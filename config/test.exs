@@ -10,9 +10,9 @@ config :ash, policies: [show_policy_breakdowns?: true], disable_async?: true
 # Run `mix help test` for more information.
 config :AshPhoenixStarter, AshPhoenixStarter.Repo,
   username: "postgres",
-  password: "ikijumba",
+  password: "postgres",
   hostname: "localhost",
-  database: "AshPhoenixStarter_test#{System.get_env("MIX_TEST_PARTITION")}",
+  database: "samba_test#{System.get_env("MIX_TEST_PARTITION")}",
   pool: Ecto.Adapters.SQL.Sandbox,
   pool_size: System.schedulers_online() * 2
 
