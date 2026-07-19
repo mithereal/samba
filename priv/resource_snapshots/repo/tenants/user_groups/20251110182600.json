@@ -130,7 +130,7 @@
     "global": false,
     "strategy": "context"
   },
-  "repo": "Elixir.ash_phoenix_starter.Repo",
+  "repo": "Elixir.samba.Repo",
   "schema": null,
   "table": "user_groups"
 }

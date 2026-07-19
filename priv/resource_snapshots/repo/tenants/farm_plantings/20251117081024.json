@@ -147,7 +147,7 @@
     "global": false,
     "strategy": "context"
   },
-  "repo": "Elixir.AshPhoenixStarter.Repo",
+  "repo": "Elixir.Samba.Repo",
   "schema": null,
   "table": "farm_plantings"
 }

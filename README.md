@@ -51,8 +51,8 @@ You can find concepts used in this kit in the [Ash Framework for Phoenix Develop
 ## Installation 
 
 1. Clone this repository or use it as a template for your new app
-2. Run `mix rename AshPhoenixStarter MyNewProjectName` to rename your Phoenix App
-3. Replace `AshPhoenixStarter` with `MyNewProjectName` everywhere else in the code base
+2. Run `mix rename Samba MyNewProjectName` to rename your Phoenix App
+3. Replace `Samba` with `MyNewProjectName` everywhere else in the code base
 4. Run `mix tailwind.install` to install tailwindcss
 5. Confirm that all is well with `mix tests`
 6. Start implementing your new features

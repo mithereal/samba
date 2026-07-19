@@ -1,9 +1,9 @@
-defmodule AshPhoenixStarter.MixProject do
+defmodule Samba.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :AshPhoenixStarter,
+      app: :Samba,
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -22,7 +22,7 @@ defmodule AshPhoenixStarter.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {AshPhoenixStarter.Application, []},
+      mod: {Samba.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -103,10 +103,10 @@ defmodule AshPhoenixStarter.MixProject do
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ash.setup --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
-      "assets.build": ["compile", "tailwind AshPhoenixStarter", "esbuild AshPhoenixStarter"],
+      "assets.build": ["compile", "tailwind Samba", "esbuild Samba"],
       "assets.deploy": [
-        "tailwind AshPhoenixStarter --minify",
-        "esbuild AshPhoenixStarter --minify",
+        "tailwind Samba --minify",
+        "esbuild Samba --minify",
         "phx.digest"
       ],
       precommit: ["compile --warning-as-errors", "deps.unlock --unused", "format", "test"]

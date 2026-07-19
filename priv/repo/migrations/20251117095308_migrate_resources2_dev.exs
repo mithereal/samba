@@ -1,4 +1,4 @@
-defmodule AshPhoenixStarter.Repo.Migrations.MigrateResources2 do
+defmodule Samba.Repo.Migrations.MigrateResources2 do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 

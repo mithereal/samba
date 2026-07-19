@@ -102,7 +102,7 @@ jobs:
     #     yes | MIX_ENV=prod mix release --overwrite
 
     # - name: Zipping release
-    #   run: tar -czf ash_phoenix_starter.tar.gz -C _build/prod/rel/ash_phoenix_starter .
+    #   run: tar -czf samba.tar.gz -C _build/prod/rel/samba .
 
     # - name: Setup SSH key
     #   run: |
@@ -117,9 +117,9 @@ jobs:
 
     # - name: Deploy release to production server
     #   run: |
-    #     scp ash_phoenix_starter.tar.gz ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_SERVER_HOST }}:~/
+    #     scp samba.tar.gz ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_SERVER_HOST }}:~/
     #     scp ./automate/deploy.sh ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_SERVER_HOST }}:~/
     #     ssh ${{ secrets.PRODUCTION_USER }}@${{ secrets.PRODUCTION_SERVER_HOST }} "~/deploy.sh"
  
     # - name: Cleanup
-    #   run: rm -f ash_phoenix_starter.tar.gz
+    #   run: rm -f samba.tar.gz

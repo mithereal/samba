@@ -15,7 +15,7 @@ config :ash_json_api,
   show_public_calculations_when_loaded?: false,
   authorize_update_destroy_with_error?: true
 
-config :ex_cldr, default_backend: AshPhoenixStarter.Cldr
+config :ex_cldr, default_backend: Samba.Cldr
 config :cinder, default_theme: "modern"
 
 config :ash,
@@ -64,29 +64,29 @@ config :spark,
     ]
   ]
 
-config :AshPhoenixStarter,
-  ecto_repos: [AshPhoenixStarter.Repo],
+config :Samba,
+  ecto_repos: [Samba.Repo],
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
-    AshPhoenixStarter.Ledger,
-    AshPhoenixStarter.Accounts
+    Samba.Ledger,
+    Samba.Accounts
   ]
 
 # Configure super admin users who are allowed to do
 # special actions such as impersonating other
 # users in the teams. Seeing all teams
 # and more...
-config :AshPhoenixStarter, super_users: ["kamaro@example.com"]
+config :Samba, super_users: ["kamaro@example.com"]
 
 # Configures the endpoint
-config :AshPhoenixStarter, AshPhoenixStarterWeb.Endpoint,
+config :Samba, SambaWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
-    formats: [html: AshPhoenixStarterWeb.ErrorHTML, json: AshPhoenixStarterWeb.ErrorJSON],
+    formats: [html: SambaWeb.ErrorHTML, json: SambaWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: AshPhoenixStarter.PubSub,
+  pubsub_server: Samba.PubSub,
   live_view: [signing_salt: "waEAzL0/"]
 
 # Configures the mailer
@@ -96,12 +96,12 @@ config :AshPhoenixStarter, AshPhoenixStarterWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :AshPhoenixStarter, AshPhoenixStarter.Mailer, adapter: Swoosh.Adapters.Local
+config :Samba, Samba.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.25.4",
-  AshPhoenixStarter: [
+  Samba: [
     args:
       ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
     cd: Path.expand("../assets", __DIR__),
@@ -111,7 +111,7 @@ config :esbuild,
 # Configure tailwind (the version is required)
 config :tailwind,
   version: "4.1.7",
-  AshPhoenixStarter: [
+  Samba: [
     args: ~w(
       --input=assets/css/app.css
       --output=priv/static/assets/css/app.css

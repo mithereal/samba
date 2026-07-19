@@ -190,7 +190,7 @@
     "global": null,
     "strategy": null
   },
-  "repo": "Elixir.AshPhoenixStarter.Repo",
+  "repo": "Elixir.Samba.Repo",
   "schema": null,
   "table": "user_impersonations"
 }
