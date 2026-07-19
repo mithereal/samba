@@ -1,0 +1,10 @@
+{
+  "ash_functions_version": 5,
+  "installed": [
+    "ash-functions",
+    "uuid-ossp",
+    "citext",
+    "pg_trgm",
+    "ash_money_v5"
+  ]
+}
