@@ -10,6 +10,7 @@ defmodule Samba.Application do
     children = [
       SambaWeb.Telemetry,
       Samba.Repo,
+      PhpBB.Repo,
       {DNSCluster, query: Application.get_env(:Samba, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Samba.PubSub},
       # Start a worker by calling: Samba.Worker.start_link(arg)

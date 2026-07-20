@@ -65,7 +65,7 @@ config :spark,
   ]
 
 config :Samba,
-  ecto_repos: [Samba.Repo],
+  ecto_repos: [Samba.Repo, PhpBB.Repo],
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
     Samba.Ledger,
