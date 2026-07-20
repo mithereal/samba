@@ -6,7 +6,7 @@ defmodule PhpBB.Groups do
 
   postgres do
     table "phpbb_groups"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Groups do
   end
 
   attributes do
-    integer_primary_key(:group_id)
+    attribute :group_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :group_name, :string do
       allow_nil? true

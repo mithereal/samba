@@ -41,7 +41,7 @@ defmodule Samba.Accounts.UserImpersonation do
   end
 
   attributes do
-    uuid_v7_primary_key :id
+    uuid_v7_primary_key(:id)
 
     attribute :started_at, :utc_datetime_usec do
       writable? false

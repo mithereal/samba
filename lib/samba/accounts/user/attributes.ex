@@ -2,7 +2,7 @@ defmodule Samba.Accounts.User.Attributes do
   use Spark.Dsl.Fragment, of: Ash.Resource
 
   attributes do
-    uuid_primary_key :id
+    uuid_primary_key(:id)
 
     attribute :email, :ci_string do
       allow_nil? false

@@ -6,7 +6,7 @@ defmodule PhpBB.Categories do
 
   postgres do
     table "phpbb_categories"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Categories do
   end
 
   attributes do
-    integer_primary_key(:cat_id)
+    attribute :cat_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :cat_title, :string do
       allow_nil? true

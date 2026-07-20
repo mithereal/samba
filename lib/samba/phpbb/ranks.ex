@@ -6,7 +6,7 @@ defmodule PhpBB.Ranks do
 
   postgres do
     table "phpbb_ranks"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Ranks do
   end
 
   attributes do
-    integer_primary_key(:rank_id)
+    attribute :rank_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :rank_title, :string do
       allow_nil? true

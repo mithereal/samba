@@ -131,7 +131,7 @@
     "global": null,
     "strategy": null
   },
-  "repo": "Elixir.samba.Repo",
+  "repo": "Elixir.Samba.Repo",
   "schema": null,
   "table": "teams"
 }

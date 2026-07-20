@@ -6,7 +6,7 @@ defmodule PhpBB.Posts do
 
   postgres do
     table "phpbb_posts"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Posts do
   end
 
   attributes do
-    integer_primary_key(:post_id)
+    attribute :post_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :poster, PhpBB.Users do

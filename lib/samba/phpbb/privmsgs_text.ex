@@ -6,7 +6,7 @@ defmodule PhpBB.PrivmsgsText do
 
   postgres do
     table "phpbb_privmsgs_text"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

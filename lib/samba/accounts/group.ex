@@ -41,7 +41,7 @@ defmodule Samba.Accounts.Group do
   end
 
   attributes do
-    uuid_v7_primary_key :id
+    uuid_v7_primary_key(:id)
 
     attribute :name, :string do
       description "Group name unique name"

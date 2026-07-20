@@ -54,7 +54,7 @@ defmodule Samba.Ledger.Account do
   end
 
   attributes do
-    uuid_v7_primary_key :id
+    uuid_v7_primary_key(:id)
 
     attribute :identifier, :string do
       allow_nil? false

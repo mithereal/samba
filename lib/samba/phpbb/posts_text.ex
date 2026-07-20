@@ -6,7 +6,7 @@ defmodule PhpBB.PostsText do
 
   postgres do
     table "phpbb_posts_text"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

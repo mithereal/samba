@@ -6,7 +6,7 @@ defmodule PhpBB.Privmsgs do
 
   postgres do
     table "phpbb_privmsgs"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Privmsgs do
   end
 
   attributes do
-    integer_primary_key(:privmsgs_id)
+    attribute :privmsgs_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :from, PhpBB.Users do

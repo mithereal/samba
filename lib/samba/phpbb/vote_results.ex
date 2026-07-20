@@ -6,7 +6,7 @@ defmodule PhpBB.VoteResults do
 
   postgres do
     table "phpbb_vote_results"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

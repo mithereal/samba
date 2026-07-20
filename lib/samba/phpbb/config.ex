@@ -6,7 +6,7 @@ defmodule PhpBB.Config do
 
   postgres do
     table "phpbb_config"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

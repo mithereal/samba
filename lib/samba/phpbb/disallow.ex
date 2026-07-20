@@ -6,7 +6,7 @@ defmodule PhpBB.Disallow do
 
   postgres do
     table "phpbb_disallow"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Disallow do
   end
 
   attributes do
-    integer_primary_key(:disallow_id)
+    attribute :disallow_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :disallow_username, :integer do
       allow_nil? true

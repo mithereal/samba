@@ -43,6 +43,7 @@ defmodule Samba.MixProject do
   defp deps do
     [
       {:open_api_spex, "~> 3.0"},
+      {:decimal, "~> 3.0", override: true},
       {:ash_json_api, "~> 1.0"},
       {:rename_project, "~> 0.1"},
       {:ex_money_sql, "~> 1.0"},
@@ -59,11 +60,11 @@ defmodule Samba.MixProject do
       {:ash_authentication, "~> 4.0"},
       {:ash_postgres, "~> 2.0"},
       {:ash_phoenix, "~> 2.0"},
-      {:ash, "~> 3.0"},
+      {:ash, "~> 3.29", override: true},
       {:igniter, "~> 0.6", only: [:dev, :test]},
       {:phoenix, "~> 1.8.1"},
       {:phoenix_ecto, "~> 4.5"},
-      {:ecto_sql, "~> 3.13"},
+      {:ecto_sql, "~> 3.13", override: true},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -89,9 +90,7 @@ defmodule Samba.MixProject do
       {:bandit, "~> 1.5"},
       {:mishka_chelekom, "~> 0.0.9", only: :dev},
       {:ash_pagify, "~> 1.5"},
-      {:ash_archival, "~> 2.0"},
-      {:bbcode, "~> 0.1.0"},
-      {:nimble_parsec, "~> 1.4", override: true}
+      {:ash_archival, "~> 2.0"}
     ]
   end
 

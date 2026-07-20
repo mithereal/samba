@@ -9,8 +9,8 @@ defmodule SambaWeb.Accounts.Teams.CreateLive do
     <Layouts.account_teams flash={@flash} current_user={@current_user} uri={@uri}>
       <.form for={@form} phx-change="validate" phx-submit="save" id="user-teams-form">
         <.render_ash_form_errors form={@form} />
-        
-    <!-- Member Identification Section -->
+
+        <!-- Member Identification Section -->
         <div class=" p-6 rounded-lg border border-gray-200">
           <h2 class="text-2xl font-semibold text-gray-700 mb-4">{gettext("Create new team")}</h2>
           <.input

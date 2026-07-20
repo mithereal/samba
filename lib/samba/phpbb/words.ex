@@ -6,7 +6,7 @@ defmodule PhpBB.Words do
 
   postgres do
     table "phpbb_words"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Words do
   end
 
   attributes do
-    integer_primary_key(:word_id)
+    attribute :word_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :word, :string do
       allow_nil? true

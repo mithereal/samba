@@ -6,7 +6,7 @@ defmodule PhpBB.Themes do
 
   postgres do
     table "phpbb_themes"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Themes do
   end
 
   attributes do
-    integer_primary_key(:themes_id)
+    attribute :themes_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :style_name, :string do
       allow_nil? true

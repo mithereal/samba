@@ -20,8 +20,8 @@ defmodule SambaWeb.Reports.GraphsLive do
             </div>
           </div>
         </div>
-        
-    <!-- Report 2: Weekly Sales -->
+
+        <!-- Report 2: Weekly Sales -->
         <div class="card border border-primary">
           <div class="card-body">
             <h2 class="card-title border-b border-primary/60">Weekly Sales</h2>
@@ -31,8 +31,8 @@ defmodule SambaWeb.Reports.GraphsLive do
             </div>
           </div>
         </div>
-        
-    <!-- Report 3: Top 10 Merchants -->
+
+        <!-- Report 3: Top 10 Merchants -->
         <div class="card border border-primary">
           <div class="card-body">
             <h2 class="card-title border-b border-primary/60">Top 10 Merchants</h2>
@@ -42,8 +42,8 @@ defmodule SambaWeb.Reports.GraphsLive do
             </div>
           </div>
         </div>
-        
-    <!-- Report 4: Monthly Sales -->
+
+        <!-- Report 4: Monthly Sales -->
         <div class="card border border-primary">
           <div class="card-body">
             <h2 class="card-title border-b border-primary/60">Monthly Sales</h2>
@@ -53,8 +53,8 @@ defmodule SambaWeb.Reports.GraphsLive do
             </div>
           </div>
         </div>
-        
-    <!-- Report 9: Distribution Efficiency -->
+
+        <!-- Report 9: Distribution Efficiency -->
         <div class="card border border-primary">
           <div class="card-body">
             <h2 class="card-title  border-b border-primary/60">Distribution Efficiency</h2>
@@ -64,8 +64,8 @@ defmodule SambaWeb.Reports.GraphsLive do
             </div>
           </div>
         </div>
-        
-    <!-- Report 10: Revenue Growth -->
+
+        <!-- Report 10: Revenue Growth -->
         <div class="card border border-primary">
           <div class="card-body">
             <h2 class="card-title  border-b border-primary/60">Revenue Growth</h2>

@@ -6,7 +6,7 @@ defmodule PhpBB.SearchWordmatch do
 
   postgres do
     table "phpbb_search_wordmatch"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

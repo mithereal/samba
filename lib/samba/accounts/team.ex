@@ -51,7 +51,7 @@ defmodule Samba.Accounts.Team do
   end
 
   attributes do
-    uuid_v7_primary_key :id
+    uuid_v7_primary_key(:id)
 
     attribute :name, :string do
       allow_nil? false

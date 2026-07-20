@@ -6,7 +6,7 @@ defmodule PhpBB.ThemesName do
 
   postgres do
     table "phpbb_themes_name"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

@@ -6,7 +6,7 @@ defmodule PhpBB.Confirm do
 
   postgres do
     table "phpbb_confirm"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Confirm do
   end
 
   attributes do
-    integer_primary_key(:confirm_id)
+    attribute :confirm_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :session, PhpBB.Sessions do

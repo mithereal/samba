@@ -6,7 +6,7 @@ defmodule PhpBB.AuthAccess do
 
   postgres do
     table "phpbb_auth_access"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

@@ -6,7 +6,7 @@ defmodule PhpBB.SessionsKeys do
 
   postgres do
     table "phpbb_sessions_keys"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.SessionsKeys do
   end
 
   attributes do
-    integer_primary_key(:phpbb_sessions_keys)
+    attribute :phpbb_sessions_keys, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :user, PhpBB.Users do

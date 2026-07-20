@@ -6,7 +6,7 @@ defmodule PhpBB.VoteDesc do
 
   postgres do
     table "phpbb_vote_desc"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.VoteDesc do
   end
 
   attributes do
-    integer_primary_key(:vote_id)
+    attribute :vote_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :topic, PhpBB.Topics do

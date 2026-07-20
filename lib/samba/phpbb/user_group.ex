@@ -6,7 +6,7 @@ defmodule PhpBB.UserGroup do
 
   postgres do
     table "phpbb_user_group"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.UserGroup do
   end
 
   attributes do
-    integer_primary_key(:group_id)
+    attribute :group_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :user, PhpBB.Users do

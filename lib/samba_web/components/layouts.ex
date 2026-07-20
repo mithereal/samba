@@ -34,8 +34,8 @@ defmodule SambaWeb.Layouts do
     <div class="flex flex-col h-screen bg-gray-100">
       <!-- Top Navigation -->
       <.top_nav current_user={@current_user} />
-      
-    <!-- Main Content with Left Menu -->
+
+      <!-- Main Content with Left Menu -->
       <div class="flex flex-1 overflow-hidden">
         <!-- Left Menu -->
         <aside
@@ -68,8 +68,8 @@ defmodule SambaWeb.Layouts do
             <.left_nav menu={SambaWeb.Menu.left_menu(@current_user)} uri={@uri} />
           </nav>
         </aside>
-        
-    <!-- Main Content -->
+
+        <!-- Main Content -->
         <main class="flex-1 p-2 bg-white overflow-auto">
           <div class="card card-content bg-c">{render_slot(@inner_block)}</div>
           <.flash_group flash={@flash} />

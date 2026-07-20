@@ -44,8 +44,7 @@ defmodule SambaWeb.Chart do
         labels={Jason.encode!(@labels)}
         datasets={Jason.encode!(@datasets)}
         legend_position={@legend_position}
-      >
-      </canvas>
+      ></canvas>
     </div>
     <script :type={Phoenix.LiveView.ColocatedHook} name=".Chart">
         export default {

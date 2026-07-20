@@ -6,7 +6,7 @@ defmodule PhpBB.Topics do
 
   postgres do
     table "phpbb_topics"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Topics do
   end
 
   attributes do
-    integer_primary_key(:topic_id)
+    attribute :topic_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :forum, PhpBB.Forums do

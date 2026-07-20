@@ -6,7 +6,7 @@ defmodule PhpBB.Smiles do
 
   postgres do
     table "phpbb_smilies"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.Smiles do
   end
 
   attributes do
-    integer_primary_key(:smilies_id)
+    attribute :smilies_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     attribute :code, :string do
       allow_nil? true

@@ -4,6 +4,14 @@ defmodule SambaWeb.DashboardLive do
 
   @impl Phoenix.LiveView
   def render(assigns) do
+    if SambaWeb.Helpers.is_super_user?(assigns.current_user) do
+      super_user(assigns)
+    else
+      non_super_user(assigns)
+    end
+  end
+
+  def super_user(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
       <h1 class="text-3xl font-bold mb-6">Today's Overview</h1>
@@ -45,8 +53,8 @@ defmodule SambaWeb.DashboardLive do
             <SambaWeb.Map.map />
           </div>
         </div>
-        
-    <!-- Low Stock Section -->
+
+        <!-- Low Stock Section -->
         <div class="card bg-base-100 border border-primary ">
           <div class="card-body">
             <h2 class="card-title">Actual vs Predicted Sales (Today)</h2>
@@ -90,6 +98,14 @@ defmodule SambaWeb.DashboardLive do
           </div>
         </div>
       </div>
+    </Layouts.app>
+    """
+  end
+
+  def non_super_user(assigns) do
+    ~H"""
+    <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
+
     </Layouts.app>
     """
   end

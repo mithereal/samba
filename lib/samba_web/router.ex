@@ -75,7 +75,7 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    live "/", LandingLive, :index
     auth_routes AuthController, Samba.Accounts.User, path: "/auth"
     sign_out_route AuthController
 

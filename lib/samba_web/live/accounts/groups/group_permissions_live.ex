@@ -7,8 +7,7 @@ defmodule SambaWeb.Accounts.Groups.GroupPermissionsLive do
   def render(assigns) do
     ~H"""
     <Layouts.account_groups current_user={@current_user} flash={@flash} uri={@uri}>
-      
-    <!-- SELECT ALL -->
+      <!-- SELECT ALL -->
 
       <h2 class="text-2xl font-semibold text-gray-700 mb-4">
         Manage Permission for {Phoenix.Naming.humanize(@group.name)}

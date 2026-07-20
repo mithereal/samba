@@ -6,7 +6,7 @@ defmodule PhpBB.TopicsWatch do
 
   postgres do
     table "phpbb_topics"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do

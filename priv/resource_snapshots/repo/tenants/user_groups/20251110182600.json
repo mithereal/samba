@@ -130,7 +130,7 @@
     "global": false,
     "strategy": "context"
   },
-  "repo": "Elixir.samba.Repo",
+  "repo": "Elixir.Samba.Repo",
   "schema": null,
   "table": "user_groups"
 }

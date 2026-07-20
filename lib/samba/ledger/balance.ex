@@ -59,7 +59,7 @@ defmodule Samba.Ledger.Balance do
   end
 
   attributes do
-    uuid_v7_primary_key :id
+    uuid_v7_primary_key(:id)
 
     attribute :balance, :money do
       constraints storage_type: :money_with_currency

@@ -6,7 +6,7 @@ defmodule PhpBB.ForumPrune do
 
   postgres do
     table "phpbb_forum_prune"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
@@ -15,7 +15,12 @@ defmodule PhpBB.ForumPrune do
   end
 
   attributes do
-    integer_primary_key(:prune_id)
+    attribute :prune_id, :integer do
+      writable? false
+      generated? true
+      primary_key?(true)
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :forum, PhpBB.Forums do
