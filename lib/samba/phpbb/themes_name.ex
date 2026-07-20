@@ -10,12 +10,15 @@ defmodule PhpBB.ThemesName do
   end
 
   actions do
-    default_accept [:themes_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:themes_id)
+    relationships do
+      belongs_to :theme, PhpBB.Themes do
+        destination_attribute :themes_id
+      end
+    end
 
     attribute :tr_color1, :string do
       allow_nil? true

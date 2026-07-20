@@ -15,16 +15,16 @@ defmodule PhpBB.UserGroup do
   end
 
   attributes do
-    primary_key(:group_id)
+    integer_primary_key(:group_id)
 
-    attribute :user_id, :integer do
-      allow_nil? true
-      public? true
-    end
+    relationships do
+      belongs_to :user, PhpBB.Users do
+        destination_attribute :user_id
+      end
 
-    attribute :user_pending, :integer do
-      allow_nil? true
-      public? true
+      belongs_to :user_pending, PhpBB.Users do
+        destination_attribute :user_pending
+      end
     end
   end
 end

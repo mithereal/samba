@@ -1,70 +1,28 @@
-defmodule PhpBB.Forums do
+defmodule PhpBB.AuthAccess do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_forums"
+    table "phpbb_auth_access"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:forum_id]
+    default_accept [:group_id, :forum_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:forum_id)
+    relationships do
+      belongs_to :group, PhpBB.Groups do
+        destination_attribute :group_id
+      end
 
-    attribute :cat_id, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_name, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_desc, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_status, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_order, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_posts, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_topics, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :forum_last_post_id, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :prune_enable, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :prune_next, :integer do
-      allow_nil? true
-      public? true
+      belongs_to :forum, PhpBB.Forums do
+        destination_attribute :forum_id
+      end
     end
 
     attribute :auth_view, :integer do
@@ -97,17 +55,12 @@ defmodule PhpBB.Forums do
       public? true
     end
 
-    attribute :auth_announce, :integer do
-      allow_nil? true
-      public? true
-    end
-
     attribute :auth_sticky, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :auth_pollcreate, :integer do
+    attribute :auth_announce, :integer do
       allow_nil? true
       public? true
     end
@@ -117,10 +70,19 @@ defmodule PhpBB.Forums do
       public? true
     end
 
+    attribute :auth_pollcreate, :integer do
+      allow_nil? true
+      public? true
+    end
+
     attribute :auth_attachments, :integer do
       allow_nil? true
       public? true
     end
+
+    attribute :auth_mod, :integer do
+      allow_nil? true
+      public? true
+    end
   end
-  
 end

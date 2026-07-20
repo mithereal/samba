@@ -1,33 +1,37 @@
-defmodule PhpBB.SearchResults do
+defmodule PhpBB.VoteResults do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_search_results"
+    table "phpbb_vote_results"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:search_id]
+    default_accept [:vote_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:search_id)
+    relationships do
+      belongs_to :vote, PhpBB.VoteDesc do
+        destination_attribute :vote_id
+      end
+    end
 
-    attribute :session_id, :string do
+    attribute :vote_option_id, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :search_time, :integer do
+    attribute :vote_option_text, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :search_array, :integer do
+    attribute :vote_result, :integer do
       allow_nil? true
       public? true
     end

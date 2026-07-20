@@ -15,11 +15,12 @@ defmodule PhpBB.Sessions do
   end
 
   attributes do
-    primary_key(:session_id)
+    integer_primary_key(:session_id)
 
-    attribute :session_user_id, :integer do
-      allow_nil? true
-      public? true
+    relationships do
+      belongs_to :user, PhpBB.Users do
+        destination_attribute :session_user_id
+      end
     end
 
     attribute :session_start, :string do

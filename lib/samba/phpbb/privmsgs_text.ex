@@ -1,33 +1,31 @@
-defmodule PhpBB.VoteResults do
+defmodule PhpBB.PrivmsgsText do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_vote_results"
+    table "phpbb_privmsgs_text"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:vote_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:vote_id)
+    relationships do
+      belongs_to :privmsgs, PhpBB.Privmsgs do
+        destination_attribute :phpbb_privmsgs_text
+      end
+    end
 
-    attribute :vote_option_id, :integer do
+    attribute :privmsgs_bbcode_uid, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :vote_option_text, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :vote_result, :integer do
+    attribute :privmsgs_text, :string do
       allow_nil? true
       public? true
     end

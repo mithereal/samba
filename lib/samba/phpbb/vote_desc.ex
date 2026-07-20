@@ -1,33 +1,39 @@
-defmodule PhpBB.Smiles do
+defmodule PhpBB.VoteDesc do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_smilies"
+    table "phpbb_vote_desc"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:smilies_id]
+    default_accept [:vote_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:smilies_id)
+    integer_primary_key(:vote_id)
 
-    attribute :code, :string do
+    relationships do
+      belongs_to :topic, PhpBB.Topics do
+        destination_attribute :topic_id
+      end
+    end
+
+    attribute :vote_text, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :smile_url, :string do
+    attribute :vote_start, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :emoticon, :string do
+    attribute :vote_length, :integer do
       allow_nil? true
       public? true
     end

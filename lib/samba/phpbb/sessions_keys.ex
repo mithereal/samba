@@ -1,28 +1,34 @@
-defmodule PhpBB.Words do
+defmodule PhpBB.SessionsKeys do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_words"
+    table "phpbb_sessions_keys"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:word_id]
+    default_accept [:phpbb_sessions_keys]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:word_id)
+    integer_primary_key(:phpbb_sessions_keys)
 
-    attribute :word, :string do
+    relationships do
+      belongs_to :user, PhpBB.Users do
+        destination_attribute :user_id
+      end
+    end
+
+    attribute :last_ip, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :replacement, :string do
+    attribute :last_login, :string do
       allow_nil? true
       public? true
     end

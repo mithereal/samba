@@ -1,32 +1,30 @@
-defmodule PhpBB.Confirm do
+defmodule PhpBB.Categories do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_confirm"
+    table "phpbb_categories"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:confirm_id]
+    default_accept [:cat_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:confirm_id)
+    integer_primary_key(:cat_id)
 
-    attribute :session_id, :integer do
+    attribute :cat_title, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :code, :string do
+    attribute :cat_order, :integer do
       allow_nil? true
       public? true
     end
   end
-
-  index ["session_id", "confirm_id"], unique: true
 end

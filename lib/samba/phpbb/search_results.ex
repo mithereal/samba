@@ -1,33 +1,34 @@
-defmodule PhpBB.SessionsKeys do
+defmodule PhpBB.SearchResults do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_sessions_keys"
+    table "phpbb_search_results"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:phpbb_sessions_keys]
+    default_accept [:search_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:phpbb_sessions_keys)
+    integer_primary_key(:search_id)
 
-    attribute :user_id, :integer do
+    relationships do
+      belongs_to :session, PhpBB.Sessions do
+        destination_attribute :session_id
+      end
+    end
+
+    attribute :search_time, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :last_ip, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :last_login, :string do
+    attribute :search_array, :integer do
       allow_nil? true
       public? true
     end

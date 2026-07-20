@@ -15,7 +15,7 @@ defmodule PhpBB.Themes do
   end
 
   attributes do
-    primary_key(:themes_id)
+    integer_primary_key(:themes_id)
 
     attribute :style_name, :string do
       allow_nil? true

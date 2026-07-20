@@ -1,11 +1,11 @@
-defmodule PhpBB.PostsText do
+defmodule PhpBB.SearchWordmatch do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_posts_text"
+    table "phpbb_search_wordmatch"
     repo PhpBB.Repo
   end
 
@@ -15,19 +15,17 @@ defmodule PhpBB.PostsText do
   end
 
   attributes do
-    primary_key(:post_id)
+    relationships do
+      belongs_to :post, PhpBB.Posts do
+        destination_attribute :post_id
+      end
 
-    attribute :bbcode_uid, :integer do
-      allow_nil? true
-      public? true
+      belongs_to :word, PhpBB.SearchWordlist do
+        destination_attribute :word_id
+      end
     end
 
-    attribute :post_subject, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :post_text, :string do
+    attribute :title_match, :string do
       allow_nil? true
       public? true
     end

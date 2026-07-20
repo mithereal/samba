@@ -1,33 +1,37 @@
-defmodule PhpBB.ForumPrune do
+defmodule PhpBB.PostsText do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_forum_prune"
+    table "phpbb_posts_text"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:prune_id]
+    default_accept [:post_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:prune_id)
+    relationships do
+      belongs_to :post, PhpBB.Posts do
+        destination_attribute :post_id
+      end
+    end
 
-    attribute :forum_id, :integer do
+    attribute :bbcode_uid, :integer do
       allow_nil? true
       public? true
     end
 
-    attribute :prune_days, :integer do
+    attribute :post_subject, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :prune_freq, :integer do
+    attribute :post_text, :string do
       allow_nil? true
       public? true
     end

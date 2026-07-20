@@ -15,11 +15,14 @@ defmodule PhpBB.TopicsWatch do
   end
 
   attributes do
-    primary_key(:topic_id)
+    relationships do
+      belongs_to :topic, PhpBB.Topic do
+        destination_attribute :topic_id
+      end
 
-    attribute :user_id, :integer do
-      allow_nil? true
-      public? true
+      belongs_to :user, PhpBB.Users do
+        destination_attribute :user_id
+      end
     end
 
     attribute :notify_status, :string do

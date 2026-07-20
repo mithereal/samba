@@ -1,23 +1,28 @@
-defmodule PhpBB.Disallow do
+defmodule PhpBB.SearchWordlist do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_disallow"
+    table "phpbb_search_wordlist"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:disallow_id]
+    default_accept [:word_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    primary_key(:disallow_id)
+    integer_primary_key(:word_id)
 
-    attribute :disallow_username, :integer do
+    attribute :word_text, :string do
+      allow_nil? true
+      public? true
+    end
+
+    attribute :word_common, :integer do
       allow_nil? true
       public? true
     end

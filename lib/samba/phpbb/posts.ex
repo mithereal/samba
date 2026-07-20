@@ -15,29 +15,27 @@ defmodule PhpBB.Posts do
   end
 
   attributes do
-    primary_key(:post_id)
+    integer_primary_key(:post_id)
 
-    attribute :topic_id, :integer do
-      allow_nil? true
-      public? true
-    end
+    relationships do
+      belongs_to :poster, PhpBB.Users do
+        destination_attribute :poster_id
+      end
 
-    attribute :forum_id, :string do
-      allow_nil? true
-      public? true
-    end
+      belongs_to :username, PhpBB.Users do
+        destination_attribute :post_username
+      end
 
-    attribute :poster_id, :string do
-      allow_nil? true
-      public? true
+      belongs_to :topic, PhpBB.Topics do
+        destination_attribute :topic_id
+      end
+
+      belongs_to :forum, PhpBB.Forums do
+        destination_attribute :forum_id
+      end
     end
 
     attribute :post_time, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :post_username, :integer do
       allow_nil? true
       public? true
     end

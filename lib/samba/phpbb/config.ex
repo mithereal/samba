@@ -15,7 +15,6 @@ defmodule PhpBB.Config do
   end
 
   attributes do
-
     attribute :config_name, :string do
       allow_nil? true
       public? true

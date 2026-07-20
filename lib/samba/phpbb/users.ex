@@ -15,12 +15,7 @@ defmodule PhpBB.Users do
   end
 
   attributes do
-    primary_key(:user_id)
-
-    attribute :user_id, :integer do
-      allow_nil? true
-      public? true
-    end
+    integer_primary_key(:user_id)
 
     attribute :user_active, :integer do
       allow_nil? true
@@ -127,11 +122,6 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_last_privmsg, :integer do
-      allow_nil? true
-      public? true
-    end
-
     attribute :user_login_tries, :integer do
       allow_nil? true
       public? true
@@ -187,9 +177,14 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_rank, :integer do
-      allow_nil? true
-      public? true
+    relationships do
+      belongs_to :rank, PhpBB.Ranks do
+        destination_attribute :user_rank
+      end
+
+      belongs_to :last_privmsg, PhpBB.Privmsgs do
+        destination_attribute :user_last_privmsg
+      end
     end
 
     attribute :user_avatar, :string do

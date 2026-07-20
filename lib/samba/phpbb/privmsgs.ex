@@ -15,7 +15,17 @@ defmodule PhpBB.Privmsgs do
   end
 
   attributes do
-    primary_key(:privmsgs_id)
+    integer_primary_key(:privmsgs_id)
+
+    relationships do
+      belongs_to :from, PhpBB.Users do
+        destination_attribute :privmsgs_from_userid
+      end
+
+      belongs_to :to, PhpBB.Users do
+        destination_attribute :privmsgs_to_userid
+      end
+    end
 
     attribute :privmsgs_type, :integer do
       allow_nil? true
@@ -23,16 +33,6 @@ defmodule PhpBB.Privmsgs do
     end
 
     attribute :privmsgs_subject, :string do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :privmsgs_from_userid, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :privmsgs_to_userid, :integer do
       allow_nil? true
       public? true
     end

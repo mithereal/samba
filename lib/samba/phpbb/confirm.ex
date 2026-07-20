@@ -1,32 +1,29 @@
-defmodule PhpBB.SearchWordmatch do
+defmodule PhpBB.Confirm do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_search_wordmatch"
+    table "phpbb_confirm"
     repo PhpBB.Repo
   end
 
   actions do
-    default_accept [:post_id]
+    default_accept [:confirm_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
+    integer_primary_key(:confirm_id)
 
-    attribute :post_id, :integer do
-      allow_nil? true
-      public? true
+    relationships do
+      belongs_to :session, PhpBB.Sessions do
+        destination_attribute :session_id
+      end
     end
 
-    attribute :word_id, :integer do
-      allow_nil? true
-      public? true
-    end
-
-    attribute :title_match, :string do
+    attribute :code, :string do
       allow_nil? true
       public? true
     end

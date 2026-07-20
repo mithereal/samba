@@ -1,11 +1,11 @@
-defmodule PhpBB.SearchWordlist do
+defmodule PhpBB.Words do
   use Ash.Resource,
     domain: PhpBB,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_search_wordlist"
+    table "phpbb_words"
     repo PhpBB.Repo
   end
 
@@ -15,14 +15,14 @@ defmodule PhpBB.SearchWordlist do
   end
 
   attributes do
-    primary_key(:word_id)
+    integer_primary_key(:word_id)
 
-    attribute :word_text, :string do
+    attribute :word, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :word_common, :integer do
+    attribute :replacement, :string do
       allow_nil? true
       public? true
     end

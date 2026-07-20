@@ -15,11 +15,14 @@ defmodule PhpBB.VoteVoters do
   end
 
   attributes do
-    primary_key(:vote_id)
+    relationships do
+      belongs_to :user, PhpBB.Users do
+        destination_attribute :vote_user_id
+      end
 
-    attribute :vote_user_id, :integer do
-      allow_nil? true
-      public? true
+      belongs_to :vote, PhpBB.VoteDesc do
+        destination_attribute :vote_id
+      end
     end
 
     attribute :vote_user_ip, :string do
