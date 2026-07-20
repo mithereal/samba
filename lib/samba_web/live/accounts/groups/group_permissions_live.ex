@@ -145,7 +145,7 @@ defmodule SambaWeb.Accounts.Groups.GroupPermissionsLive do
     group_permissions = socket.assigns.group_permissions
 
     # Iterate over all configured Ash domains
-    for domain <- Application.get_env(:Samba, :ash_domains) do
+    for domain <- Application.get_env(:samba, :ash_domains) do
       # For each domain, process its resources
       for resource <- Ash.Domain.Info.resources(domain) do
         # Get the short name of the resource

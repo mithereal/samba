@@ -64,7 +64,7 @@ config :spark,
     ]
   ]
 
-config :Samba,
+config :samba,
   ecto_repos: [Samba.Repo, PhpBB.Repo],
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
@@ -76,10 +76,10 @@ config :Samba,
 # special actions such as impersonating other
 # users in the teams. Seeing all teams
 # and more...
-config :Samba, super_users: ["kamaro@example.com"]
+config :samba, super_users: ["kamaro@example.com"]
 
 # Configures the endpoint
-config :Samba, SambaWeb.Endpoint,
+config :samba, SambaWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
@@ -96,7 +96,7 @@ config :Samba, SambaWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :Samba, Samba.Mailer, adapter: Swoosh.Adapters.Local
+config :samba, Samba.Mailer, adapter: Swoosh.Adapters.Local
 
 # Configure esbuild (the version is required)
 config :esbuild,

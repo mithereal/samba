@@ -191,6 +191,7 @@ defmodule SambaWeb do
       import Phoenix.HTML
       # Core UI components
       import SambaWeb.CoreComponents
+      import SambaWeb.Components.Dropdown
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

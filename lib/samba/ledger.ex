@@ -1,6 +1,6 @@
 defmodule Samba.Ledger do
   use Ash.Domain,
-    otp_app: :Samba
+    otp_app: :samba
 
   resources do
     resource Samba.Ledger.Account

@@ -1,5 +1,5 @@
 import Config
-config :Samba, token_signing_secret: "QLnUvgdau283stYcHZEjcJFGE4wcdS4Q"
+config :samba, token_signing_secret: "QLnUvgdau283stYcHZEjcJFGE4wcdS4Q"
 config :bcrypt_elixir, log_rounds: 1
 config :ash, policies: [show_policy_breakdowns?: true], disable_async?: true
 
@@ -8,7 +8,7 @@ config :ash, policies: [show_policy_breakdowns?: true], disable_async?: true
 # The MIX_TEST_PARTITION environment variable can be used
 # to provide built-in test partitioning in CI environment.
 # Run `mix help test` for more information.
-config :Samba, Samba.Repo,
+config :samba, Samba.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -18,13 +18,13 @@ config :Samba, Samba.Repo,
 
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :Samba, SambaWeb.Endpoint,
+config :samba, SambaWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
   secret_key_base: "KMz7yLE75r8Osz2ab0HpoPizYiGNWHnX0TJAqzQ5qGcEVHMGumiS8h2oiMJnH2pG",
   server: false
 
 # In test we don't send emails
-config :Samba, Samba.Mailer, adapter: Swoosh.Adapters.Test
+config :samba, Samba.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false

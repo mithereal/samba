@@ -1,6 +1,6 @@
 defmodule Samba.Accounts do
   use Ash.Domain,
-    otp_app: :Samba
+    otp_app: :samba
 
   resources do
     resource Samba.Accounts.Token

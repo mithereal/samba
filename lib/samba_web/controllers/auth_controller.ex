@@ -49,7 +49,7 @@ defmodule SambaWeb.AuthController do
     return_to = get_session(conn, :return_to) || ~p"/"
 
     conn
-    |> clear_session(:Samba)
+    |> clear_session(:samba)
     |> put_flash(:info, "You are now signed out")
     |> redirect(to: return_to)
   end

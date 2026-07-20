@@ -11,13 +11,13 @@ defmodule Samba.Application do
       SambaWeb.Telemetry,
       Samba.Repo,
       PhpBB.Repo,
-      {DNSCluster, query: Application.get_env(:Samba, :dns_cluster_query) || :ignore},
+      {DNSCluster, query: Application.get_env(:samba, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Samba.PubSub},
       # Start a worker by calling: Samba.Worker.start_link(arg)
       # {Samba.Worker, arg},
       # Start to serve requests, typically the last entry
       SambaWeb.Endpoint,
-      {AshAuthentication.Supervisor, [otp_app: :Samba]}
+      {AshAuthentication.Supervisor, [otp_app: :samba]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

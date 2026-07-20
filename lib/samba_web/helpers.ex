@@ -6,7 +6,7 @@ defmodule SambaWeb.Helpers do
   """
   @spec is_super_user?(User.t()) :: boolean()
   def is_super_user?(user) do
-    super_users = Application.get_env(:Samba, :super_users, [])
+    super_users = Application.get_env(:samba, :super_users, [])
     to_string(user.email) in super_users
   end
 

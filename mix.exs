@@ -3,7 +3,7 @@ defmodule Samba.MixProject do
 
   def project do
     [
-      app: :Samba,
+      app: :samba,
       version: "0.1.0",
       elixir: "~> 1.15",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -67,7 +67,7 @@ defmodule Samba.MixProject do
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_view, "~> 1.1.0"},
+      {:phoenix_live_view, "~> 1.2"},
       {:lazy_html, ">= 0.1.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
@@ -86,7 +86,12 @@ defmodule Samba.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.2.0"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:mishka_chelekom, "~> 0.0.9", only: :dev},
+      {:ash_pagify, "~> 1.5"},
+      {:ash_archival, "~> 2.0"},
+      {:bbcode, "~> 0.1.0"},
+      {:nimble_parsec, "~> 1.4", override: true}
     ]
   end
 

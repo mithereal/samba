@@ -7,6 +7,6 @@ defmodule Samba.Secrets do
         _opts,
         _context
       ) do
-    Application.fetch_env(:Samba, :token_signing_secret)
+    Application.fetch_env(:samba, :token_signing_secret)
   end
 end

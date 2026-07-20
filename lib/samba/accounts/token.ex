@@ -1,6 +1,6 @@
 defmodule Samba.Accounts.Token do
   use Ash.Resource,
-    otp_app: :Samba,
+    otp_app: :samba,
     domain: Samba.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],

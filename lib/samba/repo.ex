@@ -1,6 +1,6 @@
 defmodule Samba.Repo do
   use AshPostgres.Repo,
-    otp_app: :Samba
+    otp_app: :samba
 
   @impl AshPostgres.Repo
   def installed_extensions do

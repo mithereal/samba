@@ -17,7 +17,7 @@ import Config
 # Alternatively, you can use `mix phx.gen.release` to generate a `bin/server`
 # script that automatically sets the env var above.
 if System.get_env("PHX_SERVER") do
-  config :Samba, SambaWeb.Endpoint, server: true
+  config :samba, SambaWeb.Endpoint, server: true
 end
 
 if config_env() == :prod do
@@ -36,7 +36,7 @@ if config_env() == :prod do
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
 
-  config :Samba, Samba.Repo,
+  config :samba, Samba.Repo,
     # ssl: true,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
@@ -44,7 +44,7 @@ if config_env() == :prod do
     # pool_count: 4,
     socket_options: maybe_ipv6
 
-  config :Samba, PhpBB.Repo,
+  config :samba, PhpBB.Repo,
     # ssl: true,
     url: database_url,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
@@ -67,9 +67,9 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
-  config :Samba, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  config :samba, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
-  config :Samba, SambaWeb.Endpoint,
+  config :samba, SambaWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
     http: [
       # Enable IPv6 and bind on all interfaces.
@@ -81,7 +81,7 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
-  config :Samba,
+  config :samba,
     token_signing_secret:
       System.get_env("TOKEN_SIGNING_SECRET") ||
         raise("Missing environment variable `TOKEN_SIGNING_SECRET`!")
@@ -91,7 +91,7 @@ if config_env() == :prod do
   # To get SSL working, you will need to add the `https` key
   # to your endpoint configuration:
   #
-  #     config :Samba, SambaWeb.Endpoint,
+  #     config :samba, SambaWeb.Endpoint,
   #       https: [
   #         ...,
   #         port: 443,
@@ -113,7 +113,7 @@ if config_env() == :prod do
   # We also recommend setting `force_ssl` in your config/prod.exs,
   # ensuring no data is ever sent via http, always redirecting to https:
   #
-  #     config :Samba, SambaWeb.Endpoint,
+  #     config :samba, SambaWeb.Endpoint,
   #       force_ssl: [hsts: true]
   #
   # Check `Plug.SSL` for all available options in `force_ssl`.
@@ -123,7 +123,7 @@ if config_env() == :prod do
   # In production you need to configure the mailer to use a different adapter.
   # Here is an example configuration for Mailgun:
   #
-  #     config :Samba, Samba.Mailer,
+  #     config :samba, Samba.Mailer,
   #       adapter: Swoosh.Adapters.Mailgun,
   #       api_key: System.get_env("MAILGUN_API_KEY"),
   #       domain: System.get_env("MAILGUN_DOMAIN")

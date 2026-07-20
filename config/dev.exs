@@ -2,7 +2,7 @@ import Config
 config :ash, policies: [show_policy_breakdowns?: true]
 
 # Configure your database
-config :Samba, Samba.Repo,
+config :samba, Samba.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -11,7 +11,7 @@ config :Samba, Samba.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-config :Samba, PhpBB.Repo,
+config :samba, PhpBB.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -26,7 +26,7 @@ config :Samba, PhpBB.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :Samba, SambaWeb.Endpoint,
+config :samba, SambaWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
@@ -35,8 +35,8 @@ config :Samba, SambaWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "u2v6CEq5SaCXqs6C1kN9q3XJVlNQqE49SsFYrwnO3paU5kthcIEpLuK0urfsOpJi",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:Samba, ~w(--sourcemap=inline --watch)]},
-    tailwind: {Tailwind, :install_and_run, [:Samba, ~w(--watch)]}
+    esbuild: {Esbuild, :install_and_run, [:samba, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:samba, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -63,7 +63,7 @@ config :Samba, SambaWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :Samba, SambaWeb.Endpoint,
+config :samba, SambaWeb.Endpoint,
   live_reload: [
     web_console_logger: true,
     patterns: [
@@ -74,7 +74,7 @@ config :Samba, SambaWeb.Endpoint,
   ]
 
 # Enable dev routes for dashboard and mailbox
-config :Samba,
+config :samba,
   dev_routes: true,
   token_signing_secret: "7B/BPzeIzWI2IoXk/u0Fp8o5Sv3jF9vi"
 
