@@ -35,3 +35,4 @@ Samba-*.tar
 npm-debug.log
 /assets/node_modules/
 
+/.minio/.minio.sys/format.json
