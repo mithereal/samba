@@ -44,7 +44,7 @@ defmodule Samba.Ledger.Transfer do
 
   attributes do
     attribute :id, AshDoubleEntry.ULID do
-      primary_key?(true)
+      primary_key? true
       allow_nil? false
       default &AshDoubleEntry.ULID.generate/0
     end

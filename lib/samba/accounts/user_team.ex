@@ -10,7 +10,7 @@ defmodule Samba.Accounts.UserTeam do
 
   resource do
     # We don't need primary key for this resource
-    require_primary_key?(false)
+    require_primary_key? false
   end
 
   actions do
@@ -19,7 +19,7 @@ defmodule Samba.Accounts.UserTeam do
   end
 
   attributes do
-    uuid_v7_primary_key(:id)
+    uuid_v7_primary_key :id
     timestamps()
   end
 

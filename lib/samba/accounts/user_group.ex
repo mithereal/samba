@@ -34,7 +34,7 @@ defmodule Samba.Accounts.UserGroup do
   end
 
   attributes do
-    uuid_v7_primary_key(:id)
+    uuid_v7_primary_key :id
 
     timestamps()
   end

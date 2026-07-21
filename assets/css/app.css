@@ -2,6 +2,8 @@
    https://tailwindcss.com/docs/configuration */
 
 @import "tailwindcss";
+@import "../vendor/mishka_chelekom_headless.css";
+
 /* Load plugins you placed in assets/vendor */
 @plugin "../vendor/heroicons.js";
 @plugin "../vendor/daisyui.js";

@@ -88,7 +88,7 @@ defmodule Samba.Accounts.Token do
 
   attributes do
     attribute :jti, :string do
-      primary_key?(true)
+      primary_key? true
       public? true
       allow_nil? false
       sensitive? true

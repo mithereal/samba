@@ -104,9 +104,7 @@ defmodule SambaWeb.DashboardLive do
 
   def non_super_user(assigns) do
     ~H"""
-    <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
-
-    </Layouts.app>
+    <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}></Layouts.app>
     """
   end
 end

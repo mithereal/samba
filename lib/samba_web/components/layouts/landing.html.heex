@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {Application.get_env(:live_debugger, :live_debugger_tags)}
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title default="TheSamba" suffix=" · PXBB">
+      {assigns[:page_title]}
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
+    </script>
+    <script>
+      (() => {
+        const setTheme = (theme) => {
+          if (theme === "system") {
+            localStorage.removeItem("phx:theme");
+            document.documentElement.removeAttribute("data-theme");
+          } else {
+            localStorage.setItem("phx:theme", theme);
+            document.documentElement.setAttribute("data-theme", theme);
+          }
+        };
+        if (!document.documentElement.hasAttribute("data-theme")) {
+          setTheme(localStorage.getItem("phx:theme") || "system");
+        }
+        window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
+        
+        window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="min-h-screen pt-2 bg-gray-100 text-gray-900">
+      <!-- Top Navigation Bar -->
+      <nav class="bg-gray-200 border-b border-gray-300 px-2 py-2 text-xs">
+        <div class="flex justify-between">
+          <div>
+            Hello! <a href="/sign-in" class="underline">Log in</a>
+            or <a href="/register" class="underline">Register</a>
+            <span class="ml-4">
+              | <a href="#">Help</a>
+              | <a href="#">Donate</a>
+              | <a href="#">Premium Membership</a>
+              | <a href="#">Merch</a>
+            </span>
+          </div>
+          <div class="space-x-1">
+            <a href="/allbanners" class=""> See all banner ads </a>
+            |
+            <a href="/banners" class="">Advertise on
+            <script>
+              document.write(window.location.hostname);
+            </script></a>
+          </div>
+        </div>
+      </nav>
+      <!-- Logo and Ad Area -->
+      <header class="text-white">
+        <div class="py-2 bg-[#293F4F]">
+          <img src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
+        </div>
+        <div class="flex bg-[#42637B]">
+          <div class="mx-auto ">
+            <div class="align-center">
+              <div class="relative">
+                <.dropdown
+                  relative="md:relative"
+                  content_width="large"
+                  id="test"
+                  padding="extra_small"
+                  variant="default"
+                  color="dark"
+                >
+                  <:trigger>
+                    <.button class="w-full">Home</.button>
+                  </:trigger>
+
+                  <:content>
+                    <ul class="">
+                      <li>Whats New</li>
+                      <li>Search</li>
+                      <li>Store</li>
+                    </ul>
+                  </:content>
+                </.dropdown>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      {@inner_content}
+      <!-- Footer -->
+      <hr />
+      <footer class="text-center text-xs px-8 pt-2 text-gray-600">
+        <div class="space-x-2">
+          | <a href="#">Help</a>
+          | <a href="#">Advertise</a>
+          | <a href="#">Donate</a>
+          | <a href="#">Privacy/Terms of Use</a>
+          | <a href="#">Contact</a>
+          | <a href="#">Site Map</a>
+        </div>
+        <p class="mt-2">Copyright &copy; 1996-2026, Jason Clark. All Rights Reserved.</p>
+        <p class="mt-2">
+          Not affiliated with or sponsored by Volkswagen of America | Forum powered by phxBB.
+        </p>
+        <p class="mt-2">
+          Links to eBay or other vendor sites may be affiliate links where the site receives compensation.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -47,6 +47,7 @@ defmodule SambaWeb.Router do
       # on_mount {SambaWeb.LiveUserAuth, :live_no_user}
 
       live "/dashboard", DashboardLive
+      live "/faq-import", FaqImportLive
 
       live "/reports/graphs", Reports.GraphsLive
       live "/reports/summaries", Reports.SummariesLive
@@ -75,7 +76,10 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     pipe_through :browser
 
+    live "/faq", FaqLive, :index
+
     live "/", LandingLive, :index
+
     auth_routes AuthController, Samba.Accounts.User, path: "/auth"
     sign_out_route AuthController
 

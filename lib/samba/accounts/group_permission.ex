@@ -34,7 +34,7 @@ defmodule Samba.Accounts.GroupPermission do
   end
 
   attributes do
-    uuid_v7_primary_key(:id)
+    uuid_v7_primary_key :id
     attribute :action, :string, allow_nil?: false
     attribute :resource, :string, allow_nil?: false
     timestamps()

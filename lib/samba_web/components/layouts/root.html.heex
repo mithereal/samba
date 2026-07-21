@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="Samba" suffix=" · Phoenix Framework">
+    <.live_title default="TheSamba" suffix=" · PXBB">
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
@@ -33,6 +33,94 @@
     </script>
   </head>
   <body>
-    {@inner_content}
+    <div class="min-h-screen bg-gray-100 text-gray-900">
+      <!-- Top Navigation Bar -->
+      <nav class="bg-gray-200 border-b border-gray-300 px-2 py-2 text-xs">
+        <div class="flex justify-between">
+          <div>
+            Hello! <a href="/sign-in" class="underline">Log in</a>
+            or <a href="/register" class="underline">Register</a>
+            <span class="ml-4">
+              | <a href="#">Help</a>
+              | <a href="#">Donate</a>
+              | <a href="#">Premium Membership</a>
+              | <a href="#">Merch</a>
+            </span>
+          </div>
+          <div class="space-x-1">
+            <a href="/allbanners" class=""> See all banner ads </a>
+            |
+            <a href="/banners" class="">Advertise on
+            <script>
+              document.write(window.location.hostname);
+            </script></a>
+          </div>
+        </div>
+      </nav>
+      <!-- Logo and Ad Area -->
+      <header class="text-white">
+        <div class="py-2 bg-[#293F4F]">
+          <img src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
+        </div>
+        <div class="flex bg-[#42637B]">
+          <div class="mx-auto ">
+            <div class="align-center">
+              <div class="relative">
+                <.menu
+                  id="home_dropdown"
+                  side_offset={8}
+                  trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+                  popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+                >
+                  <:trigger>
+                    Home
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+                  </:trigger>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Whats New
+                  </:item>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Search
+                  </:item>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Store
+                  </:item>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Donate
+                  </:item>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Feedback
+                  </:item>
+                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                    Help
+                  </:item>
+                </.menu>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      {@inner_content}
+      <!-- Footer -->
+      <hr />
+      <footer class="text-center text-xs px-8 pt-2 text-gray-600">
+        <div class="space-x-2">
+          <a href="#">About</a>
+          | <a href="#">Help</a>
+          | <a href="#">Advertise</a>
+          | <a href="#">Donate</a>
+          | <a href="#">Privacy/Terms of Use</a>
+          | <a href="#">Contact</a>
+          | <a href="#">Site Map</a>
+        </div>
+        <p class="mt-2">Copyright &copy; 1996-2026, Jason Clark. All Rights Reserved.</p>
+        <p class="mt-2">
+          Not affiliated with or sponsored by Volkswagen of America | Forum powered by phxBB.
+        </p>
+        <p class="mt-2">
+          Links to eBay or other vendor sites may be affiliate links where the site receives compensation.
+        </p>
+      </footer>
+    </div>
   </body>
 </html>
