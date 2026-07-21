@@ -79,6 +79,7 @@ defmodule SambaWeb.Router do
     get "/page/:page", PageController, :show
 
     live "/faq", FaqLive, :index
+    live "/randoms_detail", FaqLive, :index
 
     live "/", LandingLive, :index
 

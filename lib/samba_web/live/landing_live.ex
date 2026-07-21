@@ -104,9 +104,9 @@ defmodule SambaWeb.LandingLive do
               <div class="flex justify-between items-center mb-2 bg-gray-200 px-2">
                 <span class="font-semibold text-xs">Search</span>
               </div>
-              <.form_wrapper for={assigns[:search_form]}>
+              <.form_wrapper for={assigns[:search_form]} method="get" action={~p"/search"}>
                 <.search_field
-                  name=""
+                  name="q"
                   value=""
                   placeholder=""
                   search_button
@@ -194,6 +194,7 @@ defmodule SambaWeb.LandingLive do
               class="break-words text-sm text-neutral-700 font-semibold"
             >I want a featured ad</.link></span>
           </div>
+
           <.gallery
             type="masonry"
             cols="four"
@@ -202,7 +203,9 @@ defmodule SambaWeb.LandingLive do
             gap="medium"
             class="px-4"
           >
-            <.gallery_media src="/images/logo.svg" />
+            <div>
+              <.gallery_media src="/images/logo.svg" /> fuc it
+            </div>
           </.gallery>
         </div>
       </section>

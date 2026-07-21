@@ -1,33 +1,20 @@
-# Ash Phoenix Application Starter Kit
+# New Samba
 
-![Unit Tests](https://github.com/kamaroly/ash-phoenix-starter/actions/workflows/elixir.yaml/badge.svg)
-
-
-A starter Kit that helps you build what's unique to your application faster. 
-
-Don't reinvent the wheel for common features. Clone it, rename it and start shipping with confidence. 
-
-Built for fast prototype and scaling in the future.
-
-You can find concepts used in this kit in the [Ash Framework for Phoenix Developers](https://medium.com/@lambert.kamaro/ash-framework-for-phoenix-developpers-c29b0a147552) blog serie. I will continue to add features and documentation as time permits. 
-
-![Ash Phoenix Starter Kit](dashboard.png "Starter Kit Dashboard")
+This is a port of one of the oldest websites on the internet from php to elixir/phoenix
 
 ## FEATURES
 
-1. Multitenancy with Team Management
-2. Team switching
-3. User invite to the team
-4. Team user group permission management with Ash Policies
-5. Permission management
-6. Main Menu configurations
-7. Chart Reports
-8. Map Reports
-11. Authentication with Ash Authentication
-12. Templating with Daisy UI
-14. Accounting with AshDouble Entry
-
-### On-going implementation
+1. Responsive Website vs Tables
+2. Secure (passes modern security audits)
+3. Websockets for Instant Notification
+4. Modern Chat System
+5. Modern Classifieds System
+6. Adapted PhpBB Table structure for postgres
+7. Routing Structure Preserved (this will not break users bookmarks etc)
+8. Import Tools
+9. Business Maps
+10. Seo Friendly
+11. Swagger API
 
 ###### User Impersonation
 
@@ -36,27 +23,8 @@ You can find concepts used in this kit in the [Ash Framework for Phoenix Develop
 3. If clicked, super users access the application as if they are the user they are impersonating
 4. Super Users can Go back to their account by clicking on top right menu and select "Go Back to My Account"
 
-### Upcoming features
 
-1. Email send out
-2. Rich Background Jobs with Oban
-4. AI integration with Ash AI
-5. Paper trail with Ash Paper Trail
-6. Workflows with ash_approver(A local package that needs to be published)
-7. Self referencing data with AshParental
-8. Documentations
-9. Automated CI/ CD workflow with Github
-
-
-## Installation 
-
-1. Clone this repository or use it as a template for your new app
-2. Run `mix rename Samba MyNewProjectName` to rename your Phoenix App
-3. Replace `Samba` with `MyNewProjectName` everywhere else in the code base
-4. Run `mix tailwind.install` to install tailwindcss
-5. Confirm that all is well with `mix tests`
-6. Start implementing your new features
-
+## Installation
 
 To start your Phoenix server:
 
