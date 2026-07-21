@@ -195,16 +195,21 @@ defmodule SambaWeb do
       import SambaWeb.Components.Breadcrumb
       import SambaWeb.Components.Card
       import SambaWeb.Components.Carousel
+      import SambaWeb.Components.CheckboxField
       import SambaWeb.Components.Dropdown
+      import SambaWeb.Components.EmailField
       import SambaWeb.Components.FormWrapper
       import SambaWeb.Components.Gallery
       import SambaWeb.Components.Icon
       import SambaWeb.Components.Image
+      import SambaWeb.Components.Jumbotron
       import SambaWeb.Components.Pagination
+      import SambaWeb.Components.PasswordField
       import SambaWeb.Components.SearchField
       import SambaWeb.Components.Stat
-
+      import SambaWeb.Components.Timeline
       import SambaWeb.Components.Headless.Avatar
+      import SambaWeb.Components.Headless.Checkbox
       import SambaWeb.Components.Headless.Menu
       import SambaWeb.Components.Headless.Menubar
       import SambaWeb.Components.Headless.ScrollArea

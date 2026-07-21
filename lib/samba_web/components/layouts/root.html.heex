@@ -300,16 +300,16 @@
           </div>
 
           <div class="w-1/8">
-            <.form_wrapper for={assigns[:form]}>
-            <.search_field
-              name=""
-              value=""
-              placeholder=""
-              search_button
-              class="text-xs"
-              size="small"
-            />
-          </.form_wrapper>
+            <.form_wrapper for={assigns[:search_form]}>
+              <.search_field
+                name=""
+                value=""
+                placeholder=""
+                search_button
+                class="text-xs"
+                size="small"
+              />
+            </.form_wrapper>
           </div>
         </div>
       </header>

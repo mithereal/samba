@@ -76,6 +76,8 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     pipe_through :browser
 
+    get "/page/:page", PageController, :show
+
     live "/faq", FaqLive, :index
 
     live "/", LandingLive, :index
