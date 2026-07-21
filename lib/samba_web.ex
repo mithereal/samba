@@ -191,8 +191,22 @@ defmodule SambaWeb do
       import Phoenix.HTML
       # Core UI components
       import SambaWeb.CoreComponents
+
+      import SambaWeb.Components.Breadcrumb
+      import SambaWeb.Components.Card
+      import SambaWeb.Components.Carousel
       import SambaWeb.Components.Dropdown
+      import SambaWeb.Components.Gallery
+      import SambaWeb.Components.Icon
+      import SambaWeb.Components.Image
+      import SambaWeb.Components.Pagination
+      import SambaWeb.Components.Stat
+
+      import SambaWeb.Components.Headless.Avatar
       import SambaWeb.Components.Headless.Menu
+      import SambaWeb.Components.Headless.Menubar
+      import SambaWeb.Components.Headless.ScrollArea
+      import SambaWeb.Components.Headless.Separator
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS
