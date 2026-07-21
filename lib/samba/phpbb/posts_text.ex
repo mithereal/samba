@@ -1,6 +1,6 @@
 defmodule PhpBB.PostsText do
   use Ash.Resource,
-    domain: PhpBB,
+    domain: Elixir.PhpBB.Domain,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 

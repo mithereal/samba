@@ -1,6 +1,6 @@
 defmodule PhpBB.Topics do
   use Ash.Resource,
-    domain: PhpBB,
+    domain: Elixir.PhpBB.Domain,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
@@ -18,7 +18,7 @@ defmodule PhpBB.Topics do
     attribute :topic_id, :integer do
       writable? false
       generated? true
-      primary_key?(true)
+      primary_key? true
       allow_nil? false
     end
 

@@ -69,14 +69,15 @@ config :samba,
   generators: [timestamp_type: :utc_datetime],
   ash_domains: [
     Samba.Ledger,
-    Samba.Accounts
+    Samba.Accounts,
+    PhpBB.Domain
   ]
 
 # Configure super admin users who are allowed to do
 # special actions such as impersonating other
 # users in the teams. Seeing all teams
 # and more...
-config :samba, super_users: ["kamaro@example.com"]
+config :samba, super_users: ["mithereal@gmail.com"]
 
 # Configures the endpoint
 config :samba, SambaWeb.Endpoint,
