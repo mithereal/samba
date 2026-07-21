@@ -1,6 +1,7 @@
 defmodule SambaWeb.FaqLive do
   use SambaWeb, :live_view
   alias PhpBB.FaqItem
+
   def mount(_params, _session, socket) do
     faq_items = FaqItem.read_all!()
 
@@ -58,7 +59,10 @@ defmodule SambaWeb.FaqLive do
         <!-- Main Content Area -->
         <div class="lg:col-span-3 space-y-16">
           <%= for {variable_name, sections} <- @grouped_faqs do %>
-            <div id={variable_name} class="scroll-mt-8 border-t border-zinc-200 pt-8 first:border-none first:pt-0">
+            <div
+              id={variable_name}
+              class="scroll-mt-8 border-t border-zinc-200 pt-8 first:border-none first:pt-0"
+            >
               <div class="flex items-center gap-3 mb-6">
                 <span class="inline-flex items-center rounded-md bg-indigo-50 px-2.5 py-1 text-xs font-mono font-medium text-indigo-700 ring-1 ring-inset ring-indigo-600/10">
                   ${variable_name}[]
@@ -71,7 +75,10 @@ defmodule SambaWeb.FaqLive do
               <div class="space-y-8">
                 <%= for {section_title, items} <- sections do %>
                   <% section_id = slugify("#{variable_name}-#{section_title}") %>
-                  <div id={section_id} class="scroll-mt-8 bg-white shadow-sm ring-1 ring-zinc-900/5 rounded-xl p-6 sm:p-8">
+                  <div
+                    id={section_id}
+                    class="scroll-mt-8 bg-white shadow-sm ring-1 ring-zinc-900/5 rounded-xl p-6 sm:p-8"
+                  >
                     <h3 class="text-lg font-semibold text-indigo-600 border-b border-zinc-100 pb-3 mb-6">
                       {section_title}
                     </h3>

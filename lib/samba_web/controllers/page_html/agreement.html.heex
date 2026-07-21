@@ -1,52 +1,55 @@
 <Layouts.flash_group flash={@flash} />
 <div class="max-w-2xl mx-auto py-12">
+  <div class="relative overflow-hidden bg-stone-900 text-stone-100 py-16 px-6 sm:px-12 rounded-2xl border border-stone-800 shadow-2xl">
+    <!-- Subtle Background VW Logo SVG -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.03]">
+      <svg
+        class="w-[800px] h-[800px] text-amber-500"
+        viewBox="0 0 512 512"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M256 0C114.615 0 0 114.615 0 256s114.615 256 256 256 256-114.615 256-256S397.385 0 256 0zm0 464c-115.28 0-208-92.72-208-208S140.72 48 256 48s208 92.72 208 208-92.72 208-208 208zm10.667-277.333L298.667 298.667h-85.334l32-112h21.334zM160 186.667l42.667 149.333h42.666L224 256h64l-21.333 80h42.666L352 186.667H160z" />
+      </svg>
+    </div>
 
-    <div class="relative overflow-hidden bg-stone-900 text-stone-100 py-16 px-6 sm:px-12 rounded-2xl border border-stone-800 shadow-2xl">
+    <!-- Content Layer -->
+    <div class="relative z-10 max-w-2xl mx-auto text-center space-y-4">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-800 border-2 border-amber-600/60 shadow-lg shadow-black/50 mb-2">
+        <span class="font-mono text-lg font-bold tracking-widest text-amber-500">VW</span>
+      </div>
 
-        <!-- Subtle Background VW Logo SVG -->
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden opacity-[0.03]">
-            <svg class="w-[800px] h-[800px] text-amber-500" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                <path d="M256 0C114.615 0 0 114.615 0 256s114.615 256 256 256 256-114.615 256-256S397.385 0 256 0zm0 464c-115.28 0-208-92.72-208-208S140.72 48 256 48s208 92.72 208 208-92.72 208-208 208zm10.667-277.333L298.667 298.667h-85.334l32-112h21.334zM160 186.667l42.667 149.333h42.666L224 256h64l-21.333 80h42.666L352 186.667H160z"/>
-            </svg>
-        </div>
+      <h2 class="text-xs uppercase tracking-[0.3em] text-amber-500 font-semibold">
+        <script>
+          document.write(window.location.hostname);
+        </script>
+      </h2>
 
-        <!-- Content Layer -->
-        <div class="relative z-10 max-w-2xl mx-auto text-center space-y-4">
-            <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-stone-800 border-2 border-amber-600/60 shadow-lg shadow-black/50 mb-2">
-                <span class="font-mono text-lg font-bold tracking-widest text-amber-500">VW</span>
-            </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-100">
+        Terms & Conditions of Service
+      </h1>
 
-            <h2 class="text-xs uppercase tracking-[0.3em] text-amber-500 font-semibold">
-                <script>
-                    document.write(window.location.hostname);
-                </script>
-            </h2>
+      <p class="text-sm text-stone-400 max-w-lg mx-auto">
+        {@page.data}
+      </p>
+    </div>
 
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-stone-100">
-                Terms & Conditions of Service
-            </h1>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+      <!-- Disagree Button (Returns to Homepage) -->
+      <.link
+        navigate={~p"/"}
+        class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-8 rounded-xl border border-stone-700 bg-stone-900 text-stone-300 hover:bg-stone-800 hover:text-stone-100 font-semibold text-sm transition-colors shadow-sm"
+      >
+        Disagree & Return Home
+      </.link>
 
-            <p class="text-sm text-stone-400 max-w-lg mx-auto">
-                {@page.data}
-            </p>
-        </div>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <!-- Disagree Button (Returns to Homepage) -->
-            <.link
-            navigate={~p"/"}
-            class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-8 rounded-xl border border-stone-700 bg-stone-900 text-stone-300 hover:bg-stone-800 hover:text-stone-100 font-semibold text-sm transition-colors shadow-sm"
-            >
-            Disagree & Return Home
-        </.link>
-
-        <!-- Agree Button (Proceeds to Register) -->
-        <.link
+      <!-- Agree Button (Proceeds to Register) -->
+      <.link
         navigate={~p"/register"}
         class="w-full sm:w-auto inline-flex items-center justify-center py-3 px-8 rounded-xl border border-transparent bg-amber-500 text-stone-950 hover:bg-amber-400 font-bold text-sm tracking-wide uppercase transition-colors shadow-lg shadow-amber-500/10"
-        >
+      >
         Agree & Register
-    </.link>
-</div>
-</div>
+      </.link>
+    </div>
+  </div>
 </div>

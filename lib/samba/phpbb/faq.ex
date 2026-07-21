@@ -21,19 +21,20 @@ defmodule PhpBB.FaqItem do
       accept [:variable, :section, :question, :answer, :position]
     end
 
-  attributes do
-    attribute :id, :integer do
-      writable? false
-      generated? true
-      primary_key? true
-      allow_nil? false
-    end
+    attributes do
+      attribute :id, :integer do
+        writable? false
+        generated? true
+        primary_key? true
+        allow_nil? false
+      end
 
-    attribute :variable, :string, allow_nil?: false # Tracks whether it came from $faq[], $forum[], etc.
-    attribute :section, :string, allow_nil?: false
-    attribute :question, :string, allow_nil?: false
-    attribute :answer, :string, allow_nil?: true
-    attribute :position, :integer, allow_nil?: false
+      # Tracks whether it came from $faq[], $forum[], etc.
+      attribute :variable, :string, allow_nil?: false
+      attribute :section, :string, allow_nil?: false
+      attribute :question, :string, allow_nil?: false
+      attribute :answer, :string, allow_nil?: true
+      attribute :position, :integer, allow_nil?: false
+    end
   end
-end
 end

@@ -196,10 +196,12 @@ defmodule SambaWeb do
       import SambaWeb.Components.Card
       import SambaWeb.Components.Carousel
       import SambaWeb.Components.Dropdown
+      import SambaWeb.Components.FormWrapper
       import SambaWeb.Components.Gallery
       import SambaWeb.Components.Icon
       import SambaWeb.Components.Image
       import SambaWeb.Components.Pagination
+      import SambaWeb.Components.SearchField
       import SambaWeb.Components.Stat
 
       import SambaWeb.Components.Headless.Avatar

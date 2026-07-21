@@ -43,5 +43,4 @@ defmodule SambaWeb.PageController do
     data = PhpBB.Page.by_name!("donate")
     render(conn, :donate, data: data)
   end
-
 end

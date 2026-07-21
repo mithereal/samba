@@ -13,16 +13,17 @@ defmodule SambaWeb.FaqImportLive do
   end
 
   def handle_event("validate", %{"content" => content}, socket) do
-    {:noreply, assign(socket, form: to_form(%{"content" => content}), imported_count: nil, error: nil)}
+    {:noreply,
+     assign(socket, form: to_form(%{"content" => content}), imported_count: nil, error: nil)}
   end
 
   def handle_event("import", %{"content" => content}, socket) do
     case FaqImporter.import_from_php_string(content) do
       {:ok, count} ->
         {:noreply,
-          socket
-          |> assign(:imported_count, count)
-          |> assign(:error, nil)}
+         socket
+         |> assign(:imported_count, count)
+         |> assign(:error, nil)}
 
       {:error, reason} ->
         {:noreply, assign(socket, :error, inspect(reason))}
@@ -34,7 +35,9 @@ defmodule SambaWeb.FaqImportLive do
     ~H"""
     <div class="max-w-3xl mx-auto px-4 py-12">
       <div class="bg-white shadow-sm ring-1 ring-zinc-900/5 rounded-xl p-6 sm:p-8">
-        <h1 class="text-2xl font-bold tracking-tight text-zinc-900 mb-2">Import Multi-Block Language File</h1>
+        <h1 class="text-2xl font-bold tracking-tight text-zinc-900 mb-2">
+          Import Multi-Block Language File
+        </h1>
         <p class="text-sm text-zinc-600 mb-6">
           Paste your legacy PHP language file below. The parser automatically detects all array variable blocks (e.g. <code class="bg-zinc-100 px-1 py-0.5 rounded text-zinc-800">$faq[]</code>, <code class="bg-zinc-100 px-1 py-0.5 rounded text-zinc-800">$forum[]</code>) and section headers simultaneously.
         </p>
@@ -42,7 +45,8 @@ defmodule SambaWeb.FaqImportLive do
         <%= if @imported_count do %>
           <div class="mb-6 rounded-md bg-emerald-50 p-4 ring-1 ring-emerald-600/20">
             <p class="text-sm font-medium text-emerald-800">
-              Successfully processed and imported <strong>{@imported_count}</strong> items across multiple blocks!
+              Successfully processed and imported <strong>{@imported_count}</strong>
+              items across multiple blocks!
             </p>
           </div>
         <% end %>
@@ -79,6 +83,6 @@ defmodule SambaWeb.FaqImportLive do
         </.form>
       </div>
     </div>
-"""
-end
+    """
+  end
 end

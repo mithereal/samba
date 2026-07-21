@@ -6,7 +6,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title default="TheSamba" suffix=" · PXBB">
+    <.live_title
+      default="TheSamba.com"
+      suffix=" :: Volkswagen Classifieds, photos, shows, forums, and information"
+    >
       {assigns[:page_title]}
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
@@ -33,9 +36,9 @@
     </script>
   </head>
   <body>
-    <div class="min-h-screen bg-gray-100 text-gray-900">
+    <div class="py-2 px-2 min-h-screen bg-gray-100 text-gray-900">
       <!-- Top Navigation Bar -->
-      <nav class="bg-gray-200 border-b border-gray-300 px-2 py-2 text-xs">
+      <nav class="bg-gray-300 border-b border-gray-300 px-2 py-2 text-xs">
         <div class="flex justify-between">
           <div>
             Hello! <a href="/sign-in" class="underline">Log in</a>
@@ -58,45 +61,255 @@
         </div>
       </nav>
       <!-- Logo and Ad Area -->
+
       <header class="text-white">
-        <div class="py-2 bg-[#293F4F]">
-          <img src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
+        <div class="flex py-2 bg-[#293F4F]">
+          <.link navigate={~p"/"}>
+            <.image src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
+          </.link>
         </div>
-        <div class="flex bg-[#42637B]">
-          <div class="mx-auto ">
-            <div class="align-center">
-              <div class="relative">
-                <.menu
-                  id="home_dropdown"
-                  side_offset={8}
-                  trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
-                  popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
-                >
-                  <:trigger>
-                    Home
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
-                  </:trigger>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Whats New
-                  </:item>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Search
-                  </:item>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Store
-                  </:item>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Donate
-                  </:item>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Feedback
-                  </:item>
-                  <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-                    Help
-                  </:item>
-                </.menu>
-              </div>
-            </div>
+        <div class="relative flex items-center justify-between bg-[#42637B] px-4 py-1">
+          <!-- Empty spacer div matching the search bar width to balance the layout and keep the menu truly centered -->
+          <div class="w-1/8 invisible pointer-events-none"></div>
+
+          <div class="flex items-center flex-wrap justify-center gap-1">
+            <.menu
+              id="home_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Home
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Whats New
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Search
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Store
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Donate
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Feedback
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Help
+              </:item>
+            </.menu>
+
+            <.menu
+              id="classifieds_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Classifieds
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Place An Ad
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                All Recent Ads
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                New Ads Only
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                New Cars Only
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Search
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Manage My Ads
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Watched Ads
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Alerts
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Rules
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Fees
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Scam Info
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Help/Faqs
+              </:item>
+            </.menu>
+
+            <.menu
+              id="gallery_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Gallery
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Add Photos
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                View All
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Search
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Help/Faqs
+              </:item>
+            </.menu>
+
+            <.menu
+              id="forums_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Forums
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Search
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Memberlist
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Rules
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Chat
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                RSS
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Help/Faqs
+              </:item>
+            </.menu>
+
+            <.menu
+              id="community_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Community
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Shows
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Clubs
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Links
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Businesses
+              </:item>
+            </.menu>
+
+            <.menu
+              id="archives_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Archives
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Literature
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Press Photos
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Postcards
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Artwork
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Vintage Ads
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Backgrounds
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Registry
+              </:item>
+            </.menu>
+
+            <.menu
+              id="technical_dropdown"
+              side_offset={8}
+              trigger_class="flex h-8 items-center justify-center gap-1.5 dark:border-white bg-slate-550 dark:bg-neutral-950 pl-3 pr-2 text-sm font-normal text-white dark:text-white select-none hover:not-data-[disabled]:bg-slate-700 dark:hover:not-data-[disabled]:bg-slate-700 data-[popup-open]:bg-slate-700 dark:data-[popup-open]:bg-neutral-800"
+              popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
+            >
+              <:trigger>
+                Technical
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
+              </:trigger>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Owners Manuals
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Vin/Chassis Numbers
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                M-Codes
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Wiring
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Paint/Upholstery
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Dictionary
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Tool Listing
+              </:item>
+              <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
+                Dealer Listings
+              </:item>
+            </.menu>
+          </div>
+
+          <div class="w-1/8">
+            <.form_wrapper for={assigns[:form]}>
+            <.search_field
+              name=""
+              value=""
+              placeholder=""
+              search_button
+              class="text-xs"
+              size="small"
+            />
+          </.form_wrapper>
           </div>
         </div>
       </header>
