@@ -12,6 +12,7 @@ defmodule Samba.Application do
       Samba.Repo,
       {DNSCluster, query: Application.get_env(:samba, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Samba.PubSub},
+      {Finch, name: Finch},
       # Start a worker by calling: Samba.Worker.start_link(arg)
       # {Samba.Worker, arg},
       # Start to serve requests, typically the last entry
