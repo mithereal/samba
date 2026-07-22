@@ -217,7 +217,6 @@ defmodule PhpBB.Users do
       public? true
     end
 
-
     relationships do
       belongs_to :rank, PhpBB.Ranks do
         destination_attribute :rank_id

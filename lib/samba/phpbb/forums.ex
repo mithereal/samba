@@ -21,9 +21,13 @@ defmodule PhpBB.Forums do
       allow_nil? false
     end
 
-    attribute :forum_last_post_id, :integer
+    attribute :forum_last_post_id, :integer do
+      allow_nil? false
+    end
 
-    attribute :cat_id, :integer
+    attribute :cat_id, :integer do
+      allow_nil? false
+    end
 
     relationships do
       belongs_to :category, PhpBB.Categories do
@@ -39,18 +43,18 @@ defmodule PhpBB.Forums do
       end
 
       has_many :posts, PhpBB.Posts do
-        destination_attribute :forum_id
+        destination_attribute :post_id
         source_attribute :forum_id
       end
 
       has_many :topics, PhpBB.Topics do
-        destination_attribute :forum_id
+        destination_attribute :topic_id
         source_attribute :forum_id
       end
     end
 
     attribute :forum_name, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 

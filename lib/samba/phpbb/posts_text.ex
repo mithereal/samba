@@ -18,6 +18,7 @@ defmodule PhpBB.PostsText do
     relationships do
       belongs_to :post, PhpBB.Posts do
         destination_attribute :post_id
+        source_attribute :post_id
       end
     end
 
@@ -35,12 +36,12 @@ defmodule PhpBB.PostsText do
     end
 
     attribute :post_subject, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 
     attribute :post_text, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
   end

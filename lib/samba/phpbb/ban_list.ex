@@ -22,7 +22,7 @@ defmodule PhpBB.BanList do
     end
 
     attribute :ban_userid, :integer do
-      allow_nil? true
+      allow_nil? false
     end
 
     relationships do

@@ -35,7 +35,7 @@ defmodule PhpBB.VoteVoters do
 
     relationships do
       belongs_to :user, PhpBB.Users do
-        destination_attribute :vote_user_id
+        destination_attribute :user_id
         source_attribute :vote_user_id
         attribute_type :integer
       end

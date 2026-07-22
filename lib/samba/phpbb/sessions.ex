@@ -15,16 +15,21 @@ defmodule PhpBB.Sessions do
   end
 
   attributes do
-
     attribute :session_id, :integer do
       generated? true
       primary_key? true
       allow_nil? false
     end
 
+    attribute :session_user_id, :integer do
+      allow_nil? false
+    end
+
     relationships do
       belongs_to :user, PhpBB.Users do
-        destination_attribute :session_user_id
+        destination_attribute :user_id
+        source_attribute :session_user_id
+        attribute_type :integer
       end
     end
 

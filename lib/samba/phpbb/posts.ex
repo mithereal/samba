@@ -36,16 +36,15 @@ defmodule PhpBB.Posts do
       default 0
     end
 
+    attribute :post_username, :integer do
+      allow_nil? false
+      default 0
+    end
+
     relationships do
       belongs_to :poster, PhpBB.Users do
         destination_attribute :user_id
         source_attribute :poster_id
-        attribute_type :integer
-      end
-
-      belongs_to :username, PhpBB.Users do
-        destination_attribute :user_id
-        source_attribute :post_username
         attribute_type :integer
       end
 

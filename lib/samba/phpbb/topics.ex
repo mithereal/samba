@@ -21,7 +21,7 @@ defmodule PhpBB.Topics do
       allow_nil? false
     end
 
-    attribute :form_id, :integer do
+    attribute :forum_id, :integer do
       default 0
       allow_nil? false
     end
@@ -54,19 +54,19 @@ defmodule PhpBB.Topics do
       end
 
       belongs_to :poster, PhpBB.Users do
+        destination_attribute :user_id
         source_attribute :topic_poster
-        destination_attribute :topic_poster
         attribute_type :integer
       end
 
       belongs_to :first_post, PhpBB.Posts do
-        destination_attribute :topic_first_post_id
+        destination_attribute :post_id
         source_attribute :topic_first_post_id
         attribute_type :integer
       end
 
       belongs_to :last_post, PhpBB.Posts do
-        destination_attribute :topic_last_post_id
+        destination_attribute :post_id
         source_attribute :topic_last_post_id
         attribute_type :integer
       end

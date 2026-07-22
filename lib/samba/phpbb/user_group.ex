@@ -35,6 +35,7 @@ defmodule PhpBB.UserGroup do
     relationships do
       belongs_to :user, PhpBB.Users do
         destination_attribute :user_id
+        source_attribute :user_id
         attribute_type :integer
       end
     end

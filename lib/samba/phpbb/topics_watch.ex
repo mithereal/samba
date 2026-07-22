@@ -5,28 +5,27 @@ defmodule PhpBB.TopicsWatch do
     notifiers: Ash.Notifier.PubSub
 
   postgres do
-    table "phpbb_topics"
+    table "phpbb_topic_watch"
     repo Samba.Repo
   end
 
   actions do
-    default_accept [:topic_id]
     defaults [:create, :read, :update, :destroy]
   end
 
   attributes do
-    attribute :topic_id, :string do
-      allow_nil? true
+    attribute :topic_id, :integer do
+      allow_nil? false
       public? true
     end
 
-    attribute :user_id, :string do
-      allow_nil? true
+    attribute :user_id, :integer do
+      allow_nil? false
       public? true
     end
 
     relationships do
-      belongs_to :topic, PhpBB.Topic do
+      belongs_to :topic, PhpBB.Topics do
         destination_attribute :topic_id
         source_attribute :topic_id
         attribute_type :integer
@@ -40,7 +39,7 @@ defmodule PhpBB.TopicsWatch do
     end
 
     attribute :notify_status, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
   end

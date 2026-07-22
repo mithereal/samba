@@ -23,7 +23,7 @@ defmodule PhpBB.SearchResults do
     end
 
     attribute :session_id, :integer do
-      default ""
+      default 0
       allow_nil? false
     end
 

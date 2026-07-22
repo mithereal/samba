@@ -35,7 +35,7 @@ defmodule PhpBB.PrivmsgsText do
     end
 
     attribute :privmsgs_text, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
   end

@@ -21,9 +21,15 @@ defmodule PhpBB.SessionsKeys do
       allow_nil? false
     end
 
+    attribute :user_id, :integer do
+      allow_nil? false
+    end
+
     relationships do
       belongs_to :user, PhpBB.Users do
         destination_attribute :user_id
+        source_attribute :user_id
+        attribute_type :integer
       end
     end
 
