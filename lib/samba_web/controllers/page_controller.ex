@@ -1,10 +1,14 @@
 defmodule SambaWeb.PageController do
   use SambaWeb, :controller
 
+  plug :put_view, html: SambaWeb.PageHTML, md: SambaWeb.PageMD
+
   def show(conn, %{"page" => name}) do
     case PhpBB.Page.by_name(name) do
       {:ok, page} ->
-        render(conn, :show, data: page)
+        conn
+        |> SEO.assign(page)
+        |> render(:show, data: page)
 
       {:error, _} ->
         conn

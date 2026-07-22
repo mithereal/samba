@@ -2,10 +2,12 @@ defmodule SambaWeb.LandingLive do
   use SambaWeb, :live_view
 
   def mount(_params, _session, socket) do
-    {:ok,
-     assign(socket,
-       whats_new: %{date: Calendar.strftime(DateTime.utc_now(), "%b. %d, %Y"), data: []}
-     )}
+    socket =
+      assign(socket,
+        whats_new: %{date: Calendar.strftime(DateTime.utc_now(), "%b. %d, %Y"), data: []}
+      )
+
+    {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end
 
   @impl Phoenix.LiveView
@@ -300,4 +302,8 @@ defmodule SambaWeb.LandingLive do
     </main>
     """
   end
+
+  #  def handle_params(params, _uri, socket) do
+  #    {:noreply, SEO.assign(socket, load_article(params))}
+  #  end
 end

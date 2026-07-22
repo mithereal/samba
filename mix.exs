@@ -11,7 +11,7 @@ defmodule Samba.MixProject do
       aliases: aliases(),
       deps: deps(),
       test_paths: ["test", "lib"],
-      compilers: [:phoenix_live_view] ++ Mix.compilers(),
+      compilers: [:phoenix_live_view, :seo_jsonld] ++ Mix.compilers(),
       listeners: [Phoenix.CodeReloader],
       consolidate_protocols: Mix.env() != :dev
     ]
@@ -90,7 +90,8 @@ defmodule Samba.MixProject do
       {:bandit, "~> 1.5"},
       {:mishka_chelekom, "~> 0.0.9", only: :dev},
       {:ash_pagify, "~> 1.5"},
-      {:ash_archival, "~> 2.0"}
+      {:ash_archival, "~> 2.0"},
+      {:phoenix_seo, "~> 0.3.1"}
     ]
   end
 

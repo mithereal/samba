@@ -6,12 +6,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title
-      default="TheSamba.com"
-      suffix=" :: Volkswagen Classifieds, photos, shows, forums, and information"
-    >
-      {assigns[:page_title]}
-    </.live_title>
+    <SEO.juice
+      conn={@conn}
+      config={SambaWeb.SEO.config()}
+      page_title={assigns[:page_title]}
+    />
     <link phx-track-static rel="stylesheet" href={~p"/assets/css/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/js/app.js"}>
     </script>
@@ -41,22 +40,24 @@
       <nav class="bg-gray-300 border-b border-gray-300 px-2 py-2 text-xs">
         <div class="flex justify-between">
           <div>
-            Hello! <a href="/sign-in" class="underline">Log in</a>
-            or <a href="/register" class="underline">Register</a>
+            Hello! <.link navigate="/sign-in" class="underline">Log in</.link>
+            or <.link navigate="/register" class="underline">Register</.link>
             <span class="ml-4">
-              | <a href="#">Help</a>
-              | <a href="#">Donate</a>
-              | <a href="#">Premium Membership</a>
-              | <a href="#">Merch</a>
+              | <.link navigate="#">Help</.link>
+              | <.link navigate="#">Donate</.link>
+              | <.link navigate="#">Premium Membership</.link>
+              | <.link navigate="#">Merch</.link>
             </span>
           </div>
-          <div class="space-x-1">
-            <a href="/allbanners" class=""> See all banner ads </a>
+          <div class=" space-x-1">
+            <.link navigate="/allbanners"> See all banner ads </.link>
             |
-            <a href="/banners" class="">Advertise on
-            <script>
-              document.write(window.location.hostname);
-            </script></a>
+            <.link navigate="/banners">
+              Advertise on
+              <script>
+                document.write(window.location.hostname);
+              </script>
+            </.link>
           </div>
         </div>
       </nav>

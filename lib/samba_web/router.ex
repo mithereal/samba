@@ -6,7 +6,7 @@ defmodule SambaWeb.Router do
   import AshAuthentication.Plug.Helpers
 
   pipeline :browser do
-    plug :accepts, ["html"]
+    plug :accepts, ["html", "md"]
     plug :fetch_session
     plug :fetch_live_flash
     plug :put_root_layout, html: {SambaWeb.Layouts, :root}
@@ -75,6 +75,10 @@ defmodule SambaWeb.Router do
 
   scope "/", SambaWeb do
     pipe_through :browser
+
+    forward "/llms.txt", SEO.LLMs,
+      config: SambaWeb.SEO,
+      provider: SambaWeb.LLMsProvider
 
     get "/page/:page", PageController, :show
 

@@ -67,6 +67,29 @@ config :spark,
 config :samba,
   ecto_repos: [Samba.Repo],
   generators: [timestamp_type: :utc_datetime],
+  site_title_prefix: "",
+  google_site_verification: "",
+  site_default_locale: "en_US",
+  site_default_mask_icon_color: "#663399",
+  site_default_windows_tile_color: "#663399",
+  site_themes_list: ["default"],
+  site_default_description: "",
+  site_default_suffix: "",
+  site_default_title: "",
+  site_author: "mithereal",
+  site_description: "",
+  site_name: "",
+  facebook_app_id: "",
+  twitter_site_name: "",
+  twitter_site_id: "",
+  twitter_site_creator: "",
+  twitter_site_creator_id: "",
+  ssl_endpoint_port: 4002,
+  ssl_endpoint_domain_info: [{"example.com", "demo@example.com"}],
+  endpoint_same_site: "Lax",
+  endpoint_signing_salt: "gTm6MBR2",
+  endpoint_key: "_web_key",
+  endpoint_store: :cookie,
   ash_domains: [
     Samba.Ledger,
     Samba.Accounts,
@@ -127,6 +150,10 @@ config :logger, :default_formatter,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :phoenix_seo, json_ld_types: :all
+# or mix-and-match:
+config :phoenix_seo, json_ld_types: [:google, SEO.JSONLD.SearchAction]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

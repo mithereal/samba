@@ -80,4 +80,94 @@ defmodule PhpBB.Posts do
       public? true
     end
   end
+
+  #  reading_time
+end
+
+defimpl SEO.OpenGraph.Build, for: PhpBB.Posts do
+  use SambaWeb, :verified_routes
+
+  def build(post, conn) do
+    SEO.OpenGraph.build(
+      detail:
+        SEO.OpenGraph.post().build(
+          published_time: post.published_at,
+          author: post.author,
+          section: "Automotive"
+        ),
+      image: image(post, conn),
+      title: post.title,
+      description: post.description
+    )
+  end
+
+  defp image(post, conn) do
+    file = "/images/post/#{post.id}.png"
+
+    exists? =
+      [:code.priv_dir(:my_app), "static", file]
+      |> Path.join()
+      |> File.exists?()
+
+    if exists? do
+      SEO.OpenGraph.Image.build(
+        url: static_url(conn, file),
+        alt: post.title
+      )
+    end
+  end
+end
+
+defimpl SEO.Site.Build, for: PhpBB.Posts do
+  use SambaWeb, :verified_routes
+
+  def build(post, conn) do
+    # Because of `Phoenix.Param`, structs will assume the key of `:id` when
+    # interpolating the struct into the verified route.
+    SEO.Site.build(
+      url: url(conn, ~p"/posts/#{post}"),
+      title: post.title,
+      description: post.description
+    )
+  end
+end
+
+defimpl SEO.Twitter.Build, for: PhpBB.Posts do
+  def build(post, _conn) do
+    SEO.Twitter.build(description: post.description, title: post.title)
+  end
+end
+
+defimpl SEO.Unfurl.Build, for: PhpBB.Posts do
+  def build(post, _conn) do
+    SEO.Unfurl.build(
+      label1: "Reading Time",
+      data1: post.reading_time,
+      label2: "Published",
+      data2: DateTime.to_iso8601(post.published_at)
+    )
+  end
+end
+
+defimpl SEO.JSONLD.Build, for: PhpBB.Posts do
+  use SambaWeb, :verified_routes
+
+  def build(post, conn) do
+    # Because of `Phoenix.Param`, structs will assume the key of `:id` when
+    # interpolating the struct into the verified route. Emit multiple JSON-LD
+    # entities by returning a list — breadcrumbs sit alongside the post.
+    [
+      SEO.JSONLD.post().build(%{
+        headline: post.title,
+        description: post.description,
+        date_published: post.published_at,
+        author: SEO.JSONLD.Person.build(%{name: post.author}),
+        main_entity_of_page: url(conn, ~p"/posts/#{post}")
+      }),
+      SEO.JSONLD.Breadcrumbs.build([
+        %{name: "posts", item: url(conn, ~p"/posts")},
+        %{name: post.title, item: url(conn, ~p"/posts/#{post}")}
+      ])
+    ]
+  end
 end

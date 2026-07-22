@@ -121,6 +121,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mochiweb" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/multigraph" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/peri" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_seo" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/rustler_precompiled" />
     </content>
     <orderEntry type="inheritedJdk" />
@@ -378,5 +379,6 @@
     <orderEntry type="library" name="decimal" level="project" />
     <orderEntry type="library" name="makeup_sql" level="project" />
     <orderEntry type="library" name="benchee_json" level="project" />
+    <orderEntry type="library" name="phoenix_seo" level="project" />
   </component>
 </module>

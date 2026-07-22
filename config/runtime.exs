@@ -68,6 +68,83 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   config :samba,
+    site_title_prefix: System.get_env("site_title_prefix") || ""
+
+  config :samba,
+    google_site_verification: System.get_env("google_site_verification") || ""
+
+  config :samba,
+    site_default_locale: System.get_env("site_default_locale") || ""
+
+  config :samba,
+    site_default_mask_icon_color: System.get_env("site_default_mask_icon_color") || ""
+
+  config :samba,
+    site_default_windows_tile_color: System.get_env("site_default_windows_tile_color") || ""
+
+  config :samba,
+    site_themes_list: System.get_env("site_themes_list") || ""
+
+  config :samba,
+    site_default_description: System.get_env("site_default_description") || ""
+
+  config :samba,
+    site_default_suffix: System.get_env("site_default_suffix") || ""
+
+  config :samba,
+    site_default_title: System.get_env("site_default_title") || ""
+
+  config :samba,
+    site_author: System.get_env("site_author") || ""
+
+  config :samba,
+    site_name: System.get_env("site_name") || ""
+
+  config :samba,
+    facebook_app_id: System.get_env("facebook_app_id") || ""
+
+  config :samba,
+    twitter_site_name: System.get_env("twitter_site_name") || ""
+
+  config :samba,
+    twitter_site_id: System.get_env("twitter_site_id") || ""
+
+  config :samba,
+    twitter_site_creator: System.get_env("twitter_site_creator") || ""
+
+  config :samba,
+    twitter_site_creator_id: System.get_env("twitter_site_creator_id") || ""
+
+  config :samba,
+    ssl_endpoint_port: System.get_env("ssl_endpoint_port") || 443
+
+  domain_info = System.get_env("ssl_endpoint_domain_info") || ""
+  domain_info = domain_info |> String.split(",") |> List.to_tuple()
+
+  config :samba,
+    ssl_endpoint_domain_info: domain_info
+
+  config :samba,
+    endpoint_same_site: System.get_env("endpoint_same_site") || ""
+
+  config :samba,
+    endpoint_signing_salt: System.get_env("endpoint_signing_salt") || ""
+
+  config :samba,
+    endpoint_key: System.get_env("endpoint_key") || ""
+
+  store = System.get_env("endpoint_store") || nil
+
+  store =
+    case store do
+      nil -> :cookie
+      data -> String.to_atom(data)
+    end
+
+  config :samba,
+    endpoint_store: store
+
+  config :samba,
     token_signing_secret:
       System.get_env("TOKEN_SIGNING_SECRET") ||
         raise("Missing environment variable `TOKEN_SIGNING_SECRET`!")
