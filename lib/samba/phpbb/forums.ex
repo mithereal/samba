@@ -16,30 +16,35 @@ defmodule PhpBB.Forums do
 
   attributes do
     attribute :forum_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
+    attribute :forum_last_post_id, :integer
+
+    attribute :cat_id, :integer
+
     relationships do
       belongs_to :category, PhpBB.Categories do
         destination_attribute :cat_id
-        source_attribute :forum_id
+        source_attribute :cat_id
+        attribute_type :integer
       end
 
       belongs_to :lastpost, PhpBB.Posts do
-        destination_attribute :forum_last_post_id
-        source_attribute :forum_id
+        destination_attribute :post_id
+        source_attribute :forum_last_post_id
+        attribute_type :integer
       end
 
       has_many :posts, PhpBB.Posts do
-        destination_attribute :post_id
+        destination_attribute :forum_id
         source_attribute :forum_id
       end
 
       has_many :topics, PhpBB.Topics do
-        destination_attribute :topic_id
+        destination_attribute :forum_id
         source_attribute :forum_id
       end
     end
@@ -55,18 +60,22 @@ defmodule PhpBB.Forums do
     end
 
     attribute :forum_status, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :forum_order, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      default 1
     end
 
     attribute :prune_enable, :integer do
-      allow_nil? true
-      public? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :prune_next, :integer do
@@ -75,58 +84,86 @@ defmodule PhpBB.Forums do
     end
 
     attribute :auth_view, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_read, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_post, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_reply, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_edit, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_delete, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_announce, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_sticky, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_pollcreate, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_vote, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
 
     attribute :auth_attachments, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      constraints min: -32768, max: 32767
+      default 0
     end
+  end
+
+  identities do
+    identity :unique_name, [:cat_id]
+    identity :unique_name, [:forum_order]
+    identity :unique_name, [:forum_last_post_id]
   end
 end

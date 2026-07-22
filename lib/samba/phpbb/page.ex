@@ -30,18 +30,17 @@ defmodule PhpBB.Page do
 
   attributes do
     attribute :page_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :name, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 
-    attribute :data, :string do
+    attribute :body, :string do
       allow_nil? true
       public? true
     end

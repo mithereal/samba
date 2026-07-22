@@ -16,12 +16,21 @@ defmodule PhpBB.PrivmsgsText do
   attributes do
     relationships do
       belongs_to :privmsgs, PhpBB.Privmsgs do
-        destination_attribute :phpbb_privmsgs_text
+        source_attribute :privmsgs_text_id
+        destination_attribute :privmsgs_id
+        attribute_type :integer
       end
     end
 
+    attribute :privmsgs_text_id, :integer do
+      allow_nil? false
+      default 0
+      public? true
+    end
+
     attribute :privmsgs_bbcode_uid, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 

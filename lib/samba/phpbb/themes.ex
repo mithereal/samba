@@ -16,7 +16,6 @@ defmodule PhpBB.Themes do
 
   attributes do
     attribute :themes_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false

@@ -16,53 +16,64 @@ defmodule PhpBB.Users do
 
   attributes do
     attribute :user_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :user_active, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
       public? true
     end
 
     attribute :username, :string do
-      allow_nil? true
+      allow_nil? false
+      default "0"
       public? true
     end
 
-    attribute :user_regdate, :string do
-      allow_nil? true
+    attribute :user_regdate, :integer do
+      allow_nil? false
+      default 0
       public? true
     end
 
     attribute :user_password, :string do
-      allow_nil? true
+      allow_nil? false
+      default "0"
       public? true
     end
 
     attribute :user_session_time, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 
     attribute :user_session_page, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_lastvisit, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 
-    attribute :user_email, :integer do
+    attribute :user_email, :string do
       allow_nil? true
       public? true
     end
 
     attribute :user_icq, :string do
+      allow_nil? true
+      public? true
+    end
+
+    attribute :user_website, :string do
       allow_nil? true
       public? true
     end
@@ -113,27 +124,41 @@ defmodule PhpBB.Users do
     end
 
     attribute :user_posts, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 
     attribute :user_new_privmsg, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_unread_privmsg, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
+      public? true
+    end
+
+    attribute :user_last_privmsg, :integer do
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_login_tries, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_last_login_try, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 
@@ -143,52 +168,67 @@ defmodule PhpBB.Users do
     end
 
     attribute :user_viewemail, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
       public? true
     end
 
     attribute :user_attachsig, :integer do
+      constraints min: -32768, max: 32767
       allow_nil? true
       public? true
     end
 
     attribute :user_allowhtml, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
     attribute :user_allowbbcode, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
     attribute :user_allowsmile, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
     attribute :user_allow_pm, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_allowavatar, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 1
+      allow_nil? false
       public? true
     end
 
     attribute :user_allow_viewonline, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 1
+      allow_nil? false
       public? true
     end
 
+
     relationships do
       belongs_to :rank, PhpBB.Ranks do
-        destination_attribute :user_rank
+        destination_attribute :rank_id
+        source_attribute :user_rank
+        attribute_type :integer
       end
 
       belongs_to :last_privmsg, PhpBB.Privmsgs do
-        destination_attribute :user_last_privmsg
+        destination_attribute :privmsgs_id
+        source_attribute :user_last_privmsg
+        attribute_type :integer
       end
     end
 
@@ -198,12 +238,15 @@ defmodule PhpBB.Users do
     end
 
     attribute :user_avatar_type, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_level, :integer do
       allow_nil? true
+      default 0
       public? true
     end
 
@@ -213,26 +256,33 @@ defmodule PhpBB.Users do
     end
 
     attribute :user_timezone, :decimal do
-      allow_nil? true
+      default 0.0
+      allow_nil? false
       public? true
     end
 
     attribute :user_dateformat, :string do
-      allow_nil? true
+      default "d M Y H:i"
+      allow_nil? false
       public? true
     end
 
     attribute :user_notify_pm, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_popup_pm, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
 
     attribute :user_notify, :integer do
+      constraints min: -32768, max: 32767
       allow_nil? true
       public? true
     end

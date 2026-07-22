@@ -16,7 +16,6 @@ defmodule PhpBB.SessionsKeys do
 
   attributes do
     attribute :phpbb_sessions_keys, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false

@@ -16,26 +16,38 @@ defmodule PhpBB.SearchResults do
 
   attributes do
     attribute :search_id, :integer do
-      writable? false
+      default 0
       generated? true
       primary_key? true
+      allow_nil? false
+    end
+
+    attribute :session_id, :integer do
+      default ""
       allow_nil? false
     end
 
     relationships do
       belongs_to :session, PhpBB.Sessions do
         destination_attribute :session_id
+        source_attribute :session_id
+        attribute_type :integer
       end
     end
 
     attribute :search_time, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
 
     attribute :search_array, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
+  end
+
+  identities do
+    identity :unique_name, [:session_id]
   end
 end

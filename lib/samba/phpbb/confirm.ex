@@ -15,16 +15,24 @@ defmodule PhpBB.Confirm do
   end
 
   attributes do
-    attribute :confirm_id, :integer do
-      writable? false
+    attribute :confirm_id, :string do
       generated? true
       primary_key? true
       allow_nil? false
+      default ""
+    end
+
+    attribute :session_id, :string do
+      allow_nil? false
+      primary_key? true
+      default ""
     end
 
     relationships do
       belongs_to :session, PhpBB.Sessions do
         destination_attribute :session_id
+        source_attribute :session_id
+        attribute_type :integer
       end
     end
 

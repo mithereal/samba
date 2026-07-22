@@ -16,17 +16,14 @@ defmodule PhpBB.Config do
 
   attributes do
     attribute :config_name, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
+      primary_key? true
     end
 
     attribute :config_value, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
-  end
-
-  identities do
-    identity :unique_name, [:config_name]
   end
 end

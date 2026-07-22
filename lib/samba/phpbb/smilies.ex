@@ -16,7 +16,7 @@ defmodule PhpBB.Smiles do
 
   attributes do
     attribute :smilies_id, :integer do
-      writable? false
+      writable? true
       generated? true
       primary_key? true
       allow_nil? false

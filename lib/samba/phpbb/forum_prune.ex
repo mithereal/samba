@@ -16,8 +16,13 @@ defmodule PhpBB.ForumPrune do
 
   attributes do
     attribute :prune_id, :integer do
-      writable? false
       generated? true
+      primary_key? true
+      allow_nil? false
+    end
+
+    attribute :forum_id, :integer do
+      generated? false
       primary_key? true
       allow_nil? false
     end
@@ -25,16 +30,18 @@ defmodule PhpBB.ForumPrune do
     relationships do
       belongs_to :forum, PhpBB.Forums do
         destination_attribute :forum_id
+        source_attribute :forum_id
+        attribute_type :integer
       end
     end
 
     attribute :prune_days, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 
     attribute :prune_freq, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
   end

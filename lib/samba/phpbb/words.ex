@@ -16,19 +16,20 @@ defmodule PhpBB.Words do
 
   attributes do
     attribute :word_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :word, :string do
-      allow_nil? true
+      allow_nil? false
+      default ""
       public? true
     end
 
     attribute :replacement, :string do
-      allow_nil? true
+      allow_nil? false
+      default ""
       public? true
     end
   end

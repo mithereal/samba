@@ -21,9 +21,17 @@ defmodule PhpBB.PostsText do
       end
     end
 
-    attribute :bbcode_uid, :integer do
-      allow_nil? true
+    attribute :post_id, :integer do
+      allow_nil? false
       public? true
+      default 0
+      primary_key? true
+    end
+
+    attribute :bbcode_uid, :string do
+      allow_nil? false
+      public? true
+      default ""
     end
 
     attribute :post_subject, :string do

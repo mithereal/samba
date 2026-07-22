@@ -16,19 +16,21 @@ defmodule PhpBB.SearchWordlist do
 
   attributes do
     attribute :word_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :word_text, :string do
-      allow_nil? true
+      allow_nil? false
+      default ""
       public? true
     end
 
     attribute :word_common, :integer do
-      allow_nil? true
+      constraints min: -32768, max: 32767
+      default 0
+      allow_nil? false
       public? true
     end
   end

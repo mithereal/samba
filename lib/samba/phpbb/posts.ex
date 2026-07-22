@@ -16,69 +16,107 @@ defmodule PhpBB.Posts do
 
   attributes do
     attribute :post_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
+    attribute :topic_id, :integer do
+      allow_nil? false
+      default 0
+    end
+
+    attribute :forum_id, :integer do
+      allow_nil? false
+      default 0
+    end
+
+    attribute :poster_id, :integer do
+      allow_nil? false
+      default 0
+    end
+
     relationships do
       belongs_to :poster, PhpBB.Users do
-        destination_attribute :poster_id
+        destination_attribute :user_id
+        source_attribute :poster_id
+        attribute_type :integer
       end
 
       belongs_to :username, PhpBB.Users do
-        destination_attribute :post_username
+        destination_attribute :user_id
+        source_attribute :post_username
+        attribute_type :integer
       end
 
       belongs_to :topic, PhpBB.Topics do
         destination_attribute :topic_id
+        source_attribute :topic_id
+        attribute_type :integer
       end
 
       belongs_to :forum, PhpBB.Forums do
         destination_attribute :forum_id
+        source_attribute :forum_id
+        attribute_type :integer
       end
     end
 
     attribute :post_time, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      default 0
     end
 
     attribute :poster_ip, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      default 0
     end
 
     attribute :enable_bbcode, :integer do
-      allow_nil? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
     attribute :enable_html, :integer do
-      allow_nil? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 0
       public? true
     end
 
     attribute :enable_smilies, :integer do
-      allow_nil? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
     attribute :enable_sig, :integer do
-      allow_nil? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 1
       public? true
     end
 
-    attribute :post_edit_time, :integer do
-      allow_nil? true
-      public? true
-    end
+    attribute :post_edit_time, :integer
 
     attribute :post_edit_count, :integer do
-      allow_nil? true
+      allow_nil? false
+      constraints min: -32768, max: 32767
+      default 0
       public? true
     end
+  end
+
+  identities do
+    identity :unique_name, [:forum_id]
+    identity :unique_name, [:post_time]
+    identity :unique_name, [:poster_id]
+    identity :unique_name, [:topic_id]
   end
 
   #  reading_time

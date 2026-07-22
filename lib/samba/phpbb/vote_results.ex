@@ -18,21 +18,32 @@ defmodule PhpBB.VoteResults do
     relationships do
       belongs_to :vote, PhpBB.VoteDesc do
         destination_attribute :vote_id
+        source_attribute :vote_id
+        attribute_type :integer
       end
     end
 
-    attribute :vote_option_id, :integer do
-      allow_nil? true
+    attribute :vote_id, :integer do
+      allow_nil? false
+      default 0
       public? true
     end
 
+    attribute :vote_option_id, :integer do
+      allow_nil? false
+      default 0
+      public? true
+      primary_key? true
+    end
+
     attribute :vote_option_text, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 
     attribute :vote_result, :integer do
-      allow_nil? true
+      allow_nil? false
+      default 0
       public? true
     end
   end

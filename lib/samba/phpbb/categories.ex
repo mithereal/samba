@@ -16,7 +16,6 @@ defmodule PhpBB.Categories do
 
   attributes do
     attribute :cat_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false

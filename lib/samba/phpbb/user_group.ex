@@ -16,20 +16,32 @@ defmodule PhpBB.UserGroup do
 
   attributes do
     attribute :group_id, :integer do
-      writable? false
       generated? true
       primary_key? true
+      allow_nil? false
+      default 0
+    end
+
+    attribute :user_id, :integer do
+      default 0
+      allow_nil? false
+    end
+
+    attribute :user_pending, :integer do
+      constraints min: -32768, max: 32767
       allow_nil? false
     end
 
     relationships do
       belongs_to :user, PhpBB.Users do
         destination_attribute :user_id
-      end
-
-      belongs_to :user_pending, PhpBB.Users do
-        destination_attribute :user_pending
+        attribute_type :integer
       end
     end
+  end
+
+  identities do
+    identity :unique_name, [:group_id, :user_id]
+    identity :unique_name, [:user_id]
   end
 end

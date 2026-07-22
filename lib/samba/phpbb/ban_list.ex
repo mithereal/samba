@@ -16,23 +16,20 @@ defmodule PhpBB.BanList do
 
   attributes do
     attribute :ban_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
+    attribute :ban_userid, :integer do
+      allow_nil? true
+    end
+
     relationships do
       belongs_to :user, PhpBB.Users do
-        destination_attribute :ban_userid
-      end
-
-      belongs_to :moderator, PhpBB.Users do
-        destination_attribute :group_moderator
-      end
-
-      belongs_to :single_user, PhpBB.Users do
-        destination_attribute :group_single_user
+        destination_attribute :user_id
+        source_attribute :ban_userid
+        attribute_type :integer
       end
     end
 

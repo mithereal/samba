@@ -15,8 +15,8 @@ defmodule PhpBB.Sessions do
   end
 
   attributes do
+
     attribute :session_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false

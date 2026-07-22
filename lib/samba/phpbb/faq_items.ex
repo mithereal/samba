@@ -23,7 +23,6 @@ defmodule PhpBB.FaqItem do
 
     attributes do
       attribute :id, :integer do
-        writable? false
         generated? true
         primary_key? true
         allow_nil? false

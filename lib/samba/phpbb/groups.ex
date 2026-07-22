@@ -16,25 +16,32 @@ defmodule PhpBB.Groups do
 
   attributes do
     attribute :group_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :group_name, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
+    end
+
+    attribute :group_moderator, :integer do
+      allow_nil? false
+      public? true
+      default 0
     end
 
     attribute :group_single_user, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      default 0
     end
 
     attribute :group_type, :integer do
-      allow_nil? true
+      allow_nil? false
       public? true
+      default 1
     end
 
     attribute :group_description, :string do
@@ -44,7 +51,9 @@ defmodule PhpBB.Groups do
 
     relationships do
       belongs_to :moderator, PhpBB.Users do
-        destination_attribute :group_moderator
+        source_attribute :group_moderator
+        destination_attribute :user_id
+        attribute_type :integer
       end
     end
   end

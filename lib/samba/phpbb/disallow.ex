@@ -16,7 +16,6 @@ defmodule PhpBB.Disallow do
 
   attributes do
     attribute :disallow_id, :integer do
-      writable? false
       generated? true
       primary_key? true
       allow_nil? false
