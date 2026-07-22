@@ -31,7 +31,7 @@ defmodule PhpBB.Confirm do
       default ""
     end
 
-    attribute :session_id, :string do
+    attribute :session_id, :integer do
       allow_nil? false
       primary_key? true
       default ""

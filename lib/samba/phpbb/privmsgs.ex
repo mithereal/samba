@@ -114,7 +114,7 @@ defmodule PhpBB.Privmsgs do
   end
 
   identities do
-    identity :unique_name, [:privmsgs_from_userid]
-    identity :unique_name, [:privmsgs_to_userid]
+    identity :privmsgs_from_userid_phpbb_privmsgs_index, [:privmsgs_from_userid]
+    identity :privmsgs_to_userid_phpbb_privmsgs_index, [:privmsgs_to_userid]
   end
 end

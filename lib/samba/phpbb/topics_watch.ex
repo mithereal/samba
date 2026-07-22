@@ -55,7 +55,7 @@ defmodule PhpBB.TopicsWatch do
   end
 
   identities do
-    identity :unique_name, [:topic_id]
-    identity :unique_name, [:user_id]
+    identity :topic_id_phpbb_topics_watch_index, [:topic_id]
+    identity :user_id_phpbb_topics_watch_index, [:user_id]
   end
 end

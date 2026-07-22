@@ -57,7 +57,7 @@ defmodule PhpBB.SearchWordmatch do
   end
 
   identities do
-    identity :unique_name, [:word_id]
-    identity :unique_name, [:post_id]
+    identity :word_id_phpbb_search_wordmatch_index, [:word_id]
+    identity :post_id_phpbb_search_wordmatch_index, [:post_id]
   end
 end

@@ -58,6 +58,6 @@ defmodule PhpBB.SearchResults do
   end
 
   identities do
-    identity :unique_name, [:session_id]
+    identity :session_id_phpbb_search_results_index, [:session_id]
   end
 end

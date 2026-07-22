@@ -51,7 +51,7 @@ defmodule PhpBB.UserGroup do
   end
 
   identities do
-    identity :unique_name, [:group_id, :user_id]
-    identity :unique_name, [:user_id]
+    identity :group_id_phpbb_user_group_index, [:group_id]
+    identity :user_id_phpbb_user_group_index, [:user_id]
   end
 end

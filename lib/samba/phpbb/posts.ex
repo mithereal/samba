@@ -130,13 +130,6 @@ defmodule PhpBB.Posts do
     end
   end
 
-  identities do
-    identity :unique_name, [:forum_id]
-    identity :unique_name, [:post_time]
-    identity :unique_name, [:poster_id]
-    identity :unique_name, [:topic_id]
-  end
-
   #  reading_time
 end
 

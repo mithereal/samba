@@ -64,6 +64,6 @@ defmodule PhpBB.VoteDesc do
   end
 
   identities do
-    identity :unique_name, [:topic_id]
+    identity :topic_id_phpbb_vote_desc_index, [:topic_id]
   end
 end

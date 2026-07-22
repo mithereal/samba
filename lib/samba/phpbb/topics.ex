@@ -144,11 +144,11 @@ defmodule PhpBB.Topics do
   end
 
   identities do
-    identity :unique_name, [:forum_id]
-    identity :unique_name, [:topic_moved_id]
-    identity :unique_name, [:topic_first_post_id]
-    identity :unique_name, [:topic_last_post_id]
-    identity :unique_name, [:topic_status]
-    identity :unique_name, [:topic_type]
+    identity :forum_id_phpbb_topics_index, [:forum_id]
+    identity :topic_moved_id_phpbb_topics_index, [:topic_moved_id]
+    identity :topic_first_post_id_phpbb_topics_index, [:topic_first_post_id]
+    identity :topic_last_post_id_phpbb_topics_index, [:topic_last_post_id]
+    identity :topic_status_phpbb_topics_index, [:topic_status]
+    identity :topic_type_phpbb_topics_index, [:topic_type]
   end
 end

@@ -192,8 +192,9 @@ defmodule PhpBB.Forums do
   end
 
   identities do
-    identity :unique_name, [:cat_id]
-    identity :unique_name, [:forum_order]
-    identity :unique_name, [:forum_last_post_id]
+    identity :cat_id_phpbb_forums_index, [:cat_id]
+    identity :forum_id_phpbb_forums_index, [:forum_id]
+    identity :forums_order_phpbb_forums_index, [:forum_order]
+    identity :forum_last_post_id_phpbb_forums_index, [:forum_last_post_id]
   end
 end

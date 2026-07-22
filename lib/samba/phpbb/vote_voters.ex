@@ -58,7 +58,8 @@ defmodule PhpBB.VoteVoters do
   end
 
   identities do
-    identity :unique_name, [:vote_user_id]
-    identity :unique_name, [:vote_user_ip]
+    identity :vote_id_phpbb_vote_voters_index, [:vote_id]
+    identity :vote_user_id_phpbb_vote_voters_index, [:vote_user_id]
+    identity :vote_user_ip_phpbb_vote_voters_index, [:vote_user_ip]
   end
 end
