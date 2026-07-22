@@ -10,8 +10,15 @@ defmodule PhpBB.Disallow do
   end
 
   actions do
-    default_accept [:disallow_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :disallow_id,
+        :disallow_username
+      ]
+    end
   end
 
   attributes do

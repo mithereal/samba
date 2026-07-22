@@ -10,8 +10,24 @@ defmodule PhpBB.Privmsgs do
   end
 
   actions do
-    default_accept [:privmsgs_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :privmsgs_id,
+        :privmsgs_from_userid,
+        :privmsgs_to_userid,
+        :privmsgs_type,
+        :privmsgs_subject,
+        :privmsgs_date,
+        :privmsgs_ip,
+        :privmsgs_enable_bbcode,
+        :privmsgs_enable_html,
+        :privmsgs_enable_smilies,
+        :privmsgs_attach_sig
+      ]
+    end
   end
 
   attributes do

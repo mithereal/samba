@@ -10,8 +10,18 @@ defmodule PhpBB.Groups do
   end
 
   actions do
-    default_accept [:group_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :group_id,
+        :group_name,
+        :group_moderator,
+        :group_single_user,
+        :group_type,
+        :group_description
+      ]
   end
 
   attributes do

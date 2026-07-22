@@ -10,8 +10,46 @@ defmodule PhpBB.Themes do
   end
 
   actions do
-    default_accept [:themes_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :themes_id,
+        :style_name,
+        :template_name,
+        :head_stylesheet,
+        :body_bgcolor,
+        :body_text,
+        :body_link,
+        :body_vlink,
+        :body_alink,
+        :body_hlink,
+        :tr_color1,
+        :tr_color2,
+        :tr_color3,
+        :tr_class1,
+        :tr_class2,
+        :tr_class3,
+        :td_color1,
+        :td_color2,
+        :td_color3,
+        :fontface1,
+        :fontface2,
+        :fontface3,
+        :fontsize1,
+        :fontsize2,
+        :fontsize3,
+        :fontcolor1,
+        :fontcolor2,
+        :fontcolor3,
+        :span_class1,
+        :span_class2,
+        :span_class3,
+        :img_size_poll,
+        :img_size_privmsg
+      ]
+    end
   end
 
   attributes do

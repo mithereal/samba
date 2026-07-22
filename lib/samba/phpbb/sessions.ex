@@ -10,8 +10,21 @@ defmodule PhpBB.Sessions do
   end
 
   actions do
-    default_accept [:session_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :session_id,
+        :session_user_id,
+        :session_start,
+        :session_time,
+        :session_ip,
+        :session_page,
+        :session_logged_in,
+        :session_admin
+      ]
+    end
   end
 
   attributes do

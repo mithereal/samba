@@ -29,6 +29,7 @@ This is a port of one of the oldest websites on the internet from php to elixir/
 To start your Phoenix server:
 
 * Run `mix setup` to install and setup dependencies
+* Dump your phpbb2 database and place in `priv/data_dumps` then run the migration script `mix run priv/repo/migrate_dumps.exs`
 * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.

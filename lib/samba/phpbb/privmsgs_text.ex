@@ -10,7 +10,16 @@ defmodule PhpBB.PrivmsgsText do
   end
 
   actions do
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :privmsgs_text_id,
+        :privmsgs_bbcode_uid,
+        :privmsgs_text
+      ]
+    end
   end
 
   attributes do

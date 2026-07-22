@@ -10,8 +10,16 @@ defmodule PhpBB.Words do
   end
 
   actions do
-    default_accept [:word_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :word_id,
+        :word,
+        :replacement
+      ]
+    end
   end
 
   attributes do

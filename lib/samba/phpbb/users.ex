@@ -10,8 +10,58 @@ defmodule PhpBB.Users do
   end
 
   actions do
-    default_accept [:user_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :user_id,
+        :user_active,
+        :username,
+        :user_regdate,
+        :user_password,
+        :user_session_time,
+        :user_session_page,
+        :user_lastvisit,
+        :user_email,
+        :user_icq,
+        :user_website,
+        :user_occ,
+        :user_from,
+        :user_interests,
+        :user_sig,
+        :user_sig_bbcode_uid,
+        :user_style,
+        :user_aim,
+        :user_yim,
+        :user_msnm,
+        :user_posts,
+        :user_new_privmsg,
+        :user_unread_privmsg,
+        :user_last_privmsg,
+        :user_login_tries,
+        :user_last_login_try,
+        :user_emailtime,
+        :user_viewemail,
+        :user_attachsig,
+        :user_allowhtml,
+        :user_allowbbcode,
+        :user_allowsmile,
+        :user_allow_pm,
+        :user_allowavatar,
+        :user_allow_viewonline,
+        :user_avatar,
+        :user_avatar_type,
+        :user_level,
+        :user_lang,
+        :user_timezone,
+        :user_dateformat,
+        :user_notify_pm,
+        :user_popup_pm,
+        :user_notify,
+        :user_actkey,
+        :user_newpasswd
+      ]
   end
 
   attributes do

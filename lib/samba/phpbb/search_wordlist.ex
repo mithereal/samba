@@ -10,8 +10,16 @@ defmodule PhpBB.SearchWordlist do
   end
 
   actions do
-    default_accept [:word_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :word_id,
+        :word_text,
+        :word_common
+      ]
+    end
   end
 
   attributes do

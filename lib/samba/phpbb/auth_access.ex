@@ -10,7 +10,27 @@ defmodule PhpBB.AuthAccess do
   end
 
   actions do
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :group_id,
+        :forum_id,
+        :auth_view,
+        :auth_read,
+        :auth_post,
+        :auth_reply,
+        :auth_edit,
+        :auth_delete,
+        :auth_sticky,
+        :auth_announce,
+        :auth_vote,
+        :auth_pollcreate,
+        :auth_attachments,
+        :auth_mod
+      ]
+    end
   end
 
   attributes do

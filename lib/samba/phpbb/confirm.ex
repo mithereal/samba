@@ -10,8 +10,16 @@ defmodule PhpBB.Confirm do
   end
 
   actions do
-    default_accept [:confirm_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :confirm_id,
+        :session_id,
+        :code
+      ]
+    end
   end
 
   attributes do

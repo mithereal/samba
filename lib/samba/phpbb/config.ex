@@ -10,8 +10,15 @@ defmodule PhpBB.Config do
   end
 
   actions do
-    default_accept [:config_name, :config_value]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :config_name,
+        :config_value
+      ]
+    end
   end
 
   attributes do

@@ -10,8 +10,17 @@ defmodule PhpBB.BanList do
   end
 
   actions do
-    default_accept [:ban_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :ban_id,
+        :ban_userid,
+        :ban_ip,
+        :ban_email
+      ]
+    end
   end
 
   attributes do

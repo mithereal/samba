@@ -10,8 +10,26 @@ defmodule PhpBB.Topics do
   end
 
   actions do
-    default_accept [:topic_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :topic_id,
+        :forum_id,
+        :topic_poster,
+        :first_post_id,
+        :last_post_id,
+        :topic_moved_id,
+        :topic_title,
+        :topic_time,
+        :topic_views,
+        :topic_replies,
+        :topic_status,
+        :topic_vote,
+        :topic_type
+      ]
+    end
   end
 
   attributes do

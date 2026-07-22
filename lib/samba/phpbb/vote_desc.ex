@@ -10,8 +10,18 @@ defmodule PhpBB.VoteDesc do
   end
 
   actions do
-    default_accept [:vote_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :vote_id,
+        :topic_id,
+        :vote_text,
+        :vote_start,
+        :vote_length
+      ]
+    end
   end
 
   attributes do

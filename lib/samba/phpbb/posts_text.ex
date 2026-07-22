@@ -10,8 +10,17 @@ defmodule PhpBB.PostsText do
   end
 
   actions do
-    default_accept [:post_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :post_id,
+        :bbcode_uid,
+        :post_subject,
+        :post_text
+      ]
+    end
   end
 
   attributes do

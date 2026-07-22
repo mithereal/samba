@@ -10,8 +10,17 @@ defmodule PhpBB.VoteResults do
   end
 
   actions do
-    default_accept [:vote_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :vote_id,
+        :vote_option_id,
+        :vote_option_text,
+        :vote_result
+      ]
+    end
   end
 
   attributes do

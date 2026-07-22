@@ -10,8 +10,17 @@ defmodule PhpBB.SessionsKeys do
   end
 
   actions do
-    default_accept [:phpbb_sessions_keys]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :phpbb_sessions_keys,
+        :user_id,
+        :last_ip,
+        :last_login
+      ]
+    end
   end
 
   attributes do

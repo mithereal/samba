@@ -10,8 +10,18 @@ defmodule PhpBB.Ranks do
   end
 
   actions do
-    default_accept [:rank_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :rank_id,
+        :rank_title,
+        :rank_min,
+        :rank_special,
+        :rank_image
+      ]
+    end
   end
 
   attributes do

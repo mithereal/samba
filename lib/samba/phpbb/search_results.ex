@@ -10,8 +10,17 @@ defmodule PhpBB.SearchResults do
   end
 
   actions do
-    default_accept [:search_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :search_id,
+        :session_id,
+        :search_time,
+        :search_array
+      ]
+    end
   end
 
   attributes do

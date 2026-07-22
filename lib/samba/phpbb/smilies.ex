@@ -10,8 +10,17 @@ defmodule PhpBB.Smiles do
   end
 
   actions do
-    default_accept [:smilies_id]
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :smilies_id,
+        :code,
+        :smile_url,
+        :emoticon
+      ]
+    end
   end
 
   attributes do

@@ -10,7 +10,16 @@ defmodule PhpBB.TopicsWatch do
   end
 
   actions do
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
+
+    create :create do
+      primary? true
+      accept [
+        :topic_id,
+        :user_id,
+        :notify_status
+      ]
+    end
   end
 
   attributes do
