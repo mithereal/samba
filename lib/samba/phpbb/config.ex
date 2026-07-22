@@ -14,6 +14,7 @@ defmodule PhpBB.Config do
 
     create :create do
       primary? true
+
       accept [
         :config_name,
         :config_value

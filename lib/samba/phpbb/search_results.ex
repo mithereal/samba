@@ -14,6 +14,7 @@ defmodule PhpBB.SearchResults do
 
     create :create do
       primary? true
+
       accept [
         :search_id,
         :session_id,

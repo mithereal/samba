@@ -14,6 +14,7 @@ defmodule PhpBB.AuthAccess do
 
     create :create do
       primary? true
+
       accept [
         :group_id,
         :forum_id,

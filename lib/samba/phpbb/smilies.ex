@@ -14,6 +14,7 @@ defmodule PhpBB.Smiles do
 
     create :create do
       primary? true
+
       accept [
         :smilies_id,
         :code,

@@ -14,6 +14,7 @@ defmodule PhpBB.SearchWordmatch do
 
     create :create do
       primary? true
+
       accept [
         :word_id,
         :post_id,

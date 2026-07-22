@@ -14,6 +14,7 @@ defmodule PhpBB.VoteResults do
 
     create :create do
       primary? true
+
       accept [
         :vote_id,
         :vote_option_id,

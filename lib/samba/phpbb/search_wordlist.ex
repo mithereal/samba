@@ -14,6 +14,7 @@ defmodule PhpBB.SearchWordlist do
 
     create :create do
       primary? true
+
       accept [
         :word_id,
         :word_text,

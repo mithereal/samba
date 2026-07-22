@@ -6,6 +6,7 @@ defmodule PhpBB.MigrationRunner do
       case {username, password} do
         {nil, nil} ->
           PhpbbCrawler.new(base_url)
+
         {u, p} ->
           {:ok, c} = PhpbbCrawler.login(base_url, u, p)
           c

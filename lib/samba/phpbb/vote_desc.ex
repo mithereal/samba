@@ -14,6 +14,7 @@ defmodule PhpBB.VoteDesc do
 
     create :create do
       primary? true
+
       accept [
         :vote_id,
         :topic_id,

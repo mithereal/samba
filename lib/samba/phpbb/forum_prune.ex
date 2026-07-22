@@ -14,6 +14,7 @@ defmodule PhpBB.ForumPrune do
 
     create :create do
       primary? true
+
       accept [
         :prune_id,
         :forum_id,

@@ -48,6 +48,7 @@ defmodule SambaWeb.Router do
 
       live "/dashboard", DashboardLive
       live "/faq-import", FaqImportLive
+      live "/forum-import", PhpbbCrawlerLive
 
       live "/reports/graphs", Reports.GraphsLive
       live "/reports/summaries", Reports.SummariesLive

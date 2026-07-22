@@ -14,6 +14,7 @@ defmodule PhpBB.Ranks do
 
     create :create do
       primary? true
+
       accept [
         :rank_id,
         :rank_title,

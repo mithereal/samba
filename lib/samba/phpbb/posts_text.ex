@@ -14,6 +14,7 @@ defmodule PhpBB.PostsText do
 
     create :create do
       primary? true
+
       accept [
         :post_id,
         :bbcode_uid,

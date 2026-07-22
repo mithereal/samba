@@ -14,6 +14,7 @@ defmodule PhpBB.ThemesName do
 
     create :create do
       primary? true
+
       accept [
         :themes_id,
         :tr_color1,
@@ -45,7 +46,14 @@ defmodule PhpBB.ThemesName do
     relationships do
       belongs_to :theme, PhpBB.Themes do
         destination_attribute :themes_id
+        source_attribute :themes_id
+        attribute_type :integer
       end
+    end
+
+    attribute :themes_id, :integer do
+      allow_nil? false
+      public? true
     end
 
     attribute :tr_color1, :string do

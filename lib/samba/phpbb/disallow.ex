@@ -14,6 +14,7 @@ defmodule PhpBB.Disallow do
 
     create :create do
       primary? true
+
       accept [
         :disallow_id,
         :disallow_username

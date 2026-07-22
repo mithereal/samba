@@ -14,6 +14,7 @@ defmodule PhpBB.Themes do
 
     create :create do
       primary? true
+
       accept [
         :themes_id,
         :style_name,

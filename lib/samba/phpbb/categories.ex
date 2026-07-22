@@ -14,6 +14,7 @@ defmodule PhpBB.Categories do
 
     create :create do
       primary? true
+
       accept [
         :cat_id,
         :cat_title,

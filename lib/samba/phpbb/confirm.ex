@@ -14,6 +14,7 @@ defmodule PhpBB.Confirm do
 
     create :create do
       primary? true
+
       accept [
         :confirm_id,
         :session_id,

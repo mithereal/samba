@@ -14,6 +14,7 @@ defmodule PhpBB.Groups do
 
     create :create do
       primary? true
+
       accept [
         :group_id,
         :group_name,
@@ -22,6 +23,7 @@ defmodule PhpBB.Groups do
         :group_type,
         :group_description
       ]
+    end
   end
 
   attributes do

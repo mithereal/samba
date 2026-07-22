@@ -14,6 +14,7 @@ defmodule PhpBB.Users do
 
     create :create do
       primary? true
+
       accept [
         :user_id,
         :user_active,
@@ -62,6 +63,7 @@ defmodule PhpBB.Users do
         :user_actkey,
         :user_newpasswd
       ]
+    end
   end
 
   attributes do

@@ -14,6 +14,7 @@ defmodule PhpBB.Topics do
 
     create :create do
       primary? true
+
       accept [
         :topic_id,
         :forum_id,

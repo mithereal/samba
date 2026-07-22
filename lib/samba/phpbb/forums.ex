@@ -10,17 +10,32 @@ defmodule PhpBB.Forums do
   end
 
   actions do
-
     defaults [:read, :update, :destroy]
 
     create :create do
       primary? true
+
       accept [
-        :forum_id, :cat_id, :forum_last_post_id, :forum_name, :forum_desc,
-        :forum_status, :forum_order, :prune_enable, :prune_next,
-        :auth_view, :auth_read, :auth_post, :auth_reply, :auth_edit,
-        :auth_delete, :auth_announce, :auth_sticky, :auth_pollcreate,
-        :auth_vote, :auth_attachments
+        :forum_id,
+        :cat_id,
+        :forum_last_post_id,
+        :forum_name,
+        :forum_desc,
+        :forum_status,
+        :forum_order,
+        :prune_enable,
+        :prune_next,
+        :auth_view,
+        :auth_read,
+        :auth_post,
+        :auth_reply,
+        :auth_edit,
+        :auth_delete,
+        :auth_announce,
+        :auth_sticky,
+        :auth_pollcreate,
+        :auth_vote,
+        :auth_attachments
       ]
     end
   end

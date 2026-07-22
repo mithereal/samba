@@ -14,6 +14,7 @@ defmodule PhpBB.PrivmsgsText do
 
     create :create do
       primary? true
+
       accept [
         :privmsgs_text_id,
         :privmsgs_bbcode_uid,

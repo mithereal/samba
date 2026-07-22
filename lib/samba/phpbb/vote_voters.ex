@@ -14,6 +14,7 @@ defmodule PhpBB.VoteVoters do
 
     create :create do
       primary? true
+
       accept [
         :vote_id,
         :vote_user_id,

@@ -14,6 +14,7 @@ defmodule PhpBB.SessionsKeys do
 
     create :create do
       primary? true
+
       accept [
         :phpbb_sessions_keys,
         :user_id,

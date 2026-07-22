@@ -14,6 +14,7 @@ defmodule PhpBB.TopicsWatch do
 
     create :create do
       primary? true
+
       accept [
         :topic_id,
         :user_id,

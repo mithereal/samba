@@ -86,7 +86,11 @@ defmodule PhpbbCrawler do
 
     all_topics =
       forums
-      |> Task.async_stream(fn forum -> crawl_forum_pages(crawler, forum.forum_id, 0, [], concurrency, timeout) end, max_concurrency: concurrency, timeout: timeout)
+      |> Task.async_stream(
+        fn forum -> crawl_forum_pages(crawler, forum.forum_id, 0, [], concurrency, timeout) end,
+        max_concurrency: concurrency,
+        timeout: timeout
+      )
       |> Enum.flat_map(fn
         {:ok, topics} -> topics
         {:error, _} -> []
@@ -96,7 +100,11 @@ defmodule PhpbbCrawler do
 
     all_posts =
       all_topics
-      |> Task.async_stream(fn topic -> crawl_topic_pages(crawler, topic.topic_id, 0, [], concurrency, timeout) end, max_concurrency: concurrency, timeout: timeout)
+      |> Task.async_stream(
+        fn topic -> crawl_topic_pages(crawler, topic.topic_id, 0, [], concurrency, timeout) end,
+        max_concurrency: concurrency,
+        timeout: timeout
+      )
       |> Enum.flat_map(fn
         {:ok, posts} -> posts
         {:error, _} -> []
@@ -162,11 +170,16 @@ defmodule PhpbbCrawler do
 
   # --- HTTP Request Wrapper (Conditional Cookie Injection) ---
 
-  defp get_request(%PhpbbCrawler{cookie: cookie, finch_name: finch_name}, url, receive_timeout \\ 15_000) do
+  defp get_request(
+         %PhpbbCrawler{cookie: cookie, finch_name: finch_name},
+         url,
+         receive_timeout \\ 15_000
+       ) do
     headers = if cookie, do: [{"cookie", cookie}], else: []
     pool_name = finch_name || default_finch_name()
 
-    case Finch.build(:get, url, headers) |> Finch.request(pool_name, receive_timeout: receive_timeout) do
+    case Finch.build(:get, url, headers)
+         |> Finch.request(pool_name, receive_timeout: receive_timeout) do
       {:ok, %Finch.Response{status: 200, body: body}} -> {:ok, body}
       {:ok, %Finch.Response{status: status}} -> {:error, "HTTP #{status}"}
       {:error, reason} -> {:error, reason}
@@ -183,9 +196,9 @@ defmodule PhpbbCrawler do
     |> Enum.map(fn {_k, v} -> v |> String.split(";") |> List.first() end)
     |> Enum.join("; ")
     |> case do
-         "" -> nil
-         cookies -> cookies
-       end
+      "" -> nil
+      cookies -> cookies
+    end
   end
 
   # --- Parsers & Helpers ---
@@ -252,13 +265,15 @@ defmodule PhpbbCrawler do
           post_id_attr = Floki.find(row, "a[name]") |> Floki.attribute("name") |> List.first()
           post_id = parse_post_id(post_id_attr)
 
-          [%{
-            post_id: post_id,
-            topic_id: topic_id,
-            user_id: user_id,
-            author: author,
-            content: content
-          }]
+          [
+            %{
+              post_id: post_id,
+              topic_id: topic_id,
+              user_id: user_id,
+              author: author,
+              content: content
+            }
+          ]
         else
           []
         end
@@ -284,6 +299,7 @@ defmodule PhpbbCrawler do
   end
 
   defp extract_id(nil, _param), do: nil
+
   defp extract_id(path, param) do
     case URI.parse(path).query |> URI.decode_query() |> Map.get(param) do
       nil -> nil
@@ -294,6 +310,7 @@ defmodule PhpbbCrawler do
   end
 
   defp parse_post_id(nil), do: nil
+
   defp parse_post_id(name_attr) do
     case Integer.parse(String.replace_prefix(name_attr, "p", "")) do
       {id, ""} -> id
@@ -311,5 +328,71 @@ defmodule PhpbbCrawler do
     else
       Path.join([base, cleaned])
     end
+  end
+
+  @doc """
+  Lazily streams topics across all pages of a forum.
+  """
+  def stream_forum_topics(crawler, forum_id, concurrency \\ 4, timeout \\ 15_000) do
+    Stream.resource(
+      fn -> {0, false} end,
+      fn
+        {_, true} ->
+          {:halt, nil}
+
+        {start, _} ->
+          url = "#{crawler.base_url}/viewforum.php?f=#{forum_id}&start=#{start}"
+
+          case get_request(crawler, url, timeout) do
+            {:ok, body} ->
+              {topics, next_start} =
+                parse_topics_with_pagination(body, crawler.base_url, forum_id)
+
+              if next_start && next_start > start do
+                # Gentle rate limiting
+                Process.sleep(100)
+                {topics, {next_start, false}}
+              else
+                {topics, {0, true}}
+              end
+
+            _ ->
+              {:halt, nil}
+          end
+      end,
+      fn _ -> :ok end
+    )
+  end
+
+  @doc """
+  Lazily streams posts across all pages of a topic.
+  """
+  def stream_topic_posts(crawler, topic_id, concurrency \\ 4, timeout \\ 15_000) do
+    Stream.resource(
+      fn -> {0, false} end,
+      fn
+        {_, true} ->
+          {:halt, nil}
+
+        {start, _} ->
+          url = "#{crawler.base_url}/viewtopic.php?t=#{topic_id}&start=#{start}"
+
+          case get_request(crawler, url, timeout) do
+            {:ok, body} ->
+              {posts, next_start} = parse_posts_with_pagination(body, topic_id)
+
+              if next_start && next_start > start do
+                Process.sleep(100)
+                {posts, {next_start, false}}
+              else
+                {posts, {0, true}}
+              end
+
+            _ ->
+              {:halt, nil}
+          end
+      end,
+      fn _ -> :ok end
+    )
   end
 end

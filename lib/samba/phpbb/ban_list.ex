@@ -14,6 +14,7 @@ defmodule PhpBB.BanList do
 
     create :create do
       primary? true
+
       accept [
         :ban_id,
         :ban_userid,

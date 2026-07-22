@@ -14,6 +14,7 @@ defmodule PhpBB.UserGroup do
 
     create :create do
       primary? true
+
       accept [
         :group_id,
         :user_id,

@@ -10,10 +10,11 @@ defmodule PhpBB.Posts do
   end
 
   actions do
-    defaults [:create, :read, :update, :destroy]
+    defaults [:read, :update, :destroy]
 
     create :create do
       primary? true
+
       accept [
         :post_id,
         :topic_id,
@@ -29,6 +30,7 @@ defmodule PhpBB.Posts do
         :post_edit_time,
         :post_edit_count
       ]
+    end
   end
 
   attributes do

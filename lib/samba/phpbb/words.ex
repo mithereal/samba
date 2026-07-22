@@ -14,6 +14,7 @@ defmodule PhpBB.Words do
 
     create :create do
       primary? true
+
       accept [
         :word_id,
         :word,

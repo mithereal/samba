@@ -14,6 +14,7 @@ defmodule PhpBB.Sessions do
 
     create :create do
       primary? true
+
       accept [
         :session_id,
         :session_user_id,
