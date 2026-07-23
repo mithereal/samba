@@ -35,32 +35,38 @@ defmodule PhpBB.Topics do
 
   attributes do
     attribute :topic_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :forum_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end
 
     attribute :topic_poster, :integer do
+      public? true
       default 0
       allow_nil? false
     end
 
     attribute :first_post_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end
 
     attribute :last_post_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end
 
     attribute :topic_moved_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end
@@ -78,23 +84,23 @@ defmodule PhpBB.Topics do
         attribute_type :integer
       end
 
-      belongs_to :first_post, PhpBB.Posts do
-        destination_attribute :post_id
-        source_attribute :topic_first_post_id
-        attribute_type :integer
-      end
+#      belongs_to :first_post, PhpBB.Posts do
+#        destination_attribute :post_id
+#        source_attribute :topic_first_post_id
+#        attribute_type :integer
+#      end
 
-      belongs_to :last_post, PhpBB.Posts do
-        destination_attribute :post_id
-        source_attribute :topic_last_post_id
-        attribute_type :integer
-      end
+#      belongs_to :last_post, PhpBB.Posts do
+#        destination_attribute :post_id
+#        source_attribute :topic_last_post_id
+#        attribute_type :integer
+#      end
 
-      belongs_to :moved, PhpBB.Topics do
-        destination_attribute :topic_moved_id
-        source_attribute :topic_moved_id
-        attribute_type :integer
-      end
+#      belongs_to :moved, PhpBB.Topics do
+#        destination_attribute :topic_moved_id
+#        source_attribute :topic_moved_id
+#        attribute_type :integer
+#      end
     end
 
     attribute :topic_title, :string do
@@ -143,12 +149,12 @@ defmodule PhpBB.Topics do
     end
   end
 
-  identities do
-    identity :forum_id_phpbb_topics_index, [:forum_id]
-    identity :topic_moved_id_phpbb_topics_index, [:topic_moved_id]
-    identity :topic_first_post_id_phpbb_topics_index, [:topic_first_post_id]
-    identity :topic_last_post_id_phpbb_topics_index, [:topic_last_post_id]
-    identity :topic_status_phpbb_topics_index, [:topic_status]
-    identity :topic_type_phpbb_topics_index, [:topic_type]
-  end
+#  identities do
+#    identity :forum_id_phpbb_topics_index, [:forum_id]
+#    identity :topic_moved_id_phpbb_topics_index, [:topic_moved_id]
+#    identity :topic_first_post_id_phpbb_topics_index, [:topic_first_post_id]
+#    identity :topic_last_post_id_phpbb_topics_index, [:topic_last_post_id]
+#    identity :topic_status_phpbb_topics_index, [:topic_status]
+#    identity :topic_type_phpbb_topics_index, [:topic_type]
+#  end
 end

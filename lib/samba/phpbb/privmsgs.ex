@@ -33,16 +33,19 @@ defmodule PhpBB.Privmsgs do
 
   attributes do
     attribute :privmsgs_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :privmsgs_from_userid, :integer do
+      public? true
       allow_nil? false
     end
 
     attribute :privmsgs_to_userid, :integer do
+      public? true
       allow_nil? false
     end
 

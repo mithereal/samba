@@ -25,6 +25,7 @@ defmodule PhpBB.UserGroup do
 
   attributes do
     attribute :group_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
@@ -32,11 +33,13 @@ defmodule PhpBB.UserGroup do
     end
 
     attribute :user_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end
 
     attribute :user_pending, :integer do
+      public? true
       constraints min: -32768, max: 32767
       allow_nil? false
     end

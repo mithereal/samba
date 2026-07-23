@@ -35,27 +35,32 @@ defmodule PhpBB.Posts do
 
   attributes do
     attribute :post_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :topic_id, :integer do
+      public? true
       allow_nil? false
       default 0
     end
 
     attribute :forum_id, :integer do
+      public? true
       allow_nil? false
       default 0
     end
 
     attribute :poster_id, :integer do
+      public? true
       allow_nil? false
       default 0
     end
 
     attribute :post_username, :integer do
+      public? true
       allow_nil? false
       default 0
     end
@@ -120,7 +125,9 @@ defmodule PhpBB.Posts do
       public? true
     end
 
-    attribute :post_edit_time, :integer
+    attribute :post_edit_time, :integer do
+      public? true
+    end
 
     attribute :post_edit_count, :integer do
       allow_nil? false

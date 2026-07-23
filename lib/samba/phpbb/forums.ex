@@ -42,16 +42,19 @@ defmodule PhpBB.Forums do
 
   attributes do
     attribute :forum_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :forum_last_post_id, :integer do
+      public? true
       allow_nil? false
     end
 
     attribute :cat_id, :integer do
+      public? true
       allow_nil? false
     end
 
@@ -62,11 +65,6 @@ defmodule PhpBB.Forums do
         attribute_type :integer
       end
 
-      belongs_to :lastpost, PhpBB.Posts do
-        destination_attribute :post_id
-        source_attribute :forum_last_post_id
-        attribute_type :integer
-      end
 
       has_many :posts, PhpBB.Posts do
         destination_attribute :post_id
@@ -103,6 +101,7 @@ defmodule PhpBB.Forums do
     end
 
     attribute :prune_enable, :integer do
+      public? true
       allow_nil? false
       constraints min: -32768, max: 32767
       default 0
@@ -192,9 +191,6 @@ defmodule PhpBB.Forums do
   end
 
   identities do
-    identity :cat_id_phpbb_forums_index, [:cat_id]
     identity :forum_id_phpbb_forums_index, [:forum_id]
-    identity :forums_order_phpbb_forums_index, [:forum_order]
-    identity :forum_last_post_id_phpbb_forums_index, [:forum_last_post_id]
   end
 end

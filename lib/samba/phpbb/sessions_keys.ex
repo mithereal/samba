@@ -26,12 +26,14 @@ defmodule PhpBB.SessionsKeys do
 
   attributes do
     attribute :phpbb_sessions_keys, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :user_id, :integer do
+      public? true
       allow_nil? false
     end
 

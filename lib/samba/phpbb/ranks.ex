@@ -27,6 +27,7 @@ defmodule PhpBB.Ranks do
 
   attributes do
     attribute :rank_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false

@@ -26,6 +26,7 @@ defmodule PhpBB.SearchResults do
 
   attributes do
     attribute :search_id, :integer do
+      public? true
       default 0
       generated? true
       primary_key? true
@@ -33,6 +34,7 @@ defmodule PhpBB.SearchResults do
     end
 
     attribute :session_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end

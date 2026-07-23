@@ -25,6 +25,7 @@ defmodule PhpBB.Words do
 
   attributes do
     attribute :word_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false

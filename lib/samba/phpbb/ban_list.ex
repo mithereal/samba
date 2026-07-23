@@ -26,12 +26,14 @@ defmodule PhpBB.BanList do
 
   attributes do
     attribute :ban_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :ban_userid, :integer do
+      public? true
       allow_nil? false
     end
 

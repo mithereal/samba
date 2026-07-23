@@ -13,6 +13,7 @@ defmodule PhpBB.Confirm do
     defaults [:read, :update, :destroy]
 
     create :create do
+
       primary? true
 
       accept [
@@ -25,6 +26,7 @@ defmodule PhpBB.Confirm do
 
   attributes do
     attribute :confirm_id, :string do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
@@ -32,6 +34,7 @@ defmodule PhpBB.Confirm do
     end
 
     attribute :session_id, :integer do
+      public? true
       allow_nil? false
       primary_key? true
       default ""

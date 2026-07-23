@@ -25,11 +25,13 @@ defmodule PhpBB.SearchWordmatch do
 
   attributes do
     attribute :word_id, :integer do
+      public? true
       allow_nil? false
       default 0
     end
 
     attribute :post_id, :integer do
+      public? true
       allow_nil? false
       default 0
     end

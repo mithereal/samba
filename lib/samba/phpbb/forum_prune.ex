@@ -26,12 +26,14 @@ defmodule PhpBB.ForumPrune do
 
   attributes do
     attribute :prune_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :forum_id, :integer do
+      public? true
       generated? false
       primary_key? true
       allow_nil? false

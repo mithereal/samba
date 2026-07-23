@@ -34,6 +34,7 @@ defmodule PhpBB.VoteResults do
     end
 
     attribute :vote_id, :integer do
+      public? true
       allow_nil? false
       default 0
       public? true

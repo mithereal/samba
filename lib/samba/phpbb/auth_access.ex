@@ -36,12 +36,14 @@ defmodule PhpBB.AuthAccess do
 
   attributes do
     attribute :group_id, :integer do
+      public? true
       allow_nil? false
       primary_key? true
       default 0
     end
 
     attribute :forum_id, :integer do
+      public? true
       allow_nil? false
       primary_key? true
       default 0

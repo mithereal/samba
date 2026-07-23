@@ -69,6 +69,7 @@ defmodule PhpBB.Users do
 
   attributes do
     attribute :user_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
@@ -281,11 +282,6 @@ defmodule PhpBB.Users do
         attribute_type :integer
       end
 
-      belongs_to :last_privmsg, PhpBB.Privmsgs do
-        destination_attribute :privmsgs_id
-        source_attribute :user_last_privmsg
-        attribute_type :integer
-      end
     end
 
     attribute :user_avatar, :string do

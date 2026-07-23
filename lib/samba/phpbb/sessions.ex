@@ -30,12 +30,14 @@ defmodule PhpBB.Sessions do
 
   attributes do
     attribute :session_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :session_user_id, :integer do
+      public? true
       allow_nil? false
     end
 

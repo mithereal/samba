@@ -55,6 +55,7 @@ defmodule PhpBB.Themes do
 
   attributes do
     attribute :themes_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false

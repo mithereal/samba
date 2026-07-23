@@ -27,12 +27,14 @@ defmodule PhpBB.VoteDesc do
 
   attributes do
     attribute :vote_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
     end
 
     attribute :topic_id, :integer do
+      public? true
       default 0
       allow_nil? false
     end

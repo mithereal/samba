@@ -30,6 +30,7 @@ defmodule PhpBB.Page do
 
   attributes do
     attribute :page_id, :integer do
+      public? true
       generated? true
       primary_key? true
       allow_nil? false
