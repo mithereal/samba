@@ -92,7 +92,9 @@ defmodule Samba.MixProject do
       {:ash_pagify, "~> 1.5"},
       {:ash_archival, "~> 2.0"},
       {:phoenix_seo, "~> 0.3.1"},
-      {:floki, "~> 0.35"}
+      {:floki, "~> 0.35"},
+      {:faker, "~> 0.19.0"},
+      {:makeup, "~> 1.2.2", override: true}
     ]
   end
 

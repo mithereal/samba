@@ -12,6 +12,17 @@ defmodule SambaWeb.AuthOverrides do
     set :root_class, "w-full max-w-md mx-auto text-gray-900 [&_label]:text-gray-900 [&_input]:text-gray-300 [&_input]:bg-gray-500"
   end
 
+  override Components.Banner do
+    # Point to your custom asset (e.g., in priv/static/images/)
+    set :image_url, "/images/logo.svg"
+      # Optional: adjust styling classes for the logo image container/tag
+    set :image_class, "mx-auto h-12 w-auto"
+
+    # Alternatively, if you want to swap it out for text instead of an image:
+    # set :image_url, nil
+    # set :text, "Samba Web"
+  end
+
   # Target the identity/email input field component
   override Components.Password.IdentityField do
     set :label_class, "block text-sm font-medium text-gray-200"

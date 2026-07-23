@@ -56,6 +56,7 @@ defmodule PhpBB.Users do
         :user_level,
         :user_lang,
         :user_timezone,
+        :user_rank,
         :user_dateformat,
         :user_notify_pm,
         :user_popup_pm,
@@ -70,6 +71,10 @@ defmodule PhpBB.Users do
     attribute :user_id, :integer do
       generated? true
       primary_key? true
+      allow_nil? false
+    end
+
+    attribute :user_rank, :integer do
       allow_nil? false
     end
 

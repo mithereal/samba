@@ -39,5 +39,13 @@ defmodule PhpBB.Categories do
       allow_nil? true
       public? true
     end
+
+    relationships do
+      has_many :forums, PhpBB.Forums do
+        destination_attribute :cat_id
+        source_attribute :cat_id
+        default_sort [forum_order: :asc]
+      end
+    end
   end
 end
