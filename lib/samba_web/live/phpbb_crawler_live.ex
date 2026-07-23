@@ -6,37 +6,45 @@ defmodule SambaWeb.PhpbbCrawlerLive do
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
-     assign(socket,
-       base_url: "http://legacy-forum.local/phpBB2",
-       username: "",
-       password: "",
-       concurrency: 4,
-       timeout: 15_000,
-       scrape_forums: true,
-       scrape_topics: true,
-       scrape_posts: true,
-       max_topics: 100,
-       max_posts: 500,
-       status: :idle,
-       logs: []
-     )}
+      assign(socket,
+        base_url: "http://legacy-forum.local/phpBB2",
+        require_login: false,
+        username: "",
+        password: "",
+        concurrency: 4,
+        timeout: 15_000,
+        scrape_forums: true,
+        scrape_topics: true,
+        scrape_posts: true,
+        scrape_profiles: true,
+        download_assets: false,
+        asset_dir: "./priv/forum_assets",
+        max_topics: 100,
+        max_posts: 500,
+        status: :idle,
+        logs: []
+      )}
   end
 
   @impl true
   def handle_event("update_settings", params, socket) do
     {:noreply,
-     assign(socket,
-       base_url: params["base_url"],
-       username: params["username"],
-       password: params["password"],
-       concurrency: String.to_integer(params["concurrency"]),
-       timeout: String.to_integer(params["timeout"]),
-       scrape_forums: Map.has_key?(params, "scrape_forums"),
-       scrape_topics: Map.has_key?(params, "scrape_topics"),
-       scrape_posts: Map.has_key?(params, "scrape_posts"),
-       max_topics: String.to_integer(params["max_topics"] || "100"),
-       max_posts: String.to_integer(params["max_posts"] || "500")
-     )}
+      assign(socket,
+        base_url: params["base_url"],
+        require_login: Map.has_key?(params, "require_login"),
+        username: params["username"],
+        password: params["password"],
+        concurrency: String.to_integer(params["concurrency"]),
+        timeout: String.to_integer(params["timeout"]),
+        scrape_forums: Map.has_key?(params, "scrape_forums"),
+        scrape_topics: Map.has_key?(params, "scrape_topics"),
+        scrape_posts: Map.has_key?(params, "scrape_posts"),
+        scrape_profiles: Map.has_key?(params, "scrape_profiles"),
+        download_assets: Map.has_key?(params, "download_assets"),
+        asset_dir: params["asset_dir"],
+        max_topics: String.to_integer(params["max_topics"] || "100"),
+        max_posts: String.to_integer(params["max_posts"] || "500")
+      )}
   end
 
   @impl true
@@ -59,6 +67,7 @@ defmodule SambaWeb.PhpbbCrawlerLive do
   def handle_info(:run_crawler, socket) do
     %{
       base_url: base_url,
+      require_login: require_login,
       username: username,
       password: password,
       concurrency: concurrency,
@@ -66,30 +75,44 @@ defmodule SambaWeb.PhpbbCrawlerLive do
       scrape_forums: scrape_forums,
       scrape_topics: scrape_topics,
       scrape_posts: scrape_posts,
+      scrape_profiles: scrape_profiles,
+      download_assets: download_assets,
+      asset_dir: asset_dir,
       max_topics: max_topics,
       max_posts: max_posts
     } = socket.assigns
 
+    crawler_opts = [
+      download_assets: download_assets,
+      asset_dir: asset_dir
+    ]
+
     crawler_result =
-      if username != "" and password != "" do
-        PhpbbCrawler.login(base_url, username, password)
+      if require_login and username != "" and password != "" do
+        prepend_log(socket, "Attempting authentication login as '#{username}'...")
+        PhpbbCrawler.login(base_url, username, password, crawler_opts)
       else
-        {:ok, PhpbbCrawler.new(base_url)}
+        if require_login and (username == "" or password == "") do
+          {:error, "Login is enabled, but username or password fields are empty."}
+        else
+          {:ok, PhpbbCrawler.new(base_url, crawler_opts)}
+        end
       end
 
     case crawler_result do
       {:ok, crawler} ->
-        socket = prepend_log(socket, "Authentication/Session initialized successfully.")
+        mode_label = if crawler.cookie, do: "Authenticated Session (Emails unlocked)", else: "Public Anonymous Session"
+        socket = prepend_log(socket, "Crawler session initialized successfully. Mode: #{mode_label}.")
 
         try do
-          # 1. Forums
+          # 1. Forums Pipeline (Streamed & Sanitized)
           forums =
             if scrape_forums do
               socket = prepend_log(socket, "Fetching and streaming forums...")
               f_list = PhpbbCrawler.fetch_forums(crawler)
 
               f_list
-              |> Enum.map(fn f -> %{forum_id: f.forum_id, forum_name: f.name, url: f.url} end)
+              |> Stream.map(fn f -> Map.drop(f, [:url]) end)
               |> Ingester.stream_forums()
 
               socket = prepend_log(socket, "Successfully ingested #{length(f_list)} forums.")
@@ -98,38 +121,104 @@ defmodule SambaWeb.PhpbbCrawlerLive do
               []
             end
 
-          # 2. Topics (Memory-efficient streaming pipeline)
-          if scrape_topics and forums != [] do
-            socket =
-              prepend_log(socket, "Crawling and streaming topics (Max limit: #{max_topics})...")
+          # 2. Topics Pipeline (Streamed & Sanitized)
+          crawled_topics =
+            if scrape_topics and forums != [] do
+              socket =
+                prepend_log(socket, "Crawling and streaming topics (Max limit: #{max_topics})...")
 
-            forums
-            |> Task.async_stream(
-              fn f ->
-                crawler
-                |> PhpbbCrawler.stream_forum_topics(f.forum_id, concurrency, timeout)
-                |> Stream.map(fn t ->
-                  %{topic_id: t.topic_id, forum_id: t.forum_id, topic_title: t.title}
+              topics_stream =
+                forums
+                |> Task.async_stream(
+                     fn f ->
+                       crawler
+                       |> PhpbbCrawler.stream_forum_topics(f.forum_id, concurrency, timeout)
+                       |> Stream.map(fn t -> Map.drop(t, [:url]) end)
+                     end, max_concurrency: concurrency, timeout: :infinity)
+                |> Stream.flat_map(fn
+                  {:ok, stream} -> stream
+                  _ -> []
                 end)
-                |> Enum.to_list()
-              end, max_concurrency: concurrency, timeout: :infinity)
-            |> Stream.flat_map(fn
-              {:ok, topics} -> topics
-              _ -> []
-            end)
-            |> Stream.take(max_topics)
-            |> Ingester.stream_topics()
+                |> Stream.take(max_topics)
 
-            socket = prepend_log(socket, "Topics streaming and ingestion completed.")
-          end
+              topics_stream
+              |> Ingester.stream_topics()
 
-          # 3. Posts (Memory-efficient streaming pipeline)
-          if scrape_posts do
-            socket =
-              prepend_log(socket, "Crawling and streaming posts (Max limit: #{max_posts})...")
+              # Collect into list for downstream posts dependency
+              topics_list = Enum.to_list(topics_stream)
 
-            # Example streaming implementation pulling from crawled topics or database reference
-            socket = prepend_log(socket, "Posts streaming and ingestion completed.")
+              socket = prepend_log(socket, "Topics streaming and ingestion completed (#{length(topics_list)} topics).")
+              topics_list
+            else
+              []
+            end
+
+          # 3. Posts Pipeline (Streamed & Sanitized)
+          crawled_posts =
+            if scrape_posts and crawled_topics != [] do
+              socket =
+                prepend_log(socket, "Crawling and streaming posts (Max limit: #{max_posts})...")
+
+              posts_stream =
+                crawled_topics
+                |> Task.async_stream(
+                     fn t ->
+                       crawler
+                       |> PhpbbCrawler.stream_topic_posts(t.topic_id, concurrency, timeout)
+                     end, max_concurrency: concurrency, timeout: :infinity)
+                |> Stream.flat_map(fn
+                  {:ok, stream} -> stream
+                  _ -> []
+                end)
+                |> Stream.take(max_posts)
+
+              if function_exported?(Ingester, :stream_posts, 1) do
+                Ingester.stream_posts(posts_stream)
+              else
+                Stream.run(posts_stream)
+              end
+
+              posts_list = Enum.to_list(posts_stream)
+
+              socket = prepend_log(socket, "Posts streaming and ingestion completed (#{length(posts_list)} posts).")
+              posts_list
+            else
+              []
+            end
+
+          # 4. User Profiles & Avatars Pipeline
+          if scrape_profiles and crawled_posts != [] do
+            socket = prepend_log(socket, "Extracting user profiles and avatars (Authenticated emails extraction: #{!!crawler.cookie})...")
+
+            unique_user_ids =
+              crawled_posts
+              |> Enum.map(& &1.user_id)
+              |> Enum.reject(&is_nil/1)
+              |> Enum.uniq()
+
+            profiles_stream =
+              unique_user_ids
+              |> Task.async_stream(
+                   fn user_id -> PhpbbCrawler.crawl_user_profile(crawler, user_id) end,
+                   max_concurrency: concurrency,
+                   timeout: timeout
+                 )
+              |> Stream.flat_map(fn
+                {:ok, profile} when not is_nil(profile) -> [profile]
+                _ -> []
+              end)
+
+            if function_exported?(Ingester, :stream_profiles, 1) do
+              Ingester.stream_profiles(profiles_stream)
+            else
+              Stream.run(profiles_stream)
+            end
+
+            profiles_count = Enum.count(unique_user_ids)
+            socket = prepend_log(socket, "Successfully processed user profiles & assets pipeline.")
+            socket
+          else
+            socket
           end
 
           socket =
@@ -167,7 +256,8 @@ defmodule SambaWeb.PhpbbCrawlerLive do
   @impl true
   def render(assigns) do
     ~H"""
-    <div class="max-w-4xl mx-auto p-6 space-y-6">
+    <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
+    <div class="max-w-4xl mx-auto p-6 space-y-6 mb-4">
       <h1 class="text-2xl font-bold">phpBB2 Live Crawler & Migration Dashboard</h1>
 
       <form
@@ -195,7 +285,7 @@ defmodule SambaWeb.PhpbbCrawlerLive do
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Username (Optional)</label>
+            <label class="block text-sm font-medium text-gray-700">Username</label>
             <input
               type="text"
               name="username"
@@ -204,7 +294,7 @@ defmodule SambaWeb.PhpbbCrawlerLive do
             />
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700">Password (Optional)</label>
+            <label class="block text-sm font-medium text-gray-700">Password</label>
             <input
               type="password"
               name="password"
@@ -221,6 +311,27 @@ defmodule SambaWeb.PhpbbCrawlerLive do
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
             />
           </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Asset Directory</label>
+            <input
+              type="text"
+              name="asset_dir"
+              value={@asset_dir}
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+            />
+          </div>
+        </div>
+
+        <div class="border-t pt-4">
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="require_login"
+              checked={@require_login}
+              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            />
+            <span class="text-sm font-semibold text-gray-800">Enable Authentication (Required for downloading hidden profile emails)</span>
+          </label>
         </div>
 
         <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -271,6 +382,27 @@ defmodule SambaWeb.PhpbbCrawlerLive do
           </div>
         </div>
 
+        <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="scrape_profiles"
+              checked={@scrape_profiles}
+              class="rounded border-gray-300"
+            />
+            <span class="text-sm font-medium">Scrape User Profiles & Emails</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="download_assets"
+              checked={@download_assets}
+              class="rounded border-gray-300"
+            />
+            <span class="text-sm font-medium">Download Avatars & Post Images to Disk</span>
+          </label>
+        </div>
+
         <div class="flex justify-end pt-4">
           <button
             type="submit"
@@ -289,6 +421,7 @@ defmodule SambaWeb.PhpbbCrawlerLive do
         <% end %>
       </div>
     </div>
+    </Layouts.app>
     """
   end
 end

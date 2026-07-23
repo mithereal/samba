@@ -1,5 +1,7 @@
 defmodule SambaWeb.FaqImportLive do
   use SambaWeb, :live_view
+  on_mount {SambaWeb.LiveUserAuth, :live_user_required}
+
   alias Samba.Util.FaqImporter
 
   def mount(_params, _session, socket) do

@@ -83,7 +83,7 @@ defmodule SambaWeb.Layouts do
     ~H"""
     <nav class="bg-white p-4 flex justify-between items-center border border-b border-gray-200 md:flex-row flex-col">
       <div
-        class="text-xl font-semibold mb-2 md:mb-0 hover:cursor-pointer text-primary bg-base-100 p-3 rounded-sm"
+        class="text-xl font-semibold mb-2 md:mb-0 hover:cursor-pointer text-primary  p-3 rounded-sm"
         phx-click={JS.navigate(~p"/")}
       >
         {app_name(@current_user)}
@@ -283,6 +283,19 @@ defmodule SambaWeb.Layouts do
     """
   end
 
+  attr :flash, :map, required: true, doc: "the map of flash messages"
+  attr :current_user, Samba.Accounts.User, required: true
+  slot :inner_block, required: true
+  attr :uri, URI, default: %URI{}
+
+  def account_profile(assigns) do
+    ~H"""
+    <.app flash={@flash} current_user={@current_user} uri={@uri}>
+      {render_slot(@inner_block)}
+    </.app>
+    """
+  end
+
   @doc """
   Shows the flash group with standard titles and content.
 
@@ -363,8 +376,8 @@ defmodule SambaWeb.Layouts do
     """
   end
 
-  defp app_name(%{team: nil}), do: "Social Fund"
-  defp app_name(%{team: %{name: name}}), do: Phoenix.Naming.humanize(name)
+  defp app_name(%{username: nil}), do: ""
+  defp app_name(%{username: name}), do: Phoenix.Naming.humanize(name)
   # Embed all files in layouts/* within this module.
   # The default root.html.heex file contains the HTML
   # skeleton of your application, namely HTML headers

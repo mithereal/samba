@@ -29,13 +29,13 @@
           setTheme(localStorage.getItem("phx:theme") || "system");
         }
         window.addEventListener("storage", (e) => e.key === "phx:theme" && setTheme(e.newValue || "system"));
-        
+
         window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
       })();
     </script>
   </head>
   <body>
-    <div class="py-2 px-2 min-h-screen bg-gray-100 text-gray-900">
+    <div class="py-2 px-2 min-h-screen bg-gradient-to-b from-gray-100 from-50% to-gray-900 to-90% text-gray-900">
       <!-- Top Navigation Bar -->
       <nav class="bg-gray-300 border-b border-gray-300 px-2 py-2 text-xs">
         <div class="flex justify-between">
@@ -322,26 +322,153 @@
         </div>
       </header>
       {@inner_content}
+<div class="pb-16"></div>
       <!-- Footer -->
-      <hr />
-      <footer class="text-center text-xs px-8 pt-2 text-gray-600">
-        <div class="space-x-2">
-          <a href="#">About</a>
-          | <a href="#">Help</a>
-          | <a href="#">Advertise</a>
-          | <a href="#">Donate</a>
-          | <a href="#">Privacy/Terms of Use</a>
-          | <a href="#">Contact</a>
-          | <a href="#">Site Map</a>
+<footer class="relative rounded-sm bg-gradient-to-b from-gray-600 to-gray-900 text-gray-300 overflow-hidden pt-16 pb-20">
+    <!-- Tucson Desert Scene: Horizon & Road Extended Across Entire Screen -->
+    <div class="absolute bottom-0 left-0 right-0 w-full h-56 pointer-events-none opacity-85 overflow-hidden z-0">
+        <svg class="absolute bottom-0 left-0 w-full h-full text-white" viewBox="0 0 1440 180" preserveAspectRatio="none" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- Rolling Desert Horizon Line Spanning Full Width -->
+            <path d="M0 160 Q360 140 720 155 Q1080 140 1440 160 L1440 180 L0 180 Z" fill="currentColor" fill-opacity="0.15" />
+            <path d="M0 162 Q360 142 720 157 Q1080 142 1440 162" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.4" />
+
+            <!-- Desert Scene Composition (Right-aligned cluster positioned cleanly above footer text) -->
+            <g transform="translate(840, 5)">
+
+                <!-- 1. Background Saguaro Cactus -->
+                <g transform="translate(30, 20)" opacity="0.8">
+                    <path d="M20 145 C19 90 21 50 20 15 C20 10 26 10 26 15 C25 50 27 90 26 145 Z" fill="currentColor" />
+                    <path d="M20 65 C10 65 7 50 14 45 C18 43 20 47 16 51 C11 54 13 60 20 59 Z" fill="currentColor" />
+                    <path d="M26 95 C36 95 39 75 32 70 C28 68 26 72 30 76 C35 79 33 89 26 88 Z" fill="currentColor" />
+                </g>
+
+                <!-- 2. Stylized Vintage VW Beetle (Split Window / Resto-Cal Style) -->
+                <g transform="translate(80, 85)">
+                    <!-- Ground shadow -->
+                    <ellipse cx="45" cy="80" rx="42" ry="5" fill="#111827" opacity="0.4" />
+
+                    <!-- Beetle Body Silhouette -->
+                    <path d="M15 65 C12 65 8 50 18 38 C26 28 42 20 62 25 C75 28 82 38 85 55 C88 70 85 75 80 75 L15 75 Z" fill="currentColor" />
+                    <!-- Rounded Fenders -->
+                    <path d="M8 55 C3 55 2 72 12 75 L28 75 C20 72 18 58 24 55 Z" fill="currentColor" />
+                    <path d="M70 52 C76 52 78 72 68 75 L82 75 C88 72 86 54 78 52 Z" fill="currentColor" />
+                    <!-- Split/Curved Windows -->
+                    <path d="M30 32 C38 28 48 27 54 27 C54 36 44 38 30 36 Z" fill="#111827" />
+                    <path d="M58 27 C68 28 75 33 78 45 C73 45 64 42 58 36 Z" fill="#111827" />
+                    <!-- Wheels -->
+                    <circle cx="21" cy="74" r="11" fill="#111827" />
+                    <circle cx="21" cy="74" r="5" fill="currentColor" />
+                    <circle cx="73" cy="74" r="11" fill="#111827" />
+                    <circle cx="73" cy="74" r="5" fill="currentColor" />
+                    <!-- Safari rack / luggage accent hint -->
+                    <path d="M34 25 L60 23" stroke="#111827" stroke-width="2" />
+                </g>
+
+                <!-- 3. Foreground Prickly Pear Cluster -->
+                <g transform="translate(180, 115)">
+                    <path d="M22 45 C12 40 10 22 18 12 C26 4 38 10 40 22 C42 38 32 48 22 45 Z" fill="currentColor" />
+                    <path d="M10 30 C2 25 3 12 12 8 C16 14 16 24 10 30 Z" fill="currentColor" />
+                    <path d="M35 32 C43 27 44 14 36 9 C32 15 32 26 35 32 Z" fill="currentColor" />
+                    <path d="M22 12 L22 38" stroke="#111827" stroke-width="1.2" stroke-linecap="round" />
+                </g>
+
+                <!-- 4. Stylized Vintage VW Type 2 Bus (Split-Screen Camper) -->
+                <g transform="translate(240, 65)">
+                    <!-- Ground shadow -->
+                    <ellipse cx="65" cy="100" rx="55" ry="6" fill="#111827" opacity="0.4" />
+
+                    <!-- Bus Body -->
+                    <path d="M15 75 L15 35 C15 25 25 22 38 22 L100 22 C112 22 118 28 118 38 L118 95 L15 95 Z" fill="currentColor" />
+                    <!-- V-Shape Front Split Detail -->
+                    <path d="M35 22 L45 50 L25 50 Z" fill="#111827" />
+                    <!-- Windshield & Windows -->
+                    <path d="M22 28 L33 28 L28 48 L19 48 Z" fill="#111827" />
+                    <path d="M37 28 L48 28 L46 48 L35 48 Z" fill="#111827" />
+                    <path d="M54 28 L72 28 L72 48 L53 48 Z" fill="#111827" />
+                    <path d="M78 28 L98 28 L98 48 L77 48 Z" fill="#111827" />
+                    <!-- Surfboard on Roof -->
+                    <path d="M10 20 C30 17 90 17 115 20 C118 21 118 24 112 24 C80 21 40 21 12 24 C6 24 6 21 10 20 Z" fill="currentColor" opacity="0.9" />
+                    <!-- Wheels -->
+                    <circle cx="35" cy="94" r="13" fill="#111827" />
+                    <circle cx="35" cy="94" r="6" fill="currentColor" />
+                    <circle cx="95" cy="94" r="13" fill="#111827" />
+                    <circle cx="95" cy="94" r="6" fill="currentColor" />
+                </g>
+
+                <!-- 5. Barrel Cactus (Mid-Ground Right) -->
+                <g transform="translate(390, 115)">
+                    <path d="M12 50 C5 28 15 8 28 6 C41 8 51 28 44 50 Z" fill="currentColor" />
+                    <path d="M28 6 L28 52 M20 11 C22 28 22 38 21 48 M36 11 C34 28 34 38 35 48" stroke="#111827" stroke-width="1.2" fill="none" />
+                </g>
+
+                <!-- 6. Foreground Saguaro Cactus -->
+                <g transform="translate(460, 10)">
+                    <path d="M28 160 C27 95 29 55 28 15 C28 8 36 8 36 15 C35 55 37 95 36 160 Z" fill="currentColor" />
+                    <path d="M28 70 C14 70 10 48 20 42 C25 39 27 44 22 48 C16 52 18 62 28 60 Z" fill="currentColor" />
+                    <path d="M36 100 C50 100 54 75 44 70 C39 67 37 72 42 76 C49 80 47 92 36 90 Z" fill="currentColor" />
+                </g>
+
+            </g>
+        </svg>
+    </div>
+
+    <!-- Main Footer Content -->
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+
+            <!-- Brand Column -->
+            <div class="space-y-4">
+                <h3 class="text-white text-lg font-semibold tracking-wider">Desert Board</h3>
+                <p class="text-sm text-gray-400">
+                    Rooted in the Old Pueblo. Built for community discussion, air-cooled VWs, and local connection.
+                </p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">Navigation</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Home</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Classifieds</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Forums</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Member List</a></li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div>
+                <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">Support</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">BBCode Guide</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contact Admin</a></li>
+                </ul>
+            </div>
+
+            <!-- Tucson Info -->
+            <div>
+                <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">Location</h4>
+                <p class="text-sm text-gray-400">
+                    Based out of Tucson, Arizona.<br>
+                    Cruising through saguaros and sunshine.
+                </p>
+            </div>
+
         </div>
-        <p class="mt-2">Copyright &copy; 1996-2026, Jason Clark. All Rights Reserved.</p>
-        <p class="mt-2">
-          Not affiliated with or sponsored by Volkswagen of America | Forum powered by phxBB.
-        </p>
-        <p class="mt-2">
-          Links to eBay or other vendor sites may be affiliate links where the site receives compensation.
-        </p>
-      </footer>
+
+        <!-- Bottom Bar (Left-Aligned Links with Copyright Below) -->
+        <div class=" pt-8 flex flex-col items-start text-xs text-gray-500 space-y-3">
+            <div class="flex space-x-6 border-t border-gray-800 pt-1">
+                <a href="#" class="hover:text-gray-400 transition-colors">Terms</a>
+                <a href="#" class="hover:text-gray-400 transition-colors">Privacy</a>
+                <a href="#" class="hover:text-gray-400 transition-colors">Cookies</a>
+            </div>
+            <p>&copy; 2026 Desert Board. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
     </div>
   </body>
 </html>

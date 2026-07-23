@@ -5,24 +5,6 @@ defmodule PhpbbCrawler do
 
   It automatically walks the board hierarchy—from index categories to individual forums,
   paginated topic threads, posts, and user profiles—utilizing concurrent streams and built-in rate limiting to safely migrate data without overwhelming legacy server infrastructure
-
-  ## Examples
-
-      # 1. Initialize an anonymous (public) scraper session
-      crawler = PhpbbCrawler.new("http://legacy-forum.local/phpBB2")
-
-      # 2. Alternatively, authenticate to access protected boards
-      {:ok, crawler} = PhpbbCrawler.login("http://legacy-forum.local/phpBB2", "admin", "secret_pass")
-
-      # 3. Execute the full recursive crawl
-      scraped_data = PhpbbCrawler.crawl_all(crawler)
-
-      # 4. Alternatively, setting concurrency and timeout
-      scraped_data = PhpbbCrawler.crawl_all(crawler, 4, 15_000)
-
-      IO.inspect(length(scraped_data.forums), label: "Total Forums")
-      IO.inspect(length(scraped_data.topics), label: "Total Topics")
-      IO.inspect(length(scraped_data.posts), label: "Total Posts")
   """
 
   @concurrency 4
@@ -87,10 +69,12 @@ defmodule PhpbbCrawler do
     all_topics =
       forums
       |> Task.async_stream(
-        fn forum -> crawl_forum_pages(crawler, forum.forum_id, 0, [], concurrency, timeout) end,
-        max_concurrency: concurrency,
-        timeout: timeout
-      )
+           fn forum ->
+             stream_forum_topics(crawler, forum.forum_id, concurrency, timeout) |> Enum.to_list()
+           end,
+           max_concurrency: concurrency,
+           timeout: timeout
+         )
       |> Enum.flat_map(fn
         {:ok, topics} -> topics
         {:error, _} -> []
@@ -101,10 +85,12 @@ defmodule PhpbbCrawler do
     all_posts =
       all_topics
       |> Task.async_stream(
-        fn topic -> crawl_topic_pages(crawler, topic.topic_id, 0, [], concurrency, timeout) end,
-        max_concurrency: concurrency,
-        timeout: timeout
-      )
+           fn topic ->
+             stream_topic_posts(crawler, topic.topic_id, concurrency, timeout) |> Enum.to_list()
+           end,
+           max_concurrency: concurrency,
+           timeout: timeout
+         )
       |> Enum.flat_map(fn
         {:ok, posts} -> posts
         {:error, _} -> []
@@ -125,46 +111,6 @@ defmodule PhpbbCrawler do
     case get_request(crawler, "#{crawler.base_url}/index.php") do
       {:ok, body} -> parse_forums(body, crawler.base_url)
       _ -> []
-    end
-  end
-
-  defp crawl_forum_pages(crawler, forum_id, start, acc, concurrency, timeout) do
-    url = "#{crawler.base_url}/viewforum.php?f=#{forum_id}&start=#{start}"
-
-    case get_request(crawler, url, timeout) do
-      {:ok, body} ->
-        {topics, next_start} = parse_topics_with_pagination(body, crawler.base_url, forum_id)
-        updated_acc = acc ++ topics
-
-        if next_start && next_start > start do
-          Process.sleep(250)
-          crawl_forum_pages(crawler, forum_id, next_start, updated_acc, concurrency, timeout)
-        else
-          updated_acc
-        end
-
-      _ ->
-        acc
-    end
-  end
-
-  defp crawl_topic_pages(crawler, topic_id, start, acc, concurrency, timeout) do
-    url = "#{crawler.base_url}/viewtopic.php?t=#{topic_id}&start=#{start}"
-
-    case get_request(crawler, url, timeout) do
-      {:ok, body} ->
-        {posts, next_start} = parse_posts_with_pagination(body, topic_id)
-        updated_acc = acc ++ posts
-
-        if next_start && next_start > start do
-          Process.sleep(250)
-          crawl_topic_pages(crawler, topic_id, next_start, updated_acc, concurrency, timeout)
-        else
-          updated_acc
-        end
-
-      _ ->
-        acc
     end
   end
 
@@ -196,9 +142,9 @@ defmodule PhpbbCrawler do
     |> Enum.map(fn {_k, v} -> v |> String.split(";") |> List.first() end)
     |> Enum.join("; ")
     |> case do
-      "" -> nil
-      cookies -> cookies
-    end
+         "" -> nil
+         cookies -> cookies
+       end
   end
 
   # --- Parsers & Helpers ---
@@ -207,22 +153,56 @@ defmodule PhpbbCrawler do
     {:ok, doc} = Floki.parse_document(html)
 
     doc
-    |> Floki.find("a.forumlink, a[href*='viewforum.php']")
-    |> Enum.map(fn el ->
-      name = Floki.text(el)
-      href = Floki.attribute(el, "href") |> List.first()
+    |> Floki.find("tr")
+    |> Enum.flat_map(fn row ->
+      case Floki.find(row, "a.forumlink, a[href*='viewforum.php']") do
+        [el | _] ->
+          name = Floki.text(el)
+          href = Floki.attribute(el, "href") |> List.first()
 
-      %{
-        forum_id: extract_id(href, "f"),
-        name: String.trim(name),
-        url: build_absolute_url(base_url, href)
-      }
+          cat_id = extract_cat_id_from_row(row) || 1
+          forum_last_post_id = extract_last_post_id_from_row(row) || 0
+          forum_id = extract_id(href, "f")
+
+          if forum_id do
+            [%{
+              forum_id: forum_id,
+              forum_name: String.trim(name),
+              cat_id: cat_id,
+              forum_last_post_id: forum_last_post_id,
+              url: build_absolute_url(base_url, href)
+            }]
+          else
+            []
+          end
+        _ ->
+          []
+      end
     end)
-    |> Enum.reject(&is_nil(&1.forum_id))
     |> Enum.uniq_by(& &1.forum_id)
   end
 
-  defp parse_topics_with_pagination(html, base_url, forum_id) do
+  defp extract_cat_id_from_row(row) do
+    case Floki.find(row, "a[href*='index.php?c=']") do
+      [cat_el | _] ->
+        href = Floki.attribute(cat_el, "href") |> List.first()
+        extract_id(href, "c")
+      _ ->
+        nil
+    end
+  end
+
+  defp extract_last_post_id_from_row(row) do
+    case Floki.find(row, "a[href*='viewtopic.php?p=']") do
+      [post_el | _] ->
+        href = Floki.attribute(post_el, "href") |> List.first()
+        extract_id(href, "p")
+      _ ->
+        nil
+    end
+  end
+
+  defp parse_topics_with_pagination(html, base_url, forum_id, current_start) do
     {:ok, doc} = Floki.parse_document(html)
 
     topics =
@@ -241,11 +221,11 @@ defmodule PhpbbCrawler do
       end)
       |> Enum.reject(&is_nil(&1.topic_id))
 
-    next_start = extract_next_pagination(doc, "f=#{forum_id}")
+    next_start = extract_next_pagination(doc, "f=#{forum_id}", current_start)
     {topics, next_start}
   end
 
-  defp parse_posts_with_pagination(html, topic_id) do
+  defp parse_posts_with_pagination(html, topic_id, current_start) do
     {:ok, doc} = Floki.parse_document(html)
 
     posts =
@@ -256,8 +236,10 @@ defmodule PhpbbCrawler do
         body_el = Floki.find(row, ".postbody")
 
         if author_el != [] and body_el != [] do
+          cleaned_body_html = decode_cloudflare_emails(row)
+          content = Floki.text(cleaned_body_html) |> String.trim()
+
           author = author_el |> Floki.text() |> String.trim()
-          content = body_el |> Floki.text() |> String.trim()
 
           profile_href = Floki.find(author_el, "a") |> Floki.attribute("href") |> List.first()
           user_id = extract_id(profile_href, "u")
@@ -279,23 +261,64 @@ defmodule PhpbbCrawler do
         end
       end)
 
-    next_start = extract_next_pagination(doc, "t=#{topic_id}")
+    next_start = extract_next_pagination(doc, "t=#{topic_id}", current_start)
     {posts, next_start}
   end
 
-  defp extract_next_pagination(doc, query_context) do
-    doc
-    |> Floki.find("a.nav, .gensmall a")
-    |> Enum.filter(fn el ->
-      href = Floki.attribute(el, "href") |> List.first() || ""
-      String.contains?(href, query_context) and String.contains?(href, "start=")
+  # --- Cloudflare Email Decoder ---
+  defp decode_cloudflare_emails(row_html) do
+    Floki.traverse_and_update(row_html, fn
+      {"span", [{"class", "__cf_email__"}, {"data-cfemail", hex_string} | _rest], _children} ->
+        decoded_email = decode_cf_hex(hex_string)
+        {"span", [{"class", "decoded-email"}], [decoded_email]}
+
+      other ->
+        other
     end)
+  end
+
+  defp decode_cf_hex(hex) when is_binary(hex) do
+    with {r_val, ""} <- Integer.parse(binary_part(hex, 0, 2), 16) do
+      decode_cf_loop(hex, 2, r_val, [])
+      |> IO.iodata_to_binary()
+    else
+      _ -> hex
+    end
+  end
+
+  defp decode_cf_loop(hex, index, r_val, acc) do
+    if index < byte_size(hex) do
+      case Integer.parse(binary_part(hex, index, 2), 16) do
+        {char_code, ""} ->
+          decoded_char = Bitwise.bxor(char_code, r_val)
+          decode_cf_loop(hex, index + 2, r_val, [acc | <<decoded_char>>])
+        _ ->
+          acc
+      end
+    else
+      acc
+    end
+  end
+
+  defp extract_next_pagination(doc, query_context, current_start) do
+    doc
+    |> Floki.find("a[href*='start=']")
     |> Enum.map(fn el ->
-      href = Floki.attribute(el, "href") |> List.first()
-      extract_id(href, "start")
+      href = Floki.attribute(el, "href") |> List.first() || ""
+      start_val = extract_id(href, "start")
+
+      if String.contains?(href, query_context) && start_val && start_val > current_start do
+        start_val
+      else
+        nil
+      end
     end)
     |> Enum.reject(&is_nil/1)
-    |> Enum.max(fn -> nil end)
+    |> Enum.uniq()
+    |> case do
+         [] -> nil
+         starts -> Enum.min(starts)
+       end
   end
 
   defp extract_id(nil, _param), do: nil
@@ -319,42 +342,41 @@ defmodule PhpbbCrawler do
   end
 
   defp build_absolute_url(base_url, relative_path) do
-    uri = URI.parse(base_url)
-    base = "#{uri.scheme}://#{uri.host}"
     cleaned = String.replace_prefix(relative_path || "", "./", "")
 
     if String.starts_with?(cleaned, "http") do
       cleaned
     else
-      Path.join([base, cleaned])
+      normalized_base = if String.ends_with?(base_url, "/"), do: base_url, else: base_url <> "/"
+      URI.merge(normalized_base, cleaned) |> URI.to_string()
     end
   end
 
   @doc """
   Lazily streams topics across all pages of a forum.
   """
-  def stream_forum_topics(crawler, forum_id, concurrency \\ 4, timeout \\ 15_000) do
+  def stream_forum_topics(%PhpbbCrawler{} = crawler, forum_id, _concurrency \\ @concurrency, timeout \\ @timeout) do
     Stream.resource(
       fn -> {0, false} end,
       fn
         {_, true} ->
           {:halt, nil}
 
-        {start, _} ->
+        {start, false} ->
           url = "#{crawler.base_url}/viewforum.php?f=#{forum_id}&start=#{start}"
 
           case get_request(crawler, url, timeout) do
             {:ok, body} ->
-              {topics, next_start} =
-                parse_topics_with_pagination(body, crawler.base_url, forum_id)
+              {topics, next_start} = parse_topics_with_pagination(body, crawler.base_url, forum_id, start)
 
-              if next_start && next_start > start do
-                # Gentle rate limiting
+              new_state = if next_start && next_start > start do
                 Process.sleep(100)
-                {topics, {next_start, false}}
+                {next_start, false}
               else
-                {topics, {0, true}}
+                {start, true}
               end
+
+              {topics, new_state}
 
             _ ->
               {:halt, nil}
@@ -367,26 +389,28 @@ defmodule PhpbbCrawler do
   @doc """
   Lazily streams posts across all pages of a topic.
   """
-  def stream_topic_posts(crawler, topic_id, concurrency \\ 4, timeout \\ 15_000) do
+  def stream_topic_posts(%PhpbbCrawler{} = crawler, topic_id, _concurrency \\ @concurrency, timeout \\ @timeout) do
     Stream.resource(
       fn -> {0, false} end,
       fn
         {_, true} ->
           {:halt, nil}
 
-        {start, _} ->
+        {start, false} ->
           url = "#{crawler.base_url}/viewtopic.php?t=#{topic_id}&start=#{start}"
 
           case get_request(crawler, url, timeout) do
             {:ok, body} ->
-              {posts, next_start} = parse_posts_with_pagination(body, topic_id)
+              {posts, next_start} = parse_posts_with_pagination(body, topic_id, start)
 
-              if next_start && next_start > start do
+              new_state = if next_start && next_start > start do
                 Process.sleep(100)
-                {posts, {next_start, false}}
+                {next_start, false}
               else
-                {posts, {0, true}}
+                {start, true}
               end
+
+              {posts, new_state}
 
             _ ->
               {:halt, nil}

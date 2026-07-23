@@ -53,6 +53,9 @@ defmodule SambaWeb.Router do
       live "/reports/graphs", Reports.GraphsLive
       live "/reports/summaries", Reports.SummariesLive
 
+      live "/accounts/profile", Accounts.Users.ProfileLive
+      live "/accounts/preferences", Accounts.Users.PreferencesLive
+      live "/settings", Accounts.Users.SettingsLive
       live "/accounts/teams", Accounts.Teams.TeamsLive
       live "/accounts/teams/new", Accounts.Teams.CreateLive
 

@@ -91,7 +91,8 @@ defmodule Samba.MixProject do
       {:mishka_chelekom, "~> 0.0.9", only: :dev},
       {:ash_pagify, "~> 1.5"},
       {:ash_archival, "~> 2.0"},
-      {:phoenix_seo, "~> 0.3.1"}
+      {:phoenix_seo, "~> 0.3.1"},
+      {:floki, "~> 0.35"}
     ]
   end
 

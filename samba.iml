@@ -123,6 +123,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/peri" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_seo" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/rustler_precompiled" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/floki" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -380,5 +381,50 @@
     <orderEntry type="library" name="makeup_sql" level="project" />
     <orderEntry type="library" name="benchee_json" level="project" />
     <orderEntry type="library" name="phoenix_seo" level="project" />
+    <orderEntry type="library" name="open_api_spex" level="project" />
+    <orderEntry type="library" name="decimal" level="project" />
+    <orderEntry type="library" name="ash_json_api" level="project" />
+    <orderEntry type="library" name="rename_project" level="project" />
+    <orderEntry type="library" name="ex_money_sql" level="project" />
+    <orderEntry type="library" name="ex_cldr" level="project" />
+    <orderEntry type="library" name="ash_money" level="project" />
+    <orderEntry type="library" name="ash_double_entry" level="project" />
+    <orderEntry type="library" name="nimble_csv" level="project" />
+    <orderEntry type="library" name="cinder" level="project" />
+    <orderEntry type="library" name="bcrypt_elixir" level="project" />
+    <orderEntry type="library" name="picosat_elixir" level="project" />
+    <orderEntry type="library" name="sourceror" level="project" />
+    <orderEntry type="library" name="live_debugger" level="project" />
+    <orderEntry type="library" name="ash_authentication_phoenix" level="project" />
+    <orderEntry type="library" name="ash_authentication" level="project" />
+    <orderEntry type="library" name="ash_postgres" level="project" />
+    <orderEntry type="library" name="ash_phoenix" level="project" />
+    <orderEntry type="library" name="ash" level="project" />
+    <orderEntry type="library" name="igniter" level="project" />
+    <orderEntry type="library" name="phoenix" level="project" />
+    <orderEntry type="library" name="phoenix_ecto" level="project" />
+    <orderEntry type="library" name="ecto_sql" level="project" />
+    <orderEntry type="library" name="postgrex" level="project" />
+    <orderEntry type="library" name="phoenix_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_reload" level="project" />
+    <orderEntry type="library" name="phoenix_live_view" level="project" />
+    <orderEntry type="library" name="lazy_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_dashboard" level="project" />
+    <orderEntry type="library" name="esbuild" level="project" />
+    <orderEntry type="library" name="tailwind" level="project" />
+    <orderEntry type="library" name="swoosh" level="project" />
+    <orderEntry type="library" name="req" level="project" />
+    <orderEntry type="library" name="telemetry_metrics" level="project" />
+    <orderEntry type="library" name="telemetry_poller" level="project" />
+    <orderEntry type="library" name="gettext" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="dns_cluster" level="project" />
+    <orderEntry type="library" name="bandit" level="project" />
+    <orderEntry type="library" name="mishka_chelekom" level="project" />
+    <orderEntry type="library" name="ash_pagify" level="project" />
+    <orderEntry type="library" name="ash_archival" level="project" />
+    <orderEntry type="library" name="phoenix_seo" level="project" />
+    <orderEntry type="library" name="html5ever" level="project" />
+    <orderEntry type="library" name="fast_html" level="project" />
   </component>
 </module>
