@@ -1,20 +1,33 @@
 defmodule SambaWeb.AuthOverrides do
   use AshAuthentication.Phoenix.Overrides
+  alias AshAuthentication.Phoenix.{Components, SignInLive, ResetLive}
 
-  # configure your UI overrides here
+  # Target the main sign-in live container
+  override SignInLive do
+    set :root_class, "rounded-sm min-h-screen bg-gradient-to-b from-gray-300 from-70% to-gray-600 to-90%  text-gray-900 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8"
+  end
 
-  # First argument to `override` is the component name you are overriding.
-  # The body contains any number of configurations you wish to override
-  # Below are some examples
+  # Override the standard sign-in live container and ensure base text is light
+  override Components.SignIn do
+    set :root_class, "w-full max-w-md mx-auto text-gray-900 [&_label]:text-gray-900 [&_input]:text-gray-300 [&_input]:bg-gray-500"
+  end
 
-  # For a complete reference, see https://hexdocs.pm/ash_authentication_phoenix/ui-overrides.html
+  # Target the identity/email input field component
+  override Components.Password.IdentityField do
+    set :label_class, "block text-sm font-medium text-gray-200"
+    set :input_class, "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm [&_input]:bg-gray-300"
+  end
 
-  # override AshAuthentication.Phoenix.Components.Banner do
-  #   set :image_url, "https://media.giphy.com/media/g7GKcSzwQfugw/giphy.gif"
-  #   set :text_class, "bg-red-500"
-  # end
+  # If using standard password sign-in forms
+  override Components.Password.SignInForm do
+    set :form_class, "space-y-6 "
+    set :label_class, "block text-sm font-medium text-gray-900"
+    set :input_class, "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+  end
 
-  # override AshAuthentication.Phoenix.Components.SignIn do
-  #  set :show_banner, false
-  # end
+  # If using standard password registration forms
+  override Components.Password.RegisterForm do
+    set :form_class, "space-y-6"
+    set :label_class, "block text-sm font-medium text-gray-900"
+  end
 end
