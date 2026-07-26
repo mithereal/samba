@@ -6,7 +6,7 @@ defmodule SambaWeb.ForumIndexLive do
       PhpBB.Categories
       |> Ash.Query.sort(cat_order: :asc)
       |> Ash.Query.load([
-        forums: [:topics, :posts, :lastpost]
+        forums: [:topics, :posts, :last_post]
       ])
       |> Ash.read!(domain: PhpBB.Domain)
 
@@ -20,7 +20,7 @@ defmodule SambaWeb.ForumIndexLive do
 
   def render(assigns) do
     ~H"""
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-gray-100">
+    <div class="w-full  mx-auto px-4 sm:px-6 lg:px-4 py-8 text-gray-100">
       <div class="shadow-xl rounded-lg overflow-hidden border border-gray-700 bg-gray-900/80 backdrop-blur-md">
 
         <!-- Table Header (Hidden on small screens) -->
@@ -49,7 +49,7 @@ defmodule SambaWeb.ForumIndexLive do
                     </svg>
                   </div>
                   <div>
-                    <.link navigate={~p"/forums/#{forum.forum_id}"} class="text-base font-semibold text-gray-100 hover:text-indigo-400">
+                    <.link navigate={~p"/forum/#{forum.forum_id}"} class="text-base font-semibold text-gray-100 hover:text-indigo-400">
                       <%= forum.forum_name %>
                     </.link>
                     <p class="text-sm text-gray-400"><%= forum.forum_desc %></p>
@@ -67,10 +67,10 @@ defmodule SambaWeb.ForumIndexLive do
                 </div>
 
                 <div class="col-span-2 text-left md:text-right text-xs text-gray-400">
-                  <%= if forum.lastpost do %>
+                  <%= if forum.last_post do %>
                     <div class="font-medium text-gray-200 truncate max-w-[200px] md:max-w-none">
-                      <.link navigate={~p"/posts/#{forum.lastpost.post_id}"} class="hover:underline">
-                        <%= Map.get(forum.lastpost, :subject, "View Post") %>
+                      <.link navigate={~p"/posts/#{forum.last_post.post_id}"} class="hover:underline">
+                        <%= Map.get(forum.last_post, :subject, "View Post") %>
                       </.link>
                     </div>
                     <div class="text-gray-400">

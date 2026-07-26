@@ -83,6 +83,12 @@ defmodule PhpBB.Posts do
         source_attribute :forum_id
         attribute_type :integer
       end
+
+      # Add this line so Posts knows about PostsText
+      has_one :post_text, PhpBB.PostsText do
+        destination_attribute :post_id
+        source_attribute :post_id
+      end
     end
 
     attribute :post_time, :integer do

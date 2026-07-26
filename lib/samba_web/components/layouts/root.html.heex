@@ -39,7 +39,7 @@
       <!-- Top Navigation Bar -->
       <nav class="bg-gray-300 border-b border-gray-300 px-2 py-2 text-xs">
         <div class="flex justify-between">
-          <div>
+          <div id="header_nav_block">
             Hello! <.link navigate="/sign-in" class="underline">Log in</.link>
             or <.link navigate="/register" class="underline">Register</.link>
             <span class="ml-4">
@@ -64,12 +64,13 @@
       <!-- Logo and Ad Area -->
 
       <header class="text-white">
-        <div class="flex py-2 bg-[#293F4F]">
+        <div class="flex py-2 bg-[#293F4F] justify-between">
           <.link navigate={~p"/"}>
             <.image src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
           </.link>
+          <div class="flex flex-col justify-end px-2"><.theme_toggle /></div>
         </div>
-        <div class="relative flex items-center justify-between bg-[#42637B] px-4 py-1">
+        <div class="relative flex items-center justify-between bg-[#42637B] px-4 py-1 dark:bg-neutral-950">
           <!-- Empty spacer div matching the search bar width to balance the layout and keep the menu truly centered -->
           <div class="w-1/8 invisible pointer-events-none"></div>
 
@@ -326,7 +327,7 @@
       <!-- Footer -->
 <footer class="relative rounded-sm bg-gradient-to-b from-gray-600 to-gray-900 text-gray-300 overflow-hidden pt-16 pb-20">
     <!-- Tucson Desert Scene: Horizon & Road Extended Across Entire Screen -->
-    <div class="absolute bottom-0 left-0 right-0 w-full h-56 pointer-events-none opacity-85 overflow-hidden z-0">
+    <div class="hidden md:flex absolute bottom-0 left-0 right-0 w-full h-56 pointer-events-none opacity-85 overflow-hidden z-0">
         <svg class="absolute bottom-0 left-0 w-full h-full text-white" viewBox="0 0 1440 180" preserveAspectRatio="none" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
 
             <!-- Rolling Desert Horizon Line Spanning Full Width -->
@@ -414,11 +415,11 @@
     </div>
 
     <!-- Main Footer Content -->
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+    <div class="relative max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <div class="md:grid flex justify-between mx-4 md:grid-cols-4 gap-8 mb-12">
 
             <!-- Brand Column -->
-            <div class="space-y-4">
+            <div class="hidden md:block space-y-4">
                 <h3 class="text-white text-lg font-semibold tracking-wider">Desert Board</h3>
                 <p class="text-sm text-gray-400">
                     Rooted in the Old Pueblo. Built for community discussion, air-cooled VWs, and local connection.
@@ -448,12 +449,11 @@
             </div>
 
             <!-- Tucson Info -->
-            <div>
+            <div class="hidden sm:block md:block">
                 <h4 class="text-white text-sm font-semibold uppercase tracking-wider mb-4">Location</h4>
-                <p class="text-sm text-gray-400">
-                    Based out of Tucson, Arizona.<br>
-                    Cruising through saguaros and sunshine.
-                </p>
+                <div class="mx-auto">
+                    Based out of Tucson, Arizona.<br>Cruising through saguaros and sunshine.
+                </div>
             </div>
 
         </div>

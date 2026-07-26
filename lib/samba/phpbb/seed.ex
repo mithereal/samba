@@ -128,7 +128,7 @@ defmodule PhpBB.Seed do
           forum_desc: Faker.Lorem.sentence(6..12),
           forum_order: j,
           forum_status: 0,
-          forum_last_post_id: 0,
+          forum_last_post_id: nil,
           prune_enable: 0
         })
         |> Ash.create(domain: PhpBB.Domain)

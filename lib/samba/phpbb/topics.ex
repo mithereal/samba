@@ -31,6 +31,12 @@ defmodule PhpBB.Topics do
         :topic_type
       ]
     end
+
+    update :increment_views do
+      # If you want to atomically increment or just accept view updates
+      accept []
+      change atomic_update(:topic_views, expr(topic_views + 1))
+    end
   end
 
   attributes do
@@ -43,32 +49,27 @@ defmodule PhpBB.Topics do
 
     attribute :forum_id, :integer do
       public? true
-      default 0
       allow_nil? false
     end
 
     attribute :topic_poster, :integer do
       public? true
-      default 0
       allow_nil? false
     end
 
     attribute :first_post_id, :integer do
       public? true
-      default 0
-      allow_nil? false
+      allow_nil? true
     end
 
     attribute :last_post_id, :integer do
       public? true
-      default 0
-      allow_nil? false
+      allow_nil? true
     end
 
     attribute :topic_moved_id, :integer do
       public? true
-      default 0
-      allow_nil? false
+      allow_nil? true
     end
 
     relationships do
@@ -84,23 +85,22 @@ defmodule PhpBB.Topics do
         attribute_type :integer
       end
 
-#      belongs_to :first_post, PhpBB.Posts do
-#        destination_attribute :post_id
-#        source_attribute :topic_first_post_id
-#        attribute_type :integer
-#      end
+      belongs_to :first_post, PhpBB.Posts do
+        destination_attribute :post_id
+        source_attribute :first_post_id
+        attribute_type :integer
+      end
 
-#      belongs_to :last_post, PhpBB.Posts do
-#        destination_attribute :post_id
-#        source_attribute :topic_last_post_id
-#        attribute_type :integer
-#      end
+      belongs_to :last_post, PhpBB.Posts do
+        destination_attribute :post_id
+        source_attribute :last_post_id
+        attribute_type :integer
+      end
 
-#      belongs_to :moved, PhpBB.Topics do
-#        destination_attribute :topic_moved_id
-#        source_attribute :topic_moved_id
-#        attribute_type :integer
-#      end
+      has_one :moved, PhpBB.Topics do
+        destination_attribute :topic_moved_id
+        source_attribute :topic_moved_id
+      end
     end
 
     attribute :topic_title, :string do

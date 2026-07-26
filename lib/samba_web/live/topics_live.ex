@@ -14,6 +14,17 @@ defmodule SambaWeb.ForumTopicsLive do
       |> Ash.Query.filter(forum_id == ^forum_id)
       |> Ash.read_one!(domain: PhpBB.Domain)
 
+    # Fetch groups with moderator access for this forum, then load their moderator user record
+    moderators =
+      PhpBB.AuthAccess
+      |> Ash.Query.filter(forum_id == ^forum_id and auth_mod == 1)
+      |> Ash.Query.load(group: [:moderator])
+      |> Ash.read!(domain: PhpBB.Domain)
+      |> Enum.map(fn access -> access.group && access.group.moderator && access.group.moderator.username end)
+      |> Enum.reject(&is_nil/1)
+      |> Enum.uniq()
+      |> Enum.sort()
+
     sticky_topics =
       PhpBB.Topics
       |> Ash.Query.filter(forum_id == ^forum_id and topic_type == 1)
@@ -25,7 +36,7 @@ defmodule SambaWeb.ForumTopicsLive do
       PhpBB.Topics
       |> Ash.Query.filter(forum_id == ^forum_id and topic_type != 1)
       |> Ash.Query.sort(topic_time: :desc)
-      |> Ash.Query.load([:poster, :last_post])
+      |> Ash.Query.load([:poster, :last_post]) # Added :last_post here
       |> Ash.Query.page(limit: per_page, offset: offset_val)
 
     page_results = Ash.read!(paginated_query, domain: PhpBB.Domain)
@@ -34,6 +45,7 @@ defmodule SambaWeb.ForumTopicsLive do
       socket
       |> assign(:page_title, forum && forum.forum_name || "Topics")
       |> assign(:forum, forum)
+      |> assign(:moderators, moderators)
       |> assign(:sticky_topics, sticky_topics || [])
       |> assign(:topics, page_results.results || [])
       |> assign(:page, page)
@@ -53,33 +65,28 @@ defmodule SambaWeb.ForumTopicsLive do
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
 
       <!-- Breadcrumb & Header Action -->
-      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex justify-between ">
+      <div class="mb-2 flex justify-end flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <.link navigate={~p"/forums"} class="text-indigo-400 hover:text-indigo-300 text-sm font-medium mb-1 inline-block">
-            &larr; Back to Forum Index
-          </.link>
-          <h1 class="text-2xl font-bold tracking-tight text-white"><%= @forum && @forum.forum_name %></h1>
-          <p class="text-sm text-gray-400"><%= @forum && @forum.forum_desc %></p>
-        </div>
-
-        <div class="flex items-center gap-4 self-start sm:self-auto">
+          <h1 class="text-2xl font-bold tracking-tight text-black"><%= @forum && @forum.forum_name %></h1>
+          <p class="text-sm text-gray-400">Moderators: <%= Enum.join(@moderators, ", ") %></p>
+          <.breadcrumb>
+            <:item icon="hero-folder" link="/">Forum Index</:item>
+            <:item icon="hero-folder-open" link="/"><%= @forum && @forum.forum_name %></:item>
+          </.breadcrumb>
+          <p class="mt-5 text-sm text-gray-400"><%= @forum && @forum.forum_desc %></p>
           <.link navigate={~p"/forums/#{@forum_id}/new"} class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors">
             Post New Topic
           </.link>
 
-          <div class="flex items-center space-x-2 text-sm text-gray-300">
-            <span>Topics per page:</span>
-            <form phx-change="change-per-page" class="inline">
-              <select name="per_page" class="bg-gray-800 border border-gray-700 text-white rounded px-2 py-1 text-sm focus:outline-none focus:border-indigo-500">
-                <%= for count <- [15, 25, 50, 75, 100] do %>
-                  <option value={count} selected={@per_page == count}><%= count %></option>
-                <% end %>
-              </select>
-            </form>
-          </div>
         </div>
       </div>
-
+      <div class="text-black flex flex-col justify-end text-right mr-4 ">
+          <.link navigate={~p"/forums/#{@forum_id}/mark_topics"} class="inline-flex items-center px-4  text-gray-700  text-sm font-semibold rounded-md shadow transition-colors">
+            Mark all topics read
+          </.link>
+      </div>
+      </div>
       <!-- Main subSilver Dark/Light Adaptive Table Container -->
       <div class="shadow-xl rounded-lg overflow-hidden border border-gray-700 bg-gray-900/80 backdrop-blur-md">
 
@@ -151,7 +158,14 @@ defmodule SambaWeb.ForumTopicsLive do
             </.link>
           <% end %>
         </div>
-
+            <form phx-change="change-per-page" class="inline">
+          <span class="text-black">Topics per page:</span>
+              <select name="per_page" class="bg-gray-800 border border-gray-700 text-white rounded px-2 py-1 text-sm focus:outline-none focus:border-indigo-500">
+                <%= for count <- [15, 25, 50, 75, 100] do %>
+                  <option value={count} selected={@per_page == count}><%= count %></option>
+                <% end %>
+              </select>
+            </form>
       </div>
 
     </div>
@@ -191,7 +205,7 @@ defmodule SambaWeb.ForumTopicsLive do
       <!-- Author -->
       <div class="col-span-2 text-left md:text-center text-sm text-gray-300 flex md:block justify-between">
         <span class="md:hidden font-medium text-gray-400">Author:</span>
-        <span class="text-indigo-300 font-medium"><%= get_in(@topic, [:poster, :username]) || "Anonymous" %></span>
+        <span class="text-indigo-300 font-medium"><%= (@topic.poster && @topic.poster.username) || "Anonymous" %></span>
       </div>
 
       <!-- Views -->

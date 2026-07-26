@@ -50,7 +50,7 @@ defmodule PhpBB.Forums do
 
     attribute :forum_last_post_id, :integer do
       public? true
-      allow_nil? false
+      allow_nil? true
     end
 
     attribute :cat_id, :integer do
@@ -65,6 +65,11 @@ defmodule PhpBB.Forums do
         attribute_type :integer
       end
 
+      belongs_to :last_post, PhpBB.Posts do
+        source_attribute :forum_last_post_id
+        destination_attribute :post_id
+        attribute_type :integer
+      end
 
       has_many :posts, PhpBB.Posts do
         destination_attribute :post_id

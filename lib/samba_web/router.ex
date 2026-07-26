@@ -90,6 +90,7 @@ defmodule SambaWeb.Router do
     live "/forum", ForumIndexLive, :index
     live "/forums", ForumIndexLive, :index
     live "/forum/:id", ForumTopicsLive, :index
+    live "/topics/:id", TopicPostsLive, :index
     live "/randoms_detail", FaqLive, :index
 
     live "/", LandingLive, :index
