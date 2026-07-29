@@ -125,6 +125,9 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/rustler_precompiled" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/faker" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/floki" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ckeditor5_phoenix" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/memoize" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/norm" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -428,5 +431,9 @@
     <orderEntry type="library" name="html5ever" level="project" />
     <orderEntry type="library" name="fast_html" level="project" />
     <orderEntry type="library" name="rss" level="project" />
+    <orderEntry type="library" name="ckeditor5_phoenix" level="project" />
+    <orderEntry type="library" name="norm" level="project" />
+    <orderEntry type="library" name="memoize" level="project" />
+    <orderEntry type="library" name="dotenv" level="project" />
   </component>
 </module>

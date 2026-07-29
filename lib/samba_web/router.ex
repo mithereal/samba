@@ -98,6 +98,12 @@ defmodule SambaWeb.Router do
 
   end
 
+  scope "/api/ckeditor5" do
+    pipe_through :api # Ensure this pipeline expects JSON
+
+    post "/upload", CKEditor5.Upload.Controller, :upload
+  end
+
   scope "/", SambaWeb do  #PHPBB forms
     pipe_through :browser
 
@@ -106,14 +112,14 @@ defmodule SambaWeb.Router do
     live "/forum/faq", MemberListLive, :index
     live "/forum/rss_feeds", RSSIndexLive, :index
     live "/forum/:id", ForumTopicsLive, :index
-    live "/forum/:id/new", PostLive, :index
+    live "/forum/:id/new", TopicPostLive, :index
     live "/topic/:id", TopicPostsLive, :index
     live "/topic/:id/reply", PostLive, :index
     live "/topic/post/:id", TopicPostsLive, :index
     live "/viewonline", OnlineUsersLive, :index
     live "/profile/:id", UserProfileLive, :index
 
-    get "/topic/:topic_id/rss.xml", RSSController, :index
+    get "/forum/:forum_id/rss.xml", RSSController, :index
 
     end
 

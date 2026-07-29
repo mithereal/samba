@@ -4,6 +4,8 @@
 @import "tailwindcss";
 @import "../vendor/mishka_chelekom_headless.css";
 @import "../vendor/mishka_chelekom.css";
+@import "../../deps/ckeditor5/dist/ckeditor5.css";
+
 
 /* Load plugins you placed in assets/vendor */
 @plugin "../vendor/heroicons.js";

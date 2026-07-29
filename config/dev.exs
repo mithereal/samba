@@ -26,7 +26,10 @@ config :samba, SambaWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "u2v6CEq5SaCXqs6C1kN9q3XJVlNQqE49SsFYrwnO3paU5kthcIEpLuK0urfsOpJi",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:samba, ~w(--sourcemap=inline --watch)]},
+    esbuild: {Esbuild, :install_and_run, [
+      :samba,
+      ~w(--sourcemap=inline --watch)
+    ]},
     tailwind: {Tailwind, :install_and_run, [:samba, ~w(--watch)]}
   ]
 

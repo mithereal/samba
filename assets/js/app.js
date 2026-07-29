@@ -23,6 +23,9 @@ import { LiveSocket } from "phoenix_live_view";
 import { hooks as colocatedHooks } from "phoenix-colocated/samba";
 import topbar from "../vendor/topbar";
 import MishkaComponents from "../vendor/mishka_components.js";
+import { Hooks } from 'ckeditor5_phoenix';
+//import { ClassicEditor, Essentials, Bold, Italic, Font, Paragraph } from 'ckeditor5';
+
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
@@ -34,6 +37,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
   hooks: {
     ...colocatedHooks,
     ...MishkaComponents,
+    ...Hooks
   },
 });
 // Show progress bar on live navigation and form submits

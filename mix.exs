@@ -94,7 +94,8 @@ defmodule Samba.MixProject do
       {:phoenix_seo, "~> 0.3.1"},
       {:floki, "~> 0.35"},
       {:faker, "~> 0.19.0"},
-      {:makeup, "~> 1.2.2", override: true}
+      {:makeup, "~> 1.2.2", override: true},
+      {:ckeditor5_phoenix, "~> 1.28.2"}
     ]
   end
 
@@ -110,7 +111,7 @@ defmodule Samba.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ash.setup --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
+      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing", "ckeditor5.install"],
       "assets.build": ["compile", "tailwind Samba", "esbuild Samba"],
       "assets.deploy": [
         "tailwind Samba --minify",
