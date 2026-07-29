@@ -1,8 +1,8 @@
 defmodule PhpBB.Users do
   use Ash.Resource,
-    domain: Elixir.PhpBB.Domain,
-    data_layer: AshPostgres.DataLayer,
-    notifiers: Ash.Notifier.PubSub
+      domain: Elixir.PhpBB.Domain,
+      data_layer: AshPostgres.DataLayer,
+      notifiers: Ash.Notifier.PubSub
 
   postgres do
     table "phpbb_users"
@@ -65,6 +65,71 @@ defmodule PhpBB.Users do
         :user_newpasswd
       ]
     end
+
+    read :fetch_profile do
+      argument :user_id, :integer do
+        allow_nil? false
+      end
+
+      filter expr(user_id == ^arg(:user_id))
+    end
+  end
+
+  def fetch_user_profile(user_id) when is_binary(user_id) do
+    case Integer.parse(user_id) do
+      {id, _} -> fetch_user_profile(id)
+      :error -> nil
+    end
+  end
+
+  def fetch_user_profile(user_id) do
+    user =
+      __MODULE__
+      |> Ash.Query.for_read(:fetch_profile, %{user_id: user_id})
+      |> Ash.read_one!(domain: PhpBB.Domain)
+
+    case user do
+      nil ->
+        nil
+
+      user ->
+        joined_date =
+          if user.user_regdate && user.user_regdate > 0 do
+            user.user_regdate
+            |> DateTime.from_unix!()
+            |> Calendar.strftime("%B %d, %Y")
+          else
+            "Unknown"
+          end
+
+        %{
+          username: user.username,
+          user_id: user.user_id,
+          online?: false,
+          joined_date: joined_date,
+          last_visited: "Today",
+          total_posts: user.user_posts || 0,
+          posts_percentage: "0.00",
+          posts_per_day: "0.00",
+          total_photos: 0,
+          favorite_photos: 0,
+          classified_ads_count: 0,
+          location: user.user_from,
+          website: user.user_website,
+          occupation: user.user_occ,
+          interests: user.user_interests,
+          email: user.user_email,
+          messenger_msn: user.user_msnm,
+          messenger_yahoo: user.user_yim,
+          social_facebook: nil,
+          social_twitter: nil,
+          social_instagram: nil,
+          social_youtube: nil,
+          aim_address: user.user_aim,
+          icq_number: user.user_icq,
+          user_avatar: user.user_avatar
+        }
+    end
   end
 
   attributes do
@@ -86,7 +151,6 @@ defmodule PhpBB.Users do
 
     attribute :username, :string do
       allow_nil? false
-      default "0"
       public? true
     end
 
@@ -281,7 +345,6 @@ defmodule PhpBB.Users do
         source_attribute :user_rank
         attribute_type :integer
       end
-
     end
 
     attribute :user_avatar, :string do

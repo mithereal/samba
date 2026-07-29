@@ -12,25 +12,22 @@ defmodule PhpBB.Posts do
   actions do
     defaults [:read, :update, :destroy]
 
-    create :create do
-      primary? true
-
-      accept [
-        :post_id,
-        :topic_id,
-        :forum_id,
-        :poster_id,
-        :post_username,
-        :post_time,
-        :poster_ip,
-        :enable_bbcode,
-        :enable_html,
-        :enable_smilies,
-        :enable_sig,
-        :post_edit_time,
-        :post_edit_count
-      ]
-    end
+      create :create do
+        primary? true
+        accept [
+          :post_id,
+          :topic_id,
+          :forum_id,
+          :poster_id,
+          :post_username,
+          :post_time,
+          :poster_ip,
+          :enable_bbcode,
+          :enable_html,
+          :enable_smilies,
+          :enable_sig
+        ]
+      end
   end
 
   attributes do

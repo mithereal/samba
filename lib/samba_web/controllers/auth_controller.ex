@@ -117,4 +117,11 @@ defmodule SambaWeb.AuthController do
 
     conn
   end
+
+  def online?(user_id) do
+    case SambaWeb.Presence.get_by_key("users:online", to_string(user_id)) do
+      [] -> false
+      _presence_metas -> true
+    end
+  end
 end

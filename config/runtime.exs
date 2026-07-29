@@ -89,6 +89,9 @@ if config_env() == :prod do
     site_default_description: System.get_env("site_default_description") || ""
 
   config :samba,
+      site_webmaster:  System.get_env("site_webmaster") || ""
+
+  config :samba,
     site_default_suffix: System.get_env("site_default_suffix") || ""
 
   config :samba,

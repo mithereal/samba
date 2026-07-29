@@ -8,6 +8,13 @@ defmodule Samba.Accounts.User.Relationships do
       destination_attribute :domain
     end
 
+    belongs_to :phpbb_user, PhpBB.Users do
+      description "phpbb user"
+      source_attribute :phpbb_user_id
+      destination_attribute :user_id
+      attribute_type :integer
+    end
+
     many_to_many :teams, Samba.Accounts.Team do
       through Samba.Accounts.UserTeam
       source_attribute_on_join_resource :user_id

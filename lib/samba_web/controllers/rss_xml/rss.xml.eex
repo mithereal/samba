@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title><%= Application.get_env(:samba, :site_title) %></title>
+        <description><%= Application.get_env(:samba, :site_title) %> Forums</description>
+        <managingEditor><%= Application.get_env(:samba, :site_webmaster) %></managingEditor>
+        <webMaster><%= Application.get_env(:samba, :site_webmaster) %></webMaster>
+        <link><%= pub_link(@articles) %></link>
+        <lastBuildDate><%= pub_date(@articles) %></lastBuildDate>
+        <pubDate><%= pub_date(@articles) %></pubDate>
+        <atom:link href="<%= pub_link(@articles) %>" rel="self" type="application/rss+xml"/>
+
+        <%= for article <- @articles do %>
+        <item>
+            <title><%= article.topic_title %></title>
+            <description><![CDATA[ <%= format_post(article.last_post) %> ]]></description>
+            <link><%= pub_link(article) %></link>
+            <pubDate><%= pub_date(article) %></pubDate>
+        </item>
+        <% end %>
+    </channel>
+</rss>

@@ -38,7 +38,7 @@ defmodule SambaWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, formats: [:html, :json]
+      use Phoenix.Controller, formats: [:html, :json, :xml]
 
       use Gettext, backend: SambaWeb.Gettext
 
@@ -214,6 +214,7 @@ defmodule SambaWeb do
       import SambaWeb.Components.Headless.Menubar
       import SambaWeb.Components.Headless.ScrollArea
       import SambaWeb.Components.Headless.Separator
+      import SambaWeb.Components.WhosOnline
 
       # Common modules used in templates
       alias Phoenix.LiveView.JS

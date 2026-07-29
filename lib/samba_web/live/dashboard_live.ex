@@ -2,8 +2,10 @@ defmodule SambaWeb.DashboardLive do
   use SambaWeb, :live_view
   on_mount {SambaWeb.LiveUserAuth, :live_user_required}
 
+
   @impl Phoenix.LiveView
   def render(assigns) do
+
     if SambaWeb.Helpers.is_super_user?(assigns.current_user) do
       super_user(assigns)
     else

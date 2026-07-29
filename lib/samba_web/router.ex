@@ -78,22 +78,57 @@ defmodule SambaWeb.Router do
   end
 
   scope "/", SambaWeb do
+    get "/page/:page", PageController, :show
+
+#    get "/forum/album_search.php", PhpController, :album_search #?search_author=lera.robel
+
+  end
+
+  scope "/", SambaWeb do
+
+#    live "/forum/profile/:name/buddy/add", ForumIndexLive, :index
+#    live "/forum/search/:name/posts", ForumIndexLive, :index
+#    live "/forum/search/:name/topics", ForumIndexLive, :index
+#    live "/forum/search/:name/feedback", ForumIndexLive, :index
+#    live "/forum/search/:name/photos", ForumIndexLive, :index
+#    live "/forum/search/:name/photos/favorites", ForumIndexLive, :index
+#    live "/forum/profile/:name/ignore/add", ForumIndexLive, :index
+#    live "/classifieds/search/:name", ForumIndexLive, :index
+#    live "/classifieds/profile/:name/ignore/add", ForumIndexLive, :index
+
+  end
+
+  scope "/", SambaWeb do  #PHPBB forms
+    pipe_through :browser
+
+    live "/forum", ForumIndexLive, :index
+    live "/forum/memberlist", MemberListLive, :index
+    live "/forum/faq", MemberListLive, :index
+    live "/forum/rss_feeds", RSSIndexLive, :index
+    live "/forum/:id", ForumTopicsLive, :index
+    live "/forum/:id/new", PostLive, :index
+    live "/topic/:id", TopicPostsLive, :index
+    live "/topic/:id/reply", PostLive, :index
+    live "/topic/post/:id", TopicPostsLive, :index
+    live "/viewonline", OnlineUsersLive, :index
+    live "/profile/:id", UserProfileLive, :index
+
+    get "/topic/:topic_id/rss.xml", RSSController, :index
+
+    end
+
+  scope "/", SambaWeb do
     pipe_through :browser
 
     forward "/llms.txt", SEO.LLMs,
       config: SambaWeb.SEO,
       provider: SambaWeb.LLMsProvider
 
-    get "/page/:page", PageController, :show
+    live "/", LandingLive, :index
+
+    live "/premium_membership", FaqLive, :index
 
     live "/faq", FaqLive, :index
-    live "/forum", ForumIndexLive, :index
-    live "/forums", ForumIndexLive, :index
-    live "/forum/:id", ForumTopicsLive, :index
-    live "/topics/:id", TopicPostsLive, :index
-    live "/randoms_detail", FaqLive, :index
-
-    live "/", LandingLive, :index
 
     auth_routes AuthController, Samba.Accounts.User, path: "/auth"
     sign_out_route AuthController

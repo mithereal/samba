@@ -47,4 +47,18 @@ defmodule SambaWeb.PageController do
     data = PhpBB.Page.by_name!("donate")
     render(conn, :donate, data: data)
   end
+
+  def feeds(conn, _params) do
+    categories =
+      PhpBB.Categories
+      |> Ash.Query.sort(cat_order: :asc)
+      |> Ash.Query.load([
+        forums: [
+          :topics
+        ]
+      ])
+      |> Ash.read!(domain: PhpBB.Domain)
+
+    render(conn, :feeds, categories: categories)
+  end
 end

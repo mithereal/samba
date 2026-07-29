@@ -427,5 +427,6 @@
     <orderEntry type="library" name="phoenix_seo" level="project" />
     <orderEntry type="library" name="html5ever" level="project" />
     <orderEntry type="library" name="fast_html" level="project" />
+    <orderEntry type="library" name="rss" level="project" />
   </component>
 </module>
