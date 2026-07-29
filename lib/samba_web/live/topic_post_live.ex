@@ -16,29 +16,32 @@ defmodule SambaWeb.TopicPostLive do
     poster_id = 1
     post_time = System.os_time(:second)
 
-    preset = Preset.Parser.parse!(%{
-      config: %{
-        licenseKey: "GPL",
-        toolbar: [:bold, :italic, :link],
-        plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
-      }
-    })
+    preset =
+      Preset.Parser.parse!(%{
+        config: %{
+          licenseKey: "GPL",
+          toolbar: [:bold, :italic, :link],
+          plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+        }
+      })
 
     form =
       PhpBB.Posts
-      |> AshPhoenix.Form.for_create(:create, as: "form",
+      |> AshPhoenix.Form.for_create(:create,
+        as: "form",
            params: %{
              "poster_id" => poster_id,
              "topic_id" => topic_id,
              "forum_id" => topic.forum_id,
              "post_time" => post_time,
+             "bbcode_uid" => "",
              "enable_bbcode" => 1,
              "enable_smilies" => 1,
              "enable_sig" => 1,
              "enable_html" => 0,
              "post_edit_count" => 0
            }
-         )
+      )
       |> to_form()
 
     socket =
@@ -91,17 +94,17 @@ defmodule SambaWeb.TopicPostLive do
     """
   end
 
-  def handle_event("validate", %{"form" => params}, socket) do
-    # Ensure system assigns aren't wiped out if missing from live validation payload
-    merged_params =
-      params
-      |> Map.put("topic_id", socket.assigns.topic_id)
-      |> Map.put("forum_id", socket.assigns.forum_id)
-      |> Map.put("poster_id", socket.assigns.poster_id)
-
-    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
-    {:noreply, assign(socket, form: to_form(form))}
-  end
+#  def handle_event("validate", %{"form" => params}, socket) do
+#    # Ensure system assigns aren't wiped out if missing from live validation payload
+#    merged_params =
+#      params
+#      |> Map.put("topic_id", socket.assigns.topic_id)
+#      |> Map.put("forum_id", socket.assigns.forum_id)
+#      |> Map.put("poster_id", socket.assigns.poster_id)
+#
+#    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
+#    {:noreply, assign(socket, form: to_form(form))}
+#  end
 
   def handle_event("save", %{"form" => params}, socket) do
     submission_params =
@@ -114,9 +117,9 @@ defmodule SambaWeb.TopicPostLive do
     case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
       {:ok, post} ->
         {:noreply,
-          socket
-          |> put_flash(:info, "Post created successfully!")
-          |> push_navigate(to: ~p"/forums/topics/#{post.topic_id}")}
+         socket
+         |> put_flash(:info, "Post created successfully!")
+         |> push_navigate(to: ~p"/forums/topics/#{post.topic_id}")}
 
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}

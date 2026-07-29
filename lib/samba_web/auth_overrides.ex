@@ -4,18 +4,20 @@ defmodule SambaWeb.AuthOverrides do
 
   # Target the main sign-in live container
   override SignInLive do
-    set :root_class, "rounded-sm min-h-screen bg-gradient-to-b from-gray-300 from-70% to-gray-600 to-90%  text-gray-900 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8"
+    set :root_class,
+        "rounded-sm min-h-screen bg-gradient-to-b from-gray-300 from-70% to-gray-600 to-90%  text-gray-900 flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8"
   end
 
   # Override the standard sign-in live container and ensure base text is light
   override Components.SignIn do
-    set :root_class, "w-full max-w-md mx-auto text-gray-900 [&_label]:text-gray-900 [&_input]:text-gray-300 [&_input]:bg-gray-500"
+    set :root_class,
+        "w-full max-w-md mx-auto text-gray-900 [&_label]:text-gray-900 [&_input]:text-gray-300 [&_input]:bg-gray-500"
   end
 
   override Components.Banner do
     # Point to your custom asset (e.g., in priv/static/images/)
     set :image_url, "/images/logo.svg"
-      # Optional: adjust styling classes for the logo image container/tag
+    # Optional: adjust styling classes for the logo image container/tag
     set :image_class, "mx-auto h-12 w-auto"
 
     # Alternatively, if you want to swap it out for text instead of an image:
@@ -26,14 +28,18 @@ defmodule SambaWeb.AuthOverrides do
   # Target the identity/email input field component
   override Components.Password.IdentityField do
     set :label_class, "block text-sm font-medium text-gray-200"
-    set :input_class, "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm [&_input]:bg-gray-300"
+
+    set :input_class,
+        "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm [&_input]:bg-gray-300"
   end
 
   # If using standard password sign-in forms
   override Components.Password.SignInForm do
     set :form_class, "space-y-6 "
     set :label_class, "block text-sm font-medium text-gray-900"
-    set :input_class, "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+
+    set :input_class,
+        "mt-1 block w-full rounded-md border-gray-700 bg-gray-300 text-gray-100 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
   end
 
   # If using standard password registration forms

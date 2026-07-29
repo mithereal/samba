@@ -41,6 +41,7 @@ defmodule PhpBB.Forums do
 
     update :update do
       primary? true
+
       accept [
         :forum_name,
         :forum_desc,

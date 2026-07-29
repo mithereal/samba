@@ -23,13 +23,41 @@ defmodule SambaWeb.OnlineUsersLive do
 
   defp assign_users(socket) do
     registered_users = [
-      %{id: 1, username: "Alice", profile_path: ~p"/user/alice", last_updated: ~N[2026-07-26 14:50:00], location: "General Discussion", location_path: ~p"/forum/general"},
-      %{id: 2, username: "Bob", profile_path: ~p"/user/bob", last_updated: ~N[2026-07-26 14:48:20], location: "Elixir & Phoenix", location_path: ~p"/forum/elixir"}
+      %{
+        id: 1,
+        username: "Alice",
+        profile_path: ~p"/user/alice",
+        last_updated: ~N[2026-07-26 14:50:00],
+        location: "General Discussion",
+        location_path: ~p"/forum/general"
+      },
+      %{
+        id: 2,
+        username: "Bob",
+        profile_path: ~p"/user/bob",
+        last_updated: ~N[2026-07-26 14:48:20],
+        location: "Elixir & Phoenix",
+        location_path: ~p"/forum/elixir"
+      }
     ]
 
     guests = [
-      %{id: 101, username: "Guest_4892", profile_path: nil, last_updated: ~N[2026-07-26 14:49:10], location: "FAQ", location_path: ~p"/forum/faq"},
-      %{id: 102, username: "Guest_1102", profile_path: nil, last_updated: ~N[2026-07-26 14:51:00], location: "Home Page", location_path: ~p"/"}
+      %{
+        id: 101,
+        username: "Guest_4892",
+        profile_path: nil,
+        last_updated: ~N[2026-07-26 14:49:10],
+        location: "FAQ",
+        location_path: ~p"/forum/faq"
+      },
+      %{
+        id: 102,
+        username: "Guest_1102",
+        profile_path: nil,
+        last_updated: ~N[2026-07-26 14:51:00],
+        location: "Home Page",
+        location_path: ~p"/"
+      }
     ]
 
     assign(socket,
@@ -51,7 +79,7 @@ defmodule SambaWeb.OnlineUsersLive do
       <!-- Registered Users Section -->
       <div class="mb-6">
         <h3 class="text-md font-semibold text-zinc-700 dark:text-zinc-300 mb-3">
-          Registered Users (<%= length(@registered_users) %>)
+          Registered Users ({length(@registered_users)})
         </h3>
 
         <.user_list users={@registered_users} type="registered" />
@@ -67,7 +95,7 @@ defmodule SambaWeb.OnlineUsersLive do
       <!-- Guests Section -->
       <div class="mt-6">
         <h3 class="text-md font-semibold text-zinc-700 dark:text-zinc-300 mb-3">
-          Guests (<%= length(@guests) %>)
+          Guests ({length(@guests)})
         </h3>
 
         <.user_list users={@guests} type="guest" />
@@ -90,26 +118,32 @@ defmodule SambaWeb.OnlineUsersLive do
       <div class="bg-white dark:bg-zinc-900 divide-y divide-zinc-200 dark:divide-zinc-700">
         <%= if Enum.empty?(@users) do %>
           <div class="px-6 py-4 text-center text-zinc-400 dark:text-zinc-500 italic">
-            No <%= @type %> currently online.
+            No {@type} currently online.
           </div>
         <% else %>
           <%= for user <- @users do %>
             <div class="flex items-center px-6 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
               <div class="w-1/3 font-medium text-zinc-900 dark:text-zinc-100">
                 <%= if user.id do %>
-                  <.link navigate={"/profile/#{user.id}"} class="hover:underline text-indigo-600 dark:text-indigo-400">
-                    <%= user.username %>
+                  <.link
+                    navigate={"/profile/#{user.id}"}
+                    class="hover:underline text-indigo-600 dark:text-indigo-400"
+                  >
+                    {user.username}
                   </.link>
                 <% else %>
-                  <span class="text-zinc-500 dark:text-zinc-400"><%= user.username %></span>
+                  <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
                 <% end %>
               </div>
               <div class="w-1/3 text-zinc-500 dark:text-zinc-400">
-                <%= format_time(user.last_updated) %>
+                {format_time(user.last_updated)}
               </div>
               <div class="w-1/3">
-                <.link navigate={user.location_path} class="hover:underline text-indigo-600 dark:text-indigo-400">
-                  <%= user.location %>
+                <.link
+                  navigate={user.location_path}
+                  class="hover:underline text-indigo-600 dark:text-indigo-400"
+                >
+                  {user.location}
                 </.link>
               </div>
             </div>

@@ -1,7 +1,7 @@
 defmodule Samba.Accounts.Generator do
   use Ash.Resource,
-      otp_app: :samba,
-      domain: Samba.Accounts
+    otp_app: :samba,
+    domain: Samba.Accounts
 
   actions do
     action :generate_user, {:array, :struct} do

@@ -25,7 +25,6 @@ defmodule SambaWeb.Menu do
           }
         ]
       },
-
       %{
         title: gettext("Reports"),
         links: [
@@ -64,26 +63,26 @@ defmodule SambaWeb.Menu do
       %{
         title: gettext("Settings"),
         links: [
-           %{
-             href: ~p"/settings",
-             icon: "hero-cog-6-tooth",
-             text: gettext("General")
-           },
-                 %{
-                 href: "/accounts/preferences",
-                 icon: "hero-user",
-                     text: gettext("Preferences")
-                                  },
-#          %{
-#            href: "/accounts/teams",
-#            icon: "hero-building-library",
-#            text: gettext("Teams")
-#          },
-#          %{
-#            href: "/accounts/users",
-#            icon: "hero-users",
-#            text: gettext("Users")
-#          },
+          %{
+            href: ~p"/settings",
+            icon: "hero-cog-6-tooth",
+            text: gettext("General")
+          },
+          %{
+            href: "/accounts/preferences",
+            icon: "hero-user",
+            text: gettext("Preferences")
+          },
+          #          %{
+          #            href: "/accounts/teams",
+          #            icon: "hero-building-library",
+          #            text: gettext("Teams")
+          #          },
+          #          %{
+          #            href: "/accounts/users",
+          #            icon: "hero-users",
+          #            text: gettext("Users")
+          #          },
           %{
             href: "/accounts/profile",
             icon: "hero-user",

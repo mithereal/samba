@@ -13,7 +13,6 @@ defmodule PhpBB.Confirm do
     defaults [:read, :update, :destroy]
 
     create :create do
-
       primary? true
 
       accept [

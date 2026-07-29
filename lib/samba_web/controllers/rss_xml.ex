@@ -25,7 +25,7 @@ defmodule SambaWeb.RSSXML do
     data
   end
 
- #def format_rfc822(date_time), do: Calendar.strftime(date_time, "%a, %d %b %Y %H:%M:%S %Z")
+  # def format_rfc822(date_time), do: Calendar.strftime(date_time, "%a, %d %b %Y %H:%M:%S %Z")
 
   embed_templates "rss_xml/*"
 end

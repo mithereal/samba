@@ -52,11 +52,11 @@ defmodule SambaWeb.PageController do
     categories =
       PhpBB.Categories
       |> Ash.Query.sort(cat_order: :asc)
-      |> Ash.Query.load([
+      |> Ash.Query.load(
         forums: [
           :topics
         ]
-      ])
+      )
       |> Ash.read!(domain: PhpBB.Domain)
 
     render(conn, :feeds, categories: categories)

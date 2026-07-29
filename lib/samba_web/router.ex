@@ -80,31 +80,30 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     get "/page/:page", PageController, :show
 
-#    get "/forum/album_search.php", PhpController, :album_search #?search_author=lera.robel
-
+    #    get "/forum/album_search.php", PhpController, :album_search #?search_author=lera.robel
   end
 
   scope "/", SambaWeb do
-
-#    live "/forum/profile/:name/buddy/add", ForumIndexLive, :index
-#    live "/forum/search/:name/posts", ForumIndexLive, :index
-#    live "/forum/search/:name/topics", ForumIndexLive, :index
-#    live "/forum/search/:name/feedback", ForumIndexLive, :index
-#    live "/forum/search/:name/photos", ForumIndexLive, :index
-#    live "/forum/search/:name/photos/favorites", ForumIndexLive, :index
-#    live "/forum/profile/:name/ignore/add", ForumIndexLive, :index
-#    live "/classifieds/search/:name", ForumIndexLive, :index
-#    live "/classifieds/profile/:name/ignore/add", ForumIndexLive, :index
-
+    #    live "/forum/profile/:name/buddy/add", ForumIndexLive, :index
+    #    live "/forum/search/:name/posts", ForumIndexLive, :index
+    #    live "/forum/search/:name/topics", ForumIndexLive, :index
+    #    live "/forum/search/:name/feedback", ForumIndexLive, :index
+    #    live "/forum/search/:name/photos", ForumIndexLive, :index
+    #    live "/forum/search/:name/photos/favorites", ForumIndexLive, :index
+    #    live "/forum/profile/:name/ignore/add", ForumIndexLive, :index
+    #    live "/classifieds/search/:name", ForumIndexLive, :index
+    #    live "/classifieds/profile/:name/ignore/add", ForumIndexLive, :index
   end
 
   scope "/api/ckeditor5" do
-    pipe_through :api # Ensure this pipeline expects JSON
+    # Ensure this pipeline expects JSON
+    pipe_through :api
 
     post "/upload", CKEditor5.Upload.Controller, :upload
   end
 
-  scope "/", SambaWeb do  #PHPBB forms
+  # PHPBB forms
+  scope "/", SambaWeb do
     pipe_through :browser
 
     live "/forum", ForumIndexLive, :index
@@ -120,8 +119,7 @@ defmodule SambaWeb.Router do
     live "/profile/:id", UserProfileLive, :index
 
     get "/forum/:forum_id/rss.xml", RSSController, :index
-
-    end
+  end
 
   scope "/", SambaWeb do
     pipe_through :browser

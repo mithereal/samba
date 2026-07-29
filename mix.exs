@@ -112,7 +112,11 @@ defmodule Samba.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       test: ["ash.setup --quiet", "test"],
-      "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing", "ckeditor5.install"],
+      "assets.setup": [
+        "tailwind.install --if-missing",
+        "esbuild.install --if-missing",
+        "ckeditor5.install"
+      ],
       "assets.build": ["compile", "tailwind Samba", "esbuild Samba"],
       "assets.deploy": [
         "tailwind Samba --minify",

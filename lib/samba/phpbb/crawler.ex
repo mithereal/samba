@@ -69,12 +69,12 @@ defmodule PhpbbCrawler do
     all_topics =
       forums
       |> Task.async_stream(
-           fn forum ->
-             stream_forum_topics(crawler, forum.forum_id, concurrency, timeout) |> Enum.to_list()
-           end,
-           max_concurrency: concurrency,
-           timeout: timeout
-         )
+        fn forum ->
+          stream_forum_topics(crawler, forum.forum_id, concurrency, timeout) |> Enum.to_list()
+        end,
+        max_concurrency: concurrency,
+        timeout: timeout
+      )
       |> Enum.flat_map(fn
         {:ok, topics} -> topics
         {:error, _} -> []
@@ -85,12 +85,12 @@ defmodule PhpbbCrawler do
     all_posts =
       all_topics
       |> Task.async_stream(
-           fn topic ->
-             stream_topic_posts(crawler, topic.topic_id, concurrency, timeout) |> Enum.to_list()
-           end,
-           max_concurrency: concurrency,
-           timeout: timeout
-         )
+        fn topic ->
+          stream_topic_posts(crawler, topic.topic_id, concurrency, timeout) |> Enum.to_list()
+        end,
+        max_concurrency: concurrency,
+        timeout: timeout
+      )
       |> Enum.flat_map(fn
         {:ok, posts} -> posts
         {:error, _} -> []
@@ -142,9 +142,9 @@ defmodule PhpbbCrawler do
     |> Enum.map(fn {_k, v} -> v |> String.split(";") |> List.first() end)
     |> Enum.join("; ")
     |> case do
-         "" -> nil
-         cookies -> cookies
-       end
+      "" -> nil
+      cookies -> cookies
+    end
   end
 
   # --- Parsers & Helpers ---
@@ -165,16 +165,19 @@ defmodule PhpbbCrawler do
           forum_id = extract_id(href, "f")
 
           if forum_id do
-            [%{
-              forum_id: forum_id,
-              forum_name: String.trim(name),
-              cat_id: cat_id,
-              forum_last_post_id: forum_last_post_id,
-              url: build_absolute_url(base_url, href)
-            }]
+            [
+              %{
+                forum_id: forum_id,
+                forum_name: String.trim(name),
+                cat_id: cat_id,
+                forum_last_post_id: forum_last_post_id,
+                url: build_absolute_url(base_url, href)
+              }
+            ]
           else
             []
           end
+
         _ ->
           []
       end
@@ -187,6 +190,7 @@ defmodule PhpbbCrawler do
       [cat_el | _] ->
         href = Floki.attribute(cat_el, "href") |> List.first()
         extract_id(href, "c")
+
       _ ->
         nil
     end
@@ -197,6 +201,7 @@ defmodule PhpbbCrawler do
       [post_el | _] ->
         href = Floki.attribute(post_el, "href") |> List.first()
         extract_id(href, "p")
+
       _ ->
         nil
     end
@@ -292,6 +297,7 @@ defmodule PhpbbCrawler do
         {char_code, ""} ->
           decoded_char = Bitwise.bxor(char_code, r_val)
           decode_cf_loop(hex, index + 2, r_val, [acc | <<decoded_char>>])
+
         _ ->
           acc
       end
@@ -316,9 +322,9 @@ defmodule PhpbbCrawler do
     |> Enum.reject(&is_nil/1)
     |> Enum.uniq()
     |> case do
-         [] -> nil
-         starts -> Enum.min(starts)
-       end
+      [] -> nil
+      starts -> Enum.min(starts)
+    end
   end
 
   defp extract_id(nil, _param), do: nil
@@ -355,7 +361,12 @@ defmodule PhpbbCrawler do
   @doc """
   Lazily streams topics across all pages of a forum.
   """
-  def stream_forum_topics(%PhpbbCrawler{} = crawler, forum_id, _concurrency \\ @concurrency, timeout \\ @timeout) do
+  def stream_forum_topics(
+        %PhpbbCrawler{} = crawler,
+        forum_id,
+        _concurrency \\ @concurrency,
+        timeout \\ @timeout
+      ) do
     Stream.resource(
       fn -> {0, false} end,
       fn
@@ -367,14 +378,16 @@ defmodule PhpbbCrawler do
 
           case get_request(crawler, url, timeout) do
             {:ok, body} ->
-              {topics, next_start} = parse_topics_with_pagination(body, crawler.base_url, forum_id, start)
+              {topics, next_start} =
+                parse_topics_with_pagination(body, crawler.base_url, forum_id, start)
 
-              new_state = if next_start && next_start > start do
-                Process.sleep(100)
-                {next_start, false}
-              else
-                {start, true}
-              end
+              new_state =
+                if next_start && next_start > start do
+                  Process.sleep(100)
+                  {next_start, false}
+                else
+                  {start, true}
+                end
 
               {topics, new_state}
 
@@ -389,7 +402,12 @@ defmodule PhpbbCrawler do
   @doc """
   Lazily streams posts across all pages of a topic.
   """
-  def stream_topic_posts(%PhpbbCrawler{} = crawler, topic_id, _concurrency \\ @concurrency, timeout \\ @timeout) do
+  def stream_topic_posts(
+        %PhpbbCrawler{} = crawler,
+        topic_id,
+        _concurrency \\ @concurrency,
+        timeout \\ @timeout
+      ) do
     Stream.resource(
       fn -> {0, false} end,
       fn
@@ -403,12 +421,13 @@ defmodule PhpbbCrawler do
             {:ok, body} ->
               {posts, next_start} = parse_posts_with_pagination(body, topic_id, start)
 
-              new_state = if next_start && next_start > start do
-                Process.sleep(100)
-                {next_start, false}
-              else
-                {start, true}
-              end
+              new_state =
+                if next_start && next_start > start do
+                  Process.sleep(100)
+                  {next_start, false}
+                else
+                  {start, true}
+                end
 
               {posts, new_state}
 

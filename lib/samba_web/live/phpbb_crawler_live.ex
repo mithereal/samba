@@ -6,45 +6,45 @@ defmodule SambaWeb.PhpbbCrawlerLive do
   @impl true
   def mount(_params, _session, socket) do
     {:ok,
-      assign(socket,
-        base_url: "http://legacy-forum.local/phpBB2",
-        require_login: false,
-        username: "",
-        password: "",
-        concurrency: 4,
-        timeout: 15_000,
-        scrape_forums: true,
-        scrape_topics: true,
-        scrape_posts: true,
-        scrape_profiles: true,
-        download_assets: false,
-        asset_dir: "./priv/forum_assets",
-        max_topics: 100,
-        max_posts: 500,
-        status: :idle,
-        logs: []
-      )}
+     assign(socket,
+       base_url: "http://legacy-forum.local/phpBB2",
+       require_login: false,
+       username: "",
+       password: "",
+       concurrency: 4,
+       timeout: 15_000,
+       scrape_forums: true,
+       scrape_topics: true,
+       scrape_posts: true,
+       scrape_profiles: true,
+       download_assets: false,
+       asset_dir: "./priv/forum_assets",
+       max_topics: 100,
+       max_posts: 500,
+       status: :idle,
+       logs: []
+     )}
   end
 
   @impl true
   def handle_event("update_settings", params, socket) do
     {:noreply,
-      assign(socket,
-        base_url: params["base_url"],
-        require_login: Map.has_key?(params, "require_login"),
-        username: params["username"],
-        password: params["password"],
-        concurrency: String.to_integer(params["concurrency"]),
-        timeout: String.to_integer(params["timeout"]),
-        scrape_forums: Map.has_key?(params, "scrape_forums"),
-        scrape_topics: Map.has_key?(params, "scrape_topics"),
-        scrape_posts: Map.has_key?(params, "scrape_posts"),
-        scrape_profiles: Map.has_key?(params, "scrape_profiles"),
-        download_assets: Map.has_key?(params, "download_assets"),
-        asset_dir: params["asset_dir"],
-        max_topics: String.to_integer(params["max_topics"] || "100"),
-        max_posts: String.to_integer(params["max_posts"] || "500")
-      )}
+     assign(socket,
+       base_url: params["base_url"],
+       require_login: Map.has_key?(params, "require_login"),
+       username: params["username"],
+       password: params["password"],
+       concurrency: String.to_integer(params["concurrency"]),
+       timeout: String.to_integer(params["timeout"]),
+       scrape_forums: Map.has_key?(params, "scrape_forums"),
+       scrape_topics: Map.has_key?(params, "scrape_topics"),
+       scrape_posts: Map.has_key?(params, "scrape_posts"),
+       scrape_profiles: Map.has_key?(params, "scrape_profiles"),
+       download_assets: Map.has_key?(params, "download_assets"),
+       asset_dir: params["asset_dir"],
+       max_topics: String.to_integer(params["max_topics"] || "100"),
+       max_posts: String.to_integer(params["max_posts"] || "500")
+     )}
   end
 
   @impl true
@@ -101,8 +101,13 @@ defmodule SambaWeb.PhpbbCrawlerLive do
 
     case crawler_result do
       {:ok, crawler} ->
-        mode_label = if crawler.cookie, do: "Authenticated Session (Emails unlocked)", else: "Public Anonymous Session"
-        socket = prepend_log(socket, "Crawler session initialized successfully. Mode: #{mode_label}.")
+        mode_label =
+          if crawler.cookie,
+            do: "Authenticated Session (Emails unlocked)",
+            else: "Public Anonymous Session"
+
+        socket =
+          prepend_log(socket, "Crawler session initialized successfully. Mode: #{mode_label}.")
 
         try do
           # 1. Forums Pipeline (Streamed & Sanitized)
@@ -130,11 +135,14 @@ defmodule SambaWeb.PhpbbCrawlerLive do
               topics_stream =
                 forums
                 |> Task.async_stream(
-                     fn f ->
-                       crawler
-                       |> PhpbbCrawler.stream_forum_topics(f.forum_id, concurrency, timeout)
-                       |> Stream.map(fn t -> Map.drop(t, [:url]) end)
-                     end, max_concurrency: concurrency, timeout: :infinity)
+                  fn f ->
+                    crawler
+                    |> PhpbbCrawler.stream_forum_topics(f.forum_id, concurrency, timeout)
+                    |> Stream.map(fn t -> Map.drop(t, [:url]) end)
+                  end,
+                  max_concurrency: concurrency,
+                  timeout: :infinity
+                )
                 |> Stream.flat_map(fn
                   {:ok, stream} -> stream
                   _ -> []
@@ -147,7 +155,12 @@ defmodule SambaWeb.PhpbbCrawlerLive do
               # Collect into list for downstream posts dependency
               topics_list = Enum.to_list(topics_stream)
 
-              socket = prepend_log(socket, "Topics streaming and ingestion completed (#{length(topics_list)} topics).")
+              socket =
+                prepend_log(
+                  socket,
+                  "Topics streaming and ingestion completed (#{length(topics_list)} topics)."
+                )
+
               topics_list
             else
               []
@@ -162,10 +175,13 @@ defmodule SambaWeb.PhpbbCrawlerLive do
               posts_stream =
                 crawled_topics
                 |> Task.async_stream(
-                     fn t ->
-                       crawler
-                       |> PhpbbCrawler.stream_topic_posts(t.topic_id, concurrency, timeout)
-                     end, max_concurrency: concurrency, timeout: :infinity)
+                  fn t ->
+                    crawler
+                    |> PhpbbCrawler.stream_topic_posts(t.topic_id, concurrency, timeout)
+                  end,
+                  max_concurrency: concurrency,
+                  timeout: :infinity
+                )
                 |> Stream.flat_map(fn
                   {:ok, stream} -> stream
                   _ -> []
@@ -180,7 +196,12 @@ defmodule SambaWeb.PhpbbCrawlerLive do
 
               posts_list = Enum.to_list(posts_stream)
 
-              socket = prepend_log(socket, "Posts streaming and ingestion completed (#{length(posts_list)} posts).")
+              socket =
+                prepend_log(
+                  socket,
+                  "Posts streaming and ingestion completed (#{length(posts_list)} posts)."
+                )
+
               posts_list
             else
               []
@@ -188,7 +209,11 @@ defmodule SambaWeb.PhpbbCrawlerLive do
 
           # 4. User Profiles & Avatars Pipeline
           if scrape_profiles and crawled_posts != [] do
-            socket = prepend_log(socket, "Extracting user profiles and avatars (Authenticated emails extraction: #{!!crawler.cookie})...")
+            socket =
+              prepend_log(
+                socket,
+                "Extracting user profiles and avatars (Authenticated emails extraction: #{!!crawler.cookie})..."
+              )
 
             unique_user_ids =
               crawled_posts
@@ -199,10 +224,10 @@ defmodule SambaWeb.PhpbbCrawlerLive do
             profiles_stream =
               unique_user_ids
               |> Task.async_stream(
-                   fn user_id -> PhpbbCrawler.crawl_user_profile(crawler, user_id) end,
-                   max_concurrency: concurrency,
-                   timeout: timeout
-                 )
+                fn user_id -> PhpbbCrawler.crawl_user_profile(crawler, user_id) end,
+                max_concurrency: concurrency,
+                timeout: timeout
+              )
               |> Stream.flat_map(fn
                 {:ok, profile} when not is_nil(profile) -> [profile]
                 _ -> []
@@ -215,7 +240,10 @@ defmodule SambaWeb.PhpbbCrawlerLive do
             end
 
             profiles_count = Enum.count(unique_user_ids)
-            socket = prepend_log(socket, "Successfully processed user profiles & assets pipeline.")
+
+            socket =
+              prepend_log(socket, "Successfully processed user profiles & assets pipeline.")
+
             socket
           else
             socket
@@ -257,170 +285,170 @@ defmodule SambaWeb.PhpbbCrawlerLive do
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
-    <div class="max-w-4xl mx-auto p-6 space-y-6 mb-4">
-      <h1 class="text-2xl font-bold">phpBB2 Live Crawler & Migration Dashboard</h1>
+      <div class="max-w-4xl mx-auto p-6 space-y-6 mb-4">
+        <h1 class="text-2xl font-bold">phpBB2 Live Crawler & Migration Dashboard</h1>
 
-      <form
-        phx-change="update_settings"
-        phx-submit="start_crawl"
-        class="bg-white shadow p-6 rounded-lg space-y-4"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Base URL</label>
-            <input
-              type="text"
-              name="base_url"
-              value={@base_url}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
+        <form
+          phx-change="update_settings"
+          phx-submit="start_crawl"
+          class="bg-white shadow p-6 rounded-lg space-y-4"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Base URL</label>
+              <input
+                type="text"
+                name="base_url"
+                value={@base_url}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Concurrency</label>
+              <input
+                type="number"
+                name="concurrency"
+                value={@concurrency}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Username</label>
+              <input
+                type="text"
+                name="username"
+                value={@username}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={@password}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Timeout (ms)</label>
+              <input
+                type="number"
+                name="timeout"
+                value={@timeout}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Asset Directory</label>
+              <input
+                type="text"
+                name="asset_dir"
+                value={@asset_dir}
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
+              />
+            </div>
           </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Concurrency</label>
-            <input
-              type="number"
-              name="concurrency"
-              value={@concurrency}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Username</label>
-            <input
-              type="text"
-              name="username"
-              value={@username}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              name="password"
-              value={@password}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Timeout (ms)</label>
-            <input
-              type="number"
-              name="timeout"
-              value={@timeout}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Asset Directory</label>
-            <input
-              type="text"
-              name="asset_dir"
-              value={@asset_dir}
-              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm border p-2"
-            />
-          </div>
-        </div>
 
-        <div class="border-t pt-4">
-          <label class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="require_login"
-              checked={@require_login}
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
-            <span class="text-sm font-semibold text-gray-800">Enable Authentication (Required for downloading hidden profile emails)</span>
-          </label>
-        </div>
-
-        <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <label class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="scrape_forums"
-              checked={@scrape_forums}
-              class="rounded border-gray-300"
-            />
-            <span class="text-sm font-medium">Scrape Forums</span>
-          </label>
-          <div class="space-y-1">
+          <div class="border-t pt-4">
             <label class="flex items-center space-x-2">
               <input
                 type="checkbox"
-                name="scrape_topics"
-                checked={@scrape_topics}
-                class="rounded border-gray-300"
+                name="require_login"
+                checked={@require_login}
+                class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span class="text-sm font-medium">Scrape Topics</span>
+              <span class="text-sm font-semibold text-gray-800">Enable Authentication (Required for downloading hidden profile emails)</span>
             </label>
-            <input
-              type="number"
-              name="max_topics"
-              value={@max_topics}
-              placeholder="Max topics"
-              class="block w-full text-sm border p-1 rounded"
-            />
           </div>
-          <div class="space-y-1">
+
+          <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <label class="flex items-center space-x-2">
               <input
                 type="checkbox"
-                name="scrape_posts"
-                checked={@scrape_posts}
+                name="scrape_forums"
+                checked={@scrape_forums}
                 class="rounded border-gray-300"
               />
-              <span class="text-sm font-medium">Scrape Posts</span>
+              <span class="text-sm font-medium">Scrape Forums</span>
             </label>
-            <input
-              type="number"
-              name="max_posts"
-              value={@max_posts}
-              placeholder="Max posts"
-              class="block w-full text-sm border p-1 rounded"
-            />
+            <div class="space-y-1">
+              <label class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="scrape_topics"
+                  checked={@scrape_topics}
+                  class="rounded border-gray-300"
+                />
+                <span class="text-sm font-medium">Scrape Topics</span>
+              </label>
+              <input
+                type="number"
+                name="max_topics"
+                value={@max_topics}
+                placeholder="Max topics"
+                class="block w-full text-sm border p-1 rounded"
+              />
+            </div>
+            <div class="space-y-1">
+              <label class="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  name="scrape_posts"
+                  checked={@scrape_posts}
+                  class="rounded border-gray-300"
+                />
+                <span class="text-sm font-medium">Scrape Posts</span>
+              </label>
+              <input
+                type="number"
+                name="max_posts"
+                value={@max_posts}
+                placeholder="Max posts"
+                class="block w-full text-sm border p-1 rounded"
+              />
+            </div>
           </div>
-        </div>
 
-        <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="scrape_profiles"
-              checked={@scrape_profiles}
-              class="rounded border-gray-300"
-            />
-            <span class="text-sm font-medium">Scrape User Profiles & Emails</span>
-          </label>
-          <label class="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="download_assets"
-              checked={@download_assets}
-              class="rounded border-gray-300"
-            />
-            <span class="text-sm font-medium">Download Avatars & Post Images to Disk</span>
-          </label>
-        </div>
+          <div class="border-t pt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <label class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="scrape_profiles"
+                checked={@scrape_profiles}
+                class="rounded border-gray-300"
+              />
+              <span class="text-sm font-medium">Scrape User Profiles & Emails</span>
+            </label>
+            <label class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                name="download_assets"
+                checked={@download_assets}
+                class="rounded border-gray-300"
+              />
+              <span class="text-sm font-medium">Download Avatars & Post Images to Disk</span>
+            </label>
+          </div>
 
-        <div class="flex justify-end pt-4">
-          <button
-            type="submit"
-            disabled={@status == :running}
-            class={"px-4 py-2 rounded text-white font-medium " <> if(@status == :running, do: "bg-gray-400 cursor-not-allowed", else: "bg-blue-600 hover:bg-blue-700")}
-          >
-            {if @status == :running, do: "Crawling in Progress...", else: "Start Live Crawl"}
-          </button>
-        </div>
-      </form>
+          <div class="flex justify-end pt-4">
+            <button
+              type="submit"
+              disabled={@status == :running}
+              class={"px-4 py-2 rounded text-white font-medium " <> if(@status == :running, do: "bg-gray-400 cursor-not-allowed", else: "bg-blue-600 hover:bg-blue-700")}
+            >
+              {if @status == :running, do: "Crawling in Progress...", else: "Start Live Crawl"}
+            </button>
+          </div>
+        </form>
 
-      <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm h-64 overflow-y-auto space-y-1 shadow-inner">
-        <div class="text-gray-500">// Live Execution Logs...</div>
-        <%= for log <- Enum.reverse(@logs) do %>
-          <div>{log}</div>
-        <% end %>
+        <div class="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm h-64 overflow-y-auto space-y-1 shadow-inner">
+          <div class="text-gray-500">// Live Execution Logs...</div>
+          <%= for log <- Enum.reverse(@logs) do %>
+            <div>{log}</div>
+          <% end %>
+        </div>
       </div>
-    </div>
     </Layouts.app>
     """
   end

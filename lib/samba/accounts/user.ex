@@ -81,5 +81,4 @@ defmodule Samba.Accounts.User do
   changes do
     change Samba.Accounts.User.Changes.CreatePersonTeam
   end
-
 end

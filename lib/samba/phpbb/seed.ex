@@ -25,6 +25,7 @@ defmodule PhpBB.Seed do
 
   def seed_ranks do
     IO.puts("Seeding Ranks...")
+
     for _ <- 1..5 do
       {:ok, rank} =
         PhpBB.Ranks
@@ -42,6 +43,7 @@ defmodule PhpBB.Seed do
 
   def seed_users(ranks) do
     IO.puts("Seeding Users...")
+
     for _ <- 1..25 do
       {:ok, user} =
         PhpBB.Users
@@ -73,6 +75,7 @@ defmodule PhpBB.Seed do
   def seed_groups(users) do
     IO.puts("Seeding Groups...")
     moderator_user = Enum.random(users)
+
     for _ <- 1..3 do
       {:ok, group} =
         PhpBB.Groups
@@ -91,6 +94,7 @@ defmodule PhpBB.Seed do
 
   def seed_user_groups(users, groups) do
     IO.puts("Seeding User Group memberships...")
+
     for user <- users, group <- Enum.take(groups, 1) do
       PhpBB.UserGroup
       |> Ash.Changeset.for_create(:create, %{
@@ -104,6 +108,7 @@ defmodule PhpBB.Seed do
 
   def seed_categories do
     IO.puts("Seeding Categories...")
+
     for i <- 1..3 do
       {:ok, category} =
         PhpBB.Categories
@@ -119,6 +124,7 @@ defmodule PhpBB.Seed do
 
   def seed_forums(categories) do
     IO.puts("Seeding Forums...")
+
     for category <- categories, j <- 1..3 do
       {:ok, forum} =
         PhpBB.Forums
@@ -140,6 +146,7 @@ defmodule PhpBB.Seed do
   def seed_ban_list(users) do
     IO.puts("Seeding Ban List...")
     banned_user = Enum.random(users)
+
     ban_entries = [
       %{ban_userid: banned_user.user_id, ban_ip: nil, ban_email: nil},
       %{ban_userid: 0, ban_ip: Faker.Internet.ip_v4_address(), ban_email: nil},
@@ -155,6 +162,7 @@ defmodule PhpBB.Seed do
 
   def seed_auth_access(forums, groups) do
     IO.puts("Seeding Auth Access Controls...")
+
     for forum <- forums, group <- groups do
       PhpBB.AuthAccess
       |> Ash.Changeset.for_create(:create, %{
@@ -179,6 +187,7 @@ defmodule PhpBB.Seed do
 
   def seed_words do
     IO.puts("Seeding Word Censors...")
+
     words_data = [
       {"damn", ":censored:"},
       {"hell", ":censored:"},
@@ -198,6 +207,7 @@ defmodule PhpBB.Seed do
 
   def seed_smiles do
     IO.puts("Seeding Smiles...")
+
     smiles_data = [
       {":)", "icon_smile.gif", "Smile"},
       {":-)", "icon_smile.gif", "Smile"},
@@ -227,6 +237,7 @@ defmodule PhpBB.Seed do
   def seed_faq_items do
     IO.puts("Seeding FAQ Items...")
     sections = ["General", "BBCode", "Profile", "Posting"]
+
     for {section, _s_idx} <- Enum.with_index(sections, 1) do
       for p_idx <- 1..3 do
         PhpBB.FaqItem
@@ -244,12 +255,13 @@ defmodule PhpBB.Seed do
 
   def seed_topics_and_posts(forums, users) do
     IO.puts("Seeding Topics, Posts, Content, Polls, Vote Results, and Voters...")
+
     for forum <- forums, k <- 1..4 do
       poster = Enum.random(users)
       topic_title = Faker.Lorem.sentence(3..6) |> String.trim_trailing(".")
       topic_time = System.system_time(:second) - Enum.random(1_000..500_000)
       is_sticky = if k == 1, do: 1, else: 0
-      has_vote = (k == 2)
+      has_vote = k == 2
 
       {:ok, topic} =
         PhpBB.Topics
@@ -289,6 +301,7 @@ defmodule PhpBB.Seed do
         end
 
         voter_subset = Enum.take_random(users, Enum.random(1..5))
+
         for voter <- voter_subset do
           PhpBB.VoteVoters
           |> Ash.Changeset.for_create(:create, %{
@@ -300,27 +313,25 @@ defmodule PhpBB.Seed do
         end
       end
 
+      # Initial Post (arguments passed via options keyword list)
+      # Initial Post
       {:ok, initial_post} =
         PhpBB.Posts
-        |> Ash.Changeset.for_create(:create, %{
-          topic_id: topic.topic_id,
-          forum_id: forum.forum_id,
-          poster_id: poster.user_id,
-          post_time: topic_time,
-          enable_bbcode: 1,
-          enable_smilies: 1,
-          enable_sig: 1
-        })
-        |> Ash.create(domain: PhpBB.Domain)
-
-      PhpBB.PostsText
-      |> Ash.Changeset.for_create(:create, %{
-        post_id: initial_post.post_id,
-        bbcode_uid: "abc123xyz",
-        post_subject: topic_title,
-        post_text: Faker.Lorem.paragraph(3..6)
-      })
-      |> Ash.create(domain: PhpBB.Domain)
+        |> Ash.Changeset.for_create(
+          :create,
+          %{
+            topic_id: topic.topic_id,
+            forum_id: forum.forum_id,
+            poster_id: poster.user_id,
+            post_time: topic_time,
+            enable_bbcode: 1,
+            enable_smilies: 1,
+            post_subject: topic_title,
+            post_text: Faker.Lorem.paragraph(3..6)
+          },
+          domain: PhpBB.Domain
+        )
+        |> Ash.create()
 
       topic =
         topic
@@ -335,30 +346,31 @@ defmodule PhpBB.Seed do
       |> Ash.update!(domain: PhpBB.Domain)
 
       reply_count = Enum.random(1..3)
+
       for r <- 1..reply_count do
         replier = Enum.random(users)
-        reply_time = topic_time + (r * 3600)
+        reply_time = topic_time + r * 3600
+        reply_subject = "Re: " <> topic_title
 
+        # Reply Post (arguments passed via options keyword list)
+        # Reply Post
         {:ok, reply_post} =
           PhpBB.Posts
-          |> Ash.Changeset.for_create(:create, %{
-            topic_id: topic.topic_id,
-            forum_id: forum.forum_id,
-            poster_id: replier.user_id,
-            post_time: reply_time,
-            enable_bbcode: 1,
-            enable_smilies: 1
-          })
-          |> Ash.create(domain: PhpBB.Domain)
-
-        PhpBB.PostsText
-        |> Ash.Changeset.for_create(:create, %{
-          post_id: reply_post.post_id,
-          bbcode_uid: "abc123xyz",
-          post_subject: "Re: " <> topic_title,
-          post_text: Faker.Lorem.paragraph(1..3)
-        })
-        |> Ash.create(domain: PhpBB.Domain)
+          |> Ash.Changeset.for_create(
+            :create,
+            %{
+              topic_id: topic.topic_id,
+              forum_id: forum.forum_id,
+              poster_id: replier.user_id,
+              post_time: reply_time,
+              enable_bbcode: 1,
+              enable_smilies: 1,
+              post_subject: reply_subject,
+              post_text: Faker.Lorem.paragraph(1..3)
+            },
+            domain: PhpBB.Domain
+          )
+          |> Ash.create()
 
         topic =
           topic

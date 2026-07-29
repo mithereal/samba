@@ -10,7 +10,7 @@ defmodule PhpBB.Topics do
   end
 
   actions do
-    defaults [:read,  :destroy]
+    defaults [:read, :destroy]
 
     create :create do
       primary? true
@@ -34,6 +34,7 @@ defmodule PhpBB.Topics do
 
     update :update do
       primary? true
+
       accept [
         :forum_id,
         :topic_poster,
@@ -167,12 +168,12 @@ defmodule PhpBB.Topics do
     end
   end
 
-#  identities do
-#    identity :forum_id_phpbb_topics_index, [:forum_id]
-#    identity :topic_moved_id_phpbb_topics_index, [:topic_moved_id]
-#    identity :topic_first_post_id_phpbb_topics_index, [:topic_first_post_id]
-#    identity :topic_last_post_id_phpbb_topics_index, [:topic_last_post_id]
-#    identity :topic_status_phpbb_topics_index, [:topic_status]
-#    identity :topic_type_phpbb_topics_index, [:topic_type]
-#  end
+  #  identities do
+  #    identity :forum_id_phpbb_topics_index, [:forum_id]
+  #    identity :topic_moved_id_phpbb_topics_index, [:topic_moved_id]
+  #    identity :topic_first_post_id_phpbb_topics_index, [:topic_first_post_id]
+  #    identity :topic_last_post_id_phpbb_topics_index, [:topic_last_post_id]
+  #    identity :topic_status_phpbb_topics_index, [:topic_status]
+  #    identity :topic_type_phpbb_topics_index, [:topic_type]
+  #  end
 end

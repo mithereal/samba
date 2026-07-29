@@ -23,6 +23,8 @@ defmodule Samba.Accounts do
     resource Samba.Accounts.User do
       define :get_user_by_id, action: :read, get_by: :id
     end
-    resource Samba.Accounts.Generator  # Add the resource to the Domain
+
+    # Add the resource to the Domain
+    resource Samba.Accounts.Generator
   end
 end

@@ -45,7 +45,7 @@ defmodule PhpBB.Categories do
       has_many :forums, PhpBB.Forums do
         destination_attribute :cat_id
         source_attribute :cat_id
-        default_sort [forum_order: :asc]
+        default_sort forum_order: :asc
       end
     end
   end

@@ -1,7 +1,7 @@
 defmodule PhpBB.PostsText do
   use Ash.Resource,
-      domain: Elixir.PhpBB.Domain,
-      data_layer: AshPostgres.DataLayer
+    domain: Elixir.PhpBB.Domain,
+    data_layer: AshPostgres.DataLayer
 
   postgres do
     table "phpbb_posts_text"
@@ -13,6 +13,7 @@ defmodule PhpBB.PostsText do
 
     create :create do
       primary? true
+
       accept [
         :post_id,
         :topic_id,
@@ -26,6 +27,7 @@ defmodule PhpBB.PostsText do
 
     update :update do
       primary? true
+
       accept [
         :post_subject,
         :post_text,

@@ -156,42 +156,61 @@ config :phoenix_seo, json_ld_types: :all
 config :phoenix_seo, json_ld_types: [:google, SEO.JSONLD.SearchAction]
 
 config :ckeditor5_phoenix,
-       presets: %{
-         minimal: %{
-           cloud: %{
-             version: "46.0.0",
-             premium: true,
-             translations: ["pl"],
-             ckbox: %{
-               version: "1.0.0"
-             }
-           },
-           config: %{
-             toolbar: [:bold, :italic, :link],
-             plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
-           }
-         },
-         full: %{
-           config: %{
-             toolbar: [
-               :heading, :|, :bold, :italic, :underline, :|,
-               :link, :insertImage, :insertTable, :|,
-               :bulletedList, :numberedList, :blockQuote
-             ],
-             plugins: [
-               :Heading, :Bold, :Italic, :Underline, :Link,
-               :ImageBlock, :ImageUpload, :Table, :List, :BlockQuote,
-               :Essentials, :Paragraph
-             ]
-           }
-         }
-       }
-
+  presets: %{
+    minimal: %{
+      cloud: %{
+        version: "46.0.0",
+        premium: true,
+        translations: ["pl"],
+        ckbox: %{
+          version: "1.0.0"
+        }
+      },
+      config: %{
+        toolbar: [:bold, :italic, :link],
+        plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+      }
+    },
+    full: %{
+      config: %{
+        toolbar: [
+          :heading,
+          :|,
+          :bold,
+          :italic,
+          :underline,
+          :|,
+          :link,
+          :insertImage,
+          :insertTable,
+          :|,
+          :bulletedList,
+          :numberedList,
+          :blockQuote
+        ],
+        plugins: [
+          :Heading,
+          :Bold,
+          :Italic,
+          :Underline,
+          :Link,
+          :ImageBlock,
+          :ImageUpload,
+          :Table,
+          :List,
+          :BlockQuote,
+          :Essentials,
+          :Paragraph
+        ]
+      }
+    }
+  }
 
 config :ckeditor5_phoenix, :uploads,
-       folder: "priv/static/uploads",
-       api_url: "/api/ckeditor5/uploads",
-       url: "/uploads" # Base URL for serving files
+  folder: "priv/static/uploads",
+  api_url: "/api/ckeditor5/uploads",
+  # Base URL for serving files
+  url: "/uploads"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
