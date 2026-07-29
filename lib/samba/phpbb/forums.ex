@@ -10,7 +10,7 @@ defmodule PhpBB.Forums do
   end
 
   actions do
-    defaults [:read, :update, :destroy]
+    defaults [:read, :destroy]
 
     create :create do
       primary? true
@@ -36,6 +36,17 @@ defmodule PhpBB.Forums do
         :auth_pollcreate,
         :auth_vote,
         :auth_attachments
+      ]
+    end
+
+    update :update do
+      primary? true
+      accept [
+        :forum_name,
+        :forum_desc,
+        :forum_status,
+        :forum_last_post_id,
+        :cat_id
       ]
     end
   end
@@ -71,12 +82,12 @@ defmodule PhpBB.Forums do
         attribute_type :integer
       end
 
-      has_many :posts, PhpBB.Posts do
+      has_many :forum_posts, PhpBB.Posts do
         destination_attribute :post_id
         source_attribute :forum_id
       end
 
-      has_many :topics, PhpBB.Topics do
+      has_many :forum_topics, PhpBB.Topics do
         destination_attribute :topic_id
         source_attribute :forum_id
       end

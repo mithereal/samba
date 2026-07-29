@@ -271,7 +271,7 @@ defmodule PhpBB.Seed do
           PhpBB.VoteDesc
           |> Ash.Changeset.for_create(:create, %{
             topic_id: topic.topic_id,
-            vote_text: Faker.Lorem.question(),
+            vote_text: Faker.Lorem.paragraph(),
             vote_start: topic_time,
             vote_length: 86400 * 7
           })

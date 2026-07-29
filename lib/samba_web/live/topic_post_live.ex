@@ -8,7 +8,13 @@ defmodule SambaWeb.TopicPostLive do
 
   def mount(%{"id" => id}, _session, socket) do
     topic_id = String.to_integer(id)
-    forum_id = String.to_integer(id)
+
+    # Fetch the topic to get its associated forum_id
+    topic = Ash.get!(PhpBB.Topics, topic_id)
+
+    # Set up static/system defaults in mount
+    poster_id = 1
+    post_time = System.os_time(:second)
 
     preset = Preset.Parser.parse!(%{
       config: %{
@@ -22,22 +28,28 @@ defmodule SambaWeb.TopicPostLive do
       PhpBB.Posts
       |> AshPhoenix.Form.for_create(:create, as: "form",
            params: %{
+             "poster_id" => poster_id,
              "topic_id" => topic_id,
-             "forum_id" => forum_id,
-             "post_username" => "test",
-             "poster_id" => forum_id,
-             "poster_ip" => forum_id,
-             "post_time" => System.os_time(:second)
+             "forum_id" => topic.forum_id,
+             "post_time" => post_time,
+             "enable_bbcode" => 1,
+             "enable_smilies" => 1,
+             "enable_sig" => 1,
+             "enable_html" => 0,
+             "post_edit_count" => 0
            }
          )
       |> to_form()
 
     socket =
       socket
+      |> assign(:poster_id, poster_id)
+      |> assign(:topic_id, topic_id)
+      |> assign(:forum_id, topic.forum_id)
       |> assign(:page_title, "Forums")
       |> assign(:preset, preset)
       |> assign(:form, form)
-IO.inspect form, label: "form"
+
     {:ok, socket}
   end
 
@@ -46,6 +58,11 @@ IO.inspect form, label: "form"
     <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
       <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
         <.form for={@form} phx-submit="save" phx-change="validate">
+          <%!-- Hidden inputs for backend state that shouldn't be controlled by visible form inputs --%>
+          <input type="hidden" name="form[topic_id]" value={@topic_id} />
+          <input type="hidden" name="form[forum_id]" value={@forum_id} />
+          <input type="hidden" name="form[poster_id]" value={@poster_id} />
+
           <.text_field
             id="post_subject"
             field={@form[:post_subject]}
@@ -75,13 +92,26 @@ IO.inspect form, label: "form"
   end
 
   def handle_event("validate", %{"form" => params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.form, params)
+    # Ensure system assigns aren't wiped out if missing from live validation payload
+    merged_params =
+      params
+      |> Map.put("topic_id", socket.assigns.topic_id)
+      |> Map.put("forum_id", socket.assigns.forum_id)
+      |> Map.put("poster_id", socket.assigns.poster_id)
+
+    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
     {:noreply, assign(socket, form: to_form(form))}
   end
 
   def handle_event("save", %{"form" => params}, socket) do
+    submission_params =
+      params
+      |> Map.put("topic_id", socket.assigns.topic_id)
+      |> Map.put("forum_id", socket.assigns.forum_id)
+      |> Map.put("poster_id", socket.assigns.poster_id)
+      |> Map.put("post_time", System.os_time(:second))
 
-    case AshPhoenix.Form.submit(socket.assigns.form, params: params) do
+    case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
       {:ok, post} ->
         {:noreply,
           socket

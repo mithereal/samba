@@ -1,23 +1,38 @@
 defmodule SambaWeb.ForumIndexLive do
   use SambaWeb, :live_view
 
-  def mount(_params, _session, socket) do
-    categories =
-      PhpBB.Categories
-      |> Ash.Query.sort(cat_order: :asc)
-      |> Ash.Query.load([
-        forums: [
-          :topics,
-          :posts,
-          last_post: [poster: []]
-        ]
-      ])
-      |> Ash.read!(domain: PhpBB.Domain)
+  def mount(%{"id" => id}, _session, socket) do
+    topic_id = String.to_integer(id)
+
+    # Fetch the topic to get its associated forum_id if needed
+    topic = Ash.get!(PhpBB.Topics, topic_id)
+
+    preset = Preset.Parser.parse!(%{
+      config: %{
+        licenseKey: "GPL",
+        toolbar: [:bold, :italic, :link],
+        plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+      }
+    })
+
+    form =
+      PhpBB.Posts
+      |> AshPhoenix.Form.for_create(:create, as: "form",
+           params: %{
+             "topic_id" => topic_id,
+             "forum_id" => topic.forum_id,
+             "post_time" => System.os_time(:second)
+           }
+         )
+      |> to_form()
 
     socket =
       socket
+      |> assign(:topic_id, topic_id)
+      |> assign(:forum_id, topic.forum_id)
       |> assign(:page_title, "Forums")
-      |> assign(:categories, categories)
+      |> assign(:preset, preset)
+      |> assign(:form, form)
 
     {:ok, socket}
   end
@@ -76,13 +91,13 @@ defmodule SambaWeb.ForumIndexLive do
                 <!-- Topics Count -->
                 <div class="col-span-2 text-left md:text-center text-sm text-gray-600 dark:text-gray-300 flex md:block justify-between">
                   <span class="md:hidden font-medium text-gray-500 dark:text-gray-400">Topics:</span>
-                  <span><%= length(forum.topics || []) %></span>
+                  <span><%= forum.forum_topics || 0 %></span>
                 </div>
 
                 <!-- Posts Count -->
                 <div class="col-span-2 text-left md:text-center text-sm text-gray-600 dark:text-gray-300 flex md:block justify-between">
                   <span class="md:hidden font-medium text-gray-500 dark:text-gray-400">Posts:</span>
-                  <span><%= length(forum.posts || []) %></span>
+                  <span><%= forum.forum_posts || 0 %></span>
                 </div>
 
                 <!-- Last Post Info -->
@@ -90,11 +105,15 @@ defmodule SambaWeb.ForumIndexLive do
                   <%= if forum.last_post do %>
                     <div class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-[200px] md:max-w-none">
                       <.link navigate={~p"/topic/post/#{forum.last_post.post_id}"} class="hover:underline">
-                        <%= Map.get(forum.last_post, :subject, "View Post") %>
+                        <%= get_in(forum.last_post, [:post_text, :post_subject]) || "View Post" %>
                       </.link>
                     </div>
                     <div class="text-gray-500 dark:text-gray-400 mt-0.5">
-                      by <.link navigate={"/profile/#{forum.last_post.poster.user_id}"} class="hover:underline"><span class="text-gray-700 dark:text-gray-300 font-medium"><%= forum.last_post.poster.username %></span></.link>
+                      <%= if forum.last_post.poster do %>
+                        by <.link navigate={"/profile/#{forum.last_post.poster.user_id}"} class="hover:underline"><span class="text-gray-700 dark:text-gray-300 font-medium"><%= forum.last_post.poster.username %></span></.link>
+                      <% else %>
+                        by Guest
+                      <% end %>
                       <span class="mx-1 text-gray-400 dark:text-gray-600">&raquo;</span>
                       <span><%= format_timestamp(forum.last_post.post_time) %></span>
                     </div>
@@ -107,7 +126,9 @@ defmodule SambaWeb.ForumIndexLive do
             <% end %>
           <% end %>
         </div>
-    <.whos_online />
+
+        <.whos_online />
+
         <!-- Centered Legend Footer -->
         <div class="bg-gray-100 dark:bg-gray-800/80 px-6 py-4 border-t border-gray-300 dark:border-gray-700 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-700 dark:text-gray-300">
           <div class="flex items-center space-x-2">

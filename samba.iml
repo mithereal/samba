@@ -125,6 +125,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/rustler_precompiled" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/faker" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/floki" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ash_ops" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ckeditor5_phoenix" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/memoize" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/norm" />
@@ -435,5 +436,7 @@
     <orderEntry type="library" name="norm" level="project" />
     <orderEntry type="library" name="memoize" level="project" />
     <orderEntry type="library" name="dotenv" level="project" />
+    <orderEntry type="library" name="ash_ops" level="project" />
+    <orderEntry type="library" name="neotoma_compiler" level="project" />
   </component>
 </module>
