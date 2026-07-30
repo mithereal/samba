@@ -208,6 +208,7 @@ defmodule SambaWeb do
       import SambaWeb.Components.SearchField
       import SambaWeb.Components.Stat
       import SambaWeb.Components.TextField
+      import SambaWeb.Components.TextareaField
       import SambaWeb.Components.Timeline
       import SambaWeb.Components.Headless.Avatar
       import SambaWeb.Components.Headless.Checkbox

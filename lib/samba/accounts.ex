@@ -22,6 +22,7 @@ defmodule Samba.Accounts do
 
     resource Samba.Accounts.User do
       define :get_user_by_id, action: :read, get_by: :id
+      define :get_user_by_username, action: :get_by_username, args: [:username]
     end
 
     # Add the resource to the Domain

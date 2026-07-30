@@ -1,1 +1,25 @@
 
+alias Ash.Generator
+alias Samba.Accounts.UserGenerator
+
+# priv/repo/seeds.exs
+# Pull the site name from configuration
+super_user = Application.get_env(:samba, :super_users) || "Samba"
+
+IO.puts("Seeding admin user for #{site_name}...")
+
+# Generate and insert an admin user using the UserGenerator
+admin_user =
+  Samba.Accounts.UserGenerator.user(
+    username: "admin",
+    email: super_user,
+    password: "AdminPassword123!",
+    password_confirmation: "AdminPassword123!"
+  )
+  |> Ash.Generator.generate()
+
+IO.puts("Successfully created admin user: #{admin_user.username} (#{admin_user.email})")
+
+
+users = Generator.generate_many(UserGenerator.user(), 3)
+

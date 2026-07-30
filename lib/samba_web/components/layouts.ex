@@ -98,7 +98,7 @@ defmodule SambaWeb.Layouts do
               {@current_user.email |> to_string() |> Phoenix.Naming.humanize()}
             </span>
           </div>
-          <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+          <ul tabindex="0" class="dark:text-white dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
             <li>
               <a
                 :if={SambaWeb.Helpers.impersonated?(@current_user)}
@@ -108,7 +108,7 @@ defmodule SambaWeb.Layouts do
                 <.icon name="hero-arrow-uturn-left-solid" />{gettext("Back to My Account")}
               </a>
             </li>
-            <li><a><.icon name="hero-user-circle-solid" />{gettext("Profile")}</a></li>
+            <li><a href={"/profile/#{@current_user.phpbb_user_id || @current_user.id}"}><.icon name="hero-user-circle-solid" />{gettext("Profile")}</a></li>
             <li>
               <a><.icon name="hero-cog-6-tooth-solid" />{gettext("Settings")}</a>
             </li>

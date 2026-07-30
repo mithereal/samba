@@ -72,6 +72,7 @@ config :samba, SambaWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :samba,
   dev_routes: true,
+  super_users: ["demo@example.com"],
   token_signing_secret: "7B/BPzeIzWI2IoXk/u0Fp8o5Sv3jF9vi",
   site_title_prefix: "",
   google_site_verification: "",

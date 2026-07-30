@@ -123,11 +123,16 @@ defmodule SambaWeb.Menu do
       %{
         title: gettext("Settings"),
         links: [
-          # %{
-          #   href: ~p"/settings",
-          #   icon: "hero-cog-6-tooth",
-          #   text: gettext("General")
-          # },
+          %{
+            href: ~p"/settings/categories",
+            icon: "hero-cog-6-tooth",
+            text: gettext("Categories")
+          },
+          %{
+            href: ~p"/settings/forums",
+            icon: "hero-cog-6-tooth",
+            text: gettext("Forums")
+          },
           %{
             href: "/accounts/teams",
             icon: "hero-building-library",

@@ -254,6 +254,12 @@ defmodule Samba.Accounts.User.Actions do
 
       run Samba.Accounts.User.Actions.ForceSignIn
     end
+
+    read :get_by_username do
+      argument :username, :string, allow_nil?: false
+      get? true
+      filter expr(username == ^arg(:username))
+    end
   end
 
   code_interface do

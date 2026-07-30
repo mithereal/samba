@@ -1,4 +1,4 @@
-defmodule SambaWeb.TopicPostsLive do
+defmodule SambaWeb.PostsLive do
   use SambaWeb, :live_view
 
   require Ash.Query
@@ -136,7 +136,7 @@ defmodule SambaWeb.TopicPostsLive do
       <div class="mb-6">
         <h1 class="text-2xl font-bold tracking-tight text-black">{@topic && @topic.topic_title}</h1>
         <.breadcrumb>
-          <:item icon="hero-folder" link="/">Forum Index</:item>
+          <:item icon="hero-folder" link="/form">Forum Index</:item>
           <:item
             icon="hero-folder-open"
             link={(@topic && @topic.forum_id && ~p"/forum/#{@topic.forum_id}") || "/"}
@@ -195,40 +195,6 @@ defmodule SambaWeb.TopicPostsLive do
         </form>
       </div>
 
-      <!-- Quick Reply Form -->
-      <div class="bg-gray-900/90 border border-gray-700 rounded-lg p-6 shadow-xl">
-        <h3 class="text-lg font-bold mb-4 text-indigo-300">Post a Reply</h3>
-        <.form for={@form} phx-submit="save-reply" as={:reply} class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Subject</label>
-            <input
-              type="text"
-              name="reply[subject]"
-              value={@form[:subject].value || "Re: #{@topic && @topic.topic_title}"}
-              class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-indigo-500"
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-semibold text-gray-400 uppercase mb-1">Message</label>
-            <textarea
-              name="reply[message]"
-              rows="5"
-              required
-              class="w-full bg-gray-800 border border-gray-700 rounded px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-indigo-500"
-            ><%= @form[:message].value %></textarea>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded text-sm transition-colors shadow"
-            >
-              Submit Reply
-            </button>
-          </div>
-        </.form>
-      </div>
     </div>
     """
   end
@@ -269,7 +235,7 @@ defmodule SambaWeb.TopicPostsLive do
           </div>
 
           <div class="text-gray-100 text-sm whitespace-pre-wrap leading-relaxed">
-            {(@post.post_text && @post.post_text.post_text) || "[No content]"}
+            {(@post.post_text && raw(@post.post_text.post_text)) || "[No content]"}
           </div>
         </div>
       </div>

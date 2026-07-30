@@ -1,4 +1,4 @@
-defmodule SambaWeb.TopicPostLive do
+defmodule SambaWeb.NewPostLive do
   use SambaWeb, :live_view
   use CKEditor5
 

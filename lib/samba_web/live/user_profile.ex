@@ -313,7 +313,7 @@ defmodule SambaWeb.UserProfileLive do
                   Private Message:
                 </div>
                 <div class="sm:col-span-2">
-                  <.link navigate={~p"/forum/message/#{@user.username}/post"} class="inline-block">
+                  <.link navigate={~p"/forum/message/#{@user.username}/new"} class="inline-block">
                     <div class="bg-zinc-200 dark:bg-zinc-800 px-3 py-1 rounded text-xs font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors inline-flex items-center space-x-1">
                       <span>Send private message</span>
                     </div>

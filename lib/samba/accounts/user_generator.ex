@@ -1,18 +1,19 @@
 defmodule Samba.Accounts.UserGenerator do
-  alias Ash.Generator
+  use Ash.Generator
   alias Samba.Accounts.User
 
   def user(opts \\ []) do
-    Generator.changeset_generator(
+    changeset_generator(
       User,
       :register_with_password,
       defaults: [
-        username: StreamData.repeatedly(fn -> Faker.Internet.user_name() end),
-        email: StreamData.repeatedly(fn -> Faker.Internet.email() end),
-        password: "Passw0rd",
-        password_confirmation: "Passw0rd"
+        username: sequence(:username, &"user_#{&1}"),
+        email: sequence(:email, &"user_#{&1}@example.com"),
+        password: "Passw0rd123!",
+        password_confirmation: "Passw0rd123!"
       ],
-      overrides: opts
+      overrides: opts,
+      authorize?: false
     )
   end
 end

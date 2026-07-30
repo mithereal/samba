@@ -15,6 +15,16 @@ defmodule SambaWeb.Router do
     plug :load_from_session
   end
 
+  pipeline :admin_browser do
+    plug :accepts, ["html", "md"]
+    plug :fetch_session
+    plug :fetch_live_flash
+    plug :put_root_layout, html: {SambaWeb.Layouts, :admin}
+    plug :protect_from_forgery
+    plug :put_secure_browser_headers
+    plug :load_from_session
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
     plug :load_from_bearer
@@ -32,7 +42,7 @@ defmodule SambaWeb.Router do
   end
 
   scope "/", SambaWeb do
-    pipe_through :browser
+    pipe_through :admin_browser
 
     ash_authentication_live_session :authenticated_routes do
       # in each liveview, add one of the following at the top of the module:
@@ -74,6 +84,17 @@ defmodule SambaWeb.Router do
       live "/ledger/chart-of-accounts/new", Ledger.CreateNewAccountLive
 
       live "/ussd", Ussd.UssdsLive
+
+      live "/forum/:id", ForumTopicsLive, :index
+      live "/forum/new", NewForumLive, :index
+      live "/forum", ForumIndexLive, :index
+      live "/topic/:id", PostsLive, :index
+      live "/forum/:id/topic/new", NewTopicLive, :index
+      live "/memberlist", MemberListLive, :index
+      live "/settings/categories", CategoryListLive, :index
+      live "/settings/categories/:id", CategoryListLive, :index
+      live "/settings/category/new", NewCategoryLive, :index
+      live "/settings/forums", CategoryListLive, :index
     end
   end
 
@@ -107,12 +128,12 @@ defmodule SambaWeb.Router do
     pipe_through :browser
 
     live "/forum", ForumIndexLive, :index
-    live "/forum/memberlist", MemberListLive, :index
+    live "/memberlist", MemberListLive, :index
     live "/forum/faq", MemberListLive, :index
     live "/forum/rss_feeds", RSSIndexLive, :index
     live "/forum/:id", ForumTopicsLive, :index
-    live "/forum/:id/new", TopicPostLive, :index
-    live "/topic/:id", TopicPostsLive, :index
+    live "/forum/new", NewForumLive, :index
+    live "/topic/:id", PostsLive, :index
     live "/topic/:id/reply", PostLive, :index
     live "/topic/post/:id", TopicPostsLive, :index
     live "/viewonline", OnlineUsersLive, :index
