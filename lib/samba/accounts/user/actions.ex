@@ -113,6 +113,16 @@ defmodule Samba.Accounts.User.Actions do
       # Sets the email from the argument
       change set_attribute(:email, arg(:email))
 
+      change fn changeset, _context ->
+        case Ash.Changeset.get_argument(changeset, :email) do
+          email when is_binary(email) or not is_nil(email) ->
+            [username | _] = String.split(to_string(email), "@")
+            Ash.Changeset.force_change_attribute(changeset, :username, username)
+          _ ->
+            changeset
+        end
+      end
+
       # Hashes the provided password
       change AshAuthentication.Strategy.Password.HashPasswordChange
 

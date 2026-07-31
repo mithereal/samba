@@ -22,6 +22,14 @@ defmodule PhpBB.Categories do
     end
   end
 
+  relationships do
+    has_many :forums, PhpBB.Forums do
+      destination_attribute :cat_id
+      source_attribute :cat_id
+      default_sort forum_order: :asc
+    end
+  end
+
   attributes do
     integer_primary_key :cat_id, source: :cat_id
     attribute :cat_title, :string, allow_nil?: false

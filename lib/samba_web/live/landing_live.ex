@@ -7,6 +7,15 @@ defmodule SambaWeb.LandingLive do
         whats_new: %{date: Calendar.strftime(DateTime.utc_now(), "%b. %d, %Y"), data: []}
       )
 
+    login_form =
+      Samba.Accounts.LoginForm
+      |> to_form()
+
+    socket = socket
+             |> assign(:login_form, login_form)
+
+
+
     {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end
 
@@ -81,7 +90,7 @@ defmodule SambaWeb.LandingLive do
                 >Register</.link></span>
               </div>
 
-              <.form_wrapper for={assigns[:login_form]}>
+              <.form_wrapper for={@login_form}>
                 <.email_field
                   name="email"
                   value=""

@@ -1,6 +1,46 @@
 defmodule SambaWeb.DashboardLive do
   use SambaWeb, :live_view
+
   on_mount {SambaWeb.LiveUserAuth, :live_user_required}
+
+  alias SambaWeb.Presence
+
+  @presence_topic "users:online"
+
+  def mount(_params, _session, socket) do
+    total_users = Ash.count!(Samba.Accounts.User, authorize?: false)
+
+    socket =
+      socket
+      |> assign(:total_users, total_users)
+
+    current_user = socket.assigns[:current_user]
+
+    if connected?(socket) and current_user do
+      # Subscribe to presence changes to receive updates
+      Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
+
+      # Track the current user's LiveView process
+      {:ok, _ref} = Presence.track(
+        self(),
+        @presence_topic,
+        to_string(current_user.id),
+        %{
+          username: current_user.username,
+          email: to_string(current_user.email),
+          online_at: System.system_time(:second)
+        }
+      )
+    end
+
+    # Fetch initial presence list and push to socket assigns
+   # socket = assign(socket, :online_users, list_online_users())
+    socket = assign(socket, :active_users, Enum.count(list_online_users()))
+
+    {:ok, socket}
+  end
+
+
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -20,8 +60,9 @@ defmodule SambaWeb.DashboardLive do
         <div class="bg-base-100 border border-lg border-primary rounded-box p-6">
           <div class="stat-figure"></div>
           <div class="stat-title text-lg">Total Users</div>
-          <div class="stat-value">200</div>
+          <div class="stat-value">{@total_users}</div>
           <div class="stat-desc">Active Users</div>
+          <div class="text-size-xs">{@active_users}</div>
         </div>
 
         <div class=" bg-base-100 bg-primary text-primary-content rounded-box p-6">
@@ -106,5 +147,16 @@ defmodule SambaWeb.DashboardLive do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}></Layouts.app>
     """
+  end
+
+  defp list_online_users() do
+  Presence.list(@presence_topic)
+|> Enum.map(fn {user_id, %{metas: [meta | _]}} -> {user_id, meta} end)
+ end
+
+  @impl true
+  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
+    socket = assign(socket, :online_users, list_online_users())
+    {:noreply, socket}
   end
 end
