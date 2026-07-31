@@ -1,10 +1,12 @@
 defmodule PhpBB.Categories do
   use Ash.Resource,
-      data_layer: AshPostgres.DataLayer
+      domain: Elixir.PhpBB.Domain,
+      data_layer: AshPostgres.DataLayer,
+      notifiers: Ash.Notifier.PubSub
 
   postgres do
     table "phpbb_categories"
-    repo PhpBB.Repo
+    repo Samba.Repo
   end
 
   actions do
