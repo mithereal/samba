@@ -4,7 +4,7 @@ alias Samba.Accounts.UserGenerator
 
 # priv/repo/seeds.exs
 # Pull the site name from configuration
-super_user = Application.get_env(:samba, :super_users) || "admin@example.com"
+super_user = List.first(Application.get_env(:samba, :super_users)) || "admin@example.com"
 
 IO.puts("Seeding admin user #{super_user}...")
 
