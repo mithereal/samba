@@ -4,6 +4,7 @@ defmodule SambaWeb.OnlineUsersLive do
 
   @impl true
   def mount(_params, _session, socket) do
+
     online_users = list_forum_online_users()
     {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
 
@@ -84,8 +85,12 @@ defmodule SambaWeb.OnlineUsersLive do
                   <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
                 <% end %>
               </div>
-              <div class="w-1/3 text-zinc-500 dark:text-zinc-400"></div>
-              <div class="w-1/3"></div>
+              <div class="w-1/3 text-zinc-500 dark:text-zinc-400">
+
+              </div>
+              <div class="w-1/3">
+
+              </div>
             </div>
           <% end %>
         <% end %>
@@ -93,7 +98,6 @@ defmodule SambaWeb.OnlineUsersLive do
     </div>
     """
   end
-
   import Ash.Query
 
   def get_phpbb_users_by_account_ids(account_user_ids) do
