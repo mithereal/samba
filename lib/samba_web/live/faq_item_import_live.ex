@@ -35,6 +35,7 @@ defmodule SambaWeb.FaqImportLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="max-w-3xl mx-auto px-4 py-12">
       <div class="bg-white shadow-sm ring-1 ring-zinc-900/5 rounded-xl p-6 sm:p-8">
         <h1 class="text-2xl font-bold tracking-tight text-zinc-900 mb-2">

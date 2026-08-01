@@ -31,6 +31,7 @@ defmodule SambaWeb.Router do
     plug :set_actor, :user
   end
 
+
   scope "/api/json" do
     pipe_through [:api]
 
@@ -42,19 +43,9 @@ defmodule SambaWeb.Router do
   end
 
   scope "/", SambaWeb do
-    pipe_through :admin_browser
+    pipe_through :browser
 
     ash_authentication_live_session :authenticated_routes do
-      # in each liveview, add one of the following at the top of the module:
-      #
-      # If an authenticated user must be present:
-      # on_mount {SambaWeb.LiveUserAuth, :live_user_required}
-      #
-      # If an authenticated user *may* be present:
-      # on_mount {SambaWeb.LiveUserAuth, :live_user_optional}
-      #
-      # If an authenticated user must *not* be present:
-      # on_mount {SambaWeb.LiveUserAuth, :live_no_user}
 
       live "/dashboard", DashboardLive
       live "/faq-import", FaqImportLive
@@ -86,15 +77,17 @@ defmodule SambaWeb.Router do
       live "/ussd", Ussd.UssdsLive
 
       live "/forum/:id", ForumTopicsLive, :index
-      live "/forum/new", NewForumLive, :index
       live "/forum", ForumIndexLive, :index
       live "/topic/:id", PostsLive, :index
       live "/forum/:id/topic/new", NewTopicLive, :index
       live "/memberlist", MemberListLive, :index
       live "/settings/categories", CategoryListLive, :index
-      live "/settings/categories/:id", CategoryListLive, :index
-      live "/settings/category/new", NewCategoryLive, :index
-      live "/settings/forums", CategoryListLive, :index
+      live "/settings/categories/new", CategoryLive.New, :index
+      live "/settings/categories/:id/edit", CategoryLive.Edit, :index
+      live "/settings/forums", AdminForumsListLive, :index
+      live "/settings/forums/new", NewForumLive, :index
+      live "/viewonline", OnlineUsersLive, :index
+      live "/profile/:id", UserProfileLive, :index
     end
   end
 

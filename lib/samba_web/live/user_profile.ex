@@ -83,6 +83,7 @@ defmodule SambaWeb.UserProfileLive do
   @impl true
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="mt-4 max-w-8xl mx-auto px-2 py-4 text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-950 transition-colors">
       <!-- Breadcrumb / Navigation Index -->
       <div class="mb-4">

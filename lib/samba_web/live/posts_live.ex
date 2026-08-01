@@ -131,6 +131,7 @@ defmodule SambaWeb.PostsLive do
 
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
       <!-- Breadcrumb & Header -->
       <div class="mb-6">

@@ -22,8 +22,8 @@ defmodule SambaWeb.LandingLive do
   @impl Phoenix.LiveView
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <Layouts.flash_group flash={@flash} />
-
     <!-- Main Content Grid -->
     <main class="flex pt-4 gap-4">
       <!-- Sidebar Left -->

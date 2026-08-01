@@ -73,6 +73,7 @@ defmodule SambaWeb.OnlineUsersLive do
   @impl true
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="mt-4 max-w-8xl mx-auto p-4 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 shadow-md rounded-lg border border-zinc-200 dark:border-zinc-800 transition-colors">
       <h2 class="text-xl font-bold mb-4">Who's Online</h2>
 

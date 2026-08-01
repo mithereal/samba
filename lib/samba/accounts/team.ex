@@ -59,6 +59,13 @@ defmodule Samba.Accounts.Team do
       description "Team or organisation name"
     end
 
+    attribute :active, :boolean do
+      allow_nil? false
+      default true
+      public? true
+      description "Team Active"
+    end
+
     attribute :domain, :string do
       allow_nil? false
       public? true

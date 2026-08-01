@@ -1,6 +1,8 @@
 defmodule SambaWeb.DashboardLive do
   use SambaWeb, :live_view
 
+  require Ash.Query
+
   on_mount {SambaWeb.LiveUserAuth, :live_user_required}
 
   alias SambaWeb.Presence
@@ -9,10 +11,17 @@ defmodule SambaWeb.DashboardLive do
 
   def mount(_params, _session, socket) do
     total_users = Ash.count!(Samba.Accounts.User, authorize?: false)
+    total_teams = Ash.count!(Samba.Accounts.Team, authorize?: false)
+    active_teams =
+      Samba.Accounts.Team
+      |> Ash.Query.filter(active == true)
+      |> Ash.count!(authorize?: false)
 
     socket =
       socket
       |> assign(:total_users, total_users)
+      |> assign(:total_teams, total_teams)
+      |> assign(:active_teams, active_teams)
 
     current_user = socket.assigns[:current_user]
 
@@ -68,8 +77,9 @@ defmodule SambaWeb.DashboardLive do
         <div class=" bg-base-100 bg-primary text-primary-content rounded-box p-6">
           <div class="stat-figure"></div>
           <div class="stat-title text-lg text-base-200">Total Teams</div>
-          <div class="stat-value">32</div>
-          <div class="stat-desc text-base-100">Total Tenants</div>
+          <div class="stat-value">{@total_teams}</div>
+          <div class="stat-desc text-base-100">Active Tenants</div>
+          <div class="text-size-xs">{@active_teams}</div>
         </div>
 
         <div class=" bg-base-100 bg-primary-content text-primary border border-primary rounded-box p-6">

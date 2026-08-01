@@ -16,6 +16,7 @@ defmodule SambaWeb.MemberListLive do
 
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-4 py-8 text-gray-900 dark:text-gray-100">
       <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900/80 backdrop-blur-md">
       </div>

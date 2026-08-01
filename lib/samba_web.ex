@@ -27,6 +27,17 @@ defmodule SambaWeb do
       import Plug.Conn
       import Phoenix.Controller
       import Phoenix.LiveView.Router
+
+      defp ensure_authenticated(conn, _opts) do
+        if conn.assigns[:current_user] do
+          conn
+        else
+          conn
+          |> Phoenix.Controller.put_flash(:error, "You must sign in to access this page.")
+          |> Phoenix.Controller.redirect(to: "/sign-in")
+          |> Plug.Conn.halt()
+        end
+      end
     end
   end
 

@@ -18,6 +18,7 @@ defmodule SambaWeb.FaqLive do
 
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="max-w-7xl mx-auto px-4 py-12">
       <h1 class="text-3xl font-bold tracking-tight text-zinc-900 mb-8">Documentation & FAQs</h1>
 

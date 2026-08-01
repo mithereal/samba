@@ -100,26 +100,26 @@ defmodule PhpBB.Forums do
     end
 
     attribute :forum_desc, :string do
-      allow_nil? true
+      allow_nil? false
       public? true
     end
 
     attribute :forum_status, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :forum_order, :integer do
-      allow_nil? false
+
       public? true
       default 1
     end
 
     attribute :prune_enable, :integer do
       public? true
-      allow_nil? false
+
       constraints min: -32768, max: 32767
       default 0
     end
@@ -130,77 +130,77 @@ defmodule PhpBB.Forums do
     end
 
     attribute :auth_view, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_read, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_post, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_reply, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_edit, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_delete, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_announce, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_sticky, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_pollcreate, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_vote, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_attachments, :integer do
-      allow_nil? false
+
       public? true
       constraints min: -32768, max: 32767
       default 0

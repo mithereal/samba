@@ -8,6 +8,13 @@ defmodule SambaWeb.NewForumLive do
 
   def mount(_, _session, socket) do
 
+    next_order = get_next_order()
+
+    categories =
+      PhpBB.Categories
+      |> Ash.Query.sort(cat_order: :asc)
+      |> Ash.read!(domain: PhpBB.Domain)
+
     preset =
       Preset.Parser.parse!(%{
         config: %{
@@ -33,12 +40,15 @@ defmodule SambaWeb.NewForumLive do
       |> assign(:page_title, "Forums")
       |> assign(:preset, preset)
       |> assign(:form, form)
+      |> assign(:categories, categories)
+      |> assign(:forum_order, next_order)
 
     {:ok, socket}
   end
 
   def render(assigns) do
     ~H"""
+    <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
     <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
       <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
         <.form for={@form} phx-submit="save" phx-change="validate">
@@ -64,12 +74,16 @@ defmodule SambaWeb.NewForumLive do
             color="white"
           />
 
+        <.input field={@form[:forum_order]} value={@forum_order} type="text" hidden required />
+
+
           <div class="flex flex-row justify-end space-x-2 mt-4">
             <.button type="submit">Submit</.button>
           </div>
         </.form>
       </div>
     </div>
+    </Layouts.app>
     """
   end
 
@@ -100,5 +114,21 @@ defmodule SambaWeb.NewForumLive do
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}
     end
+  end
+
+  defp get_next_order do
+    max_order =
+      PhpBB.Forums
+      |> Ash.Query.for_read(:read)
+      |> Ash.Query.sort(forum_order: :desc)
+      |> Ash.Query.limit(1)
+      |> Ash.read!(domain: Domain)
+      |> List.first()
+      |> case do
+           nil -> 0
+           cat -> cat.forum_order || 0
+         end
+
+    max_order + 1
   end
 end

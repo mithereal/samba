@@ -1,6 +1,9 @@
 
 alias Ash.Generator
 alias Samba.Accounts.UserGenerator
+## Seed default ranks
+
+PhpBB.Ranks.seed_default_ranks()
 
 # priv/repo/seeds.exs
 # Pull the site name from configuration

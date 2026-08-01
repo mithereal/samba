@@ -129,8 +129,12 @@ defmodule Samba.Accounts.User.Actions do
       # Generates an authentication token for the user
       change AshAuthentication.GenerateTokenChange
 
+      # Creates phpbb user
+      change Samba.Accounts.User.Changes.CreatePhpbbUser
+
       # validates that the password matches the confirmation
       validate AshAuthentication.Strategy.Password.PasswordConfirmationValidation
+
 
       metadata :token, :string do
         description "A JWT that can be used to authenticate the user."
@@ -229,6 +233,17 @@ defmodule Samba.Accounts.User.Actions do
       end
 
       change set_attribute(:current_team, arg(:team))
+    end
+
+    update :update_phpbb_user_id do
+      description "Set phpbbid"
+      accept []
+      argument :phpbb_user_id, :integer do
+        allow_nil? false
+        sensitive? false
+      end
+
+      change set_attribute(:phpbb_user_id, arg(:phpbb_user_id))
     end
 
     update :switch_team_to do
