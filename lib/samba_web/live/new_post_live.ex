@@ -119,7 +119,7 @@ defmodule SambaWeb.NewPostLive do
         {:noreply,
          socket
          |> put_flash(:info, "Post created successfully!")
-         |> push_navigate(to: ~p"/forums/topics/#{post.topic_id}")}
+         |> push_navigate(to: ~p"/topics/#{post.topic_id}")}
 
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}

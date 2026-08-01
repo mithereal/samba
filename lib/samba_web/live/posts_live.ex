@@ -140,7 +140,7 @@ defmodule SambaWeb.PostsLive do
           <:item icon="hero-folder" link="/form">Forum Index</:item>
           <:item
             icon="hero-folder-open"
-            link={(@topic && @topic.forum_id && ~p"/forum/#{@topic.forum_id}") || "/"}
+            link={(@topic && @topic.forum_id && ~p"/forums/#{@topic.forum_id}") || "/"}
           >
             {(@topic && @topic.forum && @topic.forum.forum_name) || "Forum"}
           </:item>

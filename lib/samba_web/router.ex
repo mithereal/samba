@@ -74,8 +74,8 @@ defmodule SambaWeb.Router do
 
       live "/ussd", Ussd.UssdsLive
 
-      live "/forum/:id", ForumTopicsLive, :index
-      live "/forum", ForumIndexLive, :index
+      live "/forums/:id", ForumTopicsLive, :index
+      live "/forums", ForumIndexLive, :index
       live "/topic/:id", PostsLive, :index
       live "/forum/:id/topic/new", NewTopicLive, :index
       live "/memberlist", MemberListLive, :index
@@ -92,7 +92,7 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     get "/page/:page", PageController, :show
 
-    #    get "/forum/album_search.php", PhpController, :album_search #?search_author=lera.robel
+    #    get "/forums/album_search.php", PhpController, :album_search #?search_author=lera.robel
   end
 
   scope "/", SambaWeb do
@@ -118,19 +118,19 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     pipe_through :browser
 
-    live "/forum", ForumIndexLive, :index
+    live "/forums", ForumIndexLive, :index
     live "/memberlist", MemberListLive, :index
-    live "/forum/faq", MemberListLive, :index
-    live "/forum/rss_feeds", RSSIndexLive, :index
-    live "/forum/:id", ForumTopicsLive, :index
-    live "/forum/new", NewForumLive, :index
+    live "/forums/faq", MemberListLive, :index
+    live "/forums/rss_feeds", RSSIndexLive, :index
+    live "/forums/:id", ForumTopicsLive, :index
+    live "/forums/new", NewForumLive, :index
     live "/topic/:id", PostsLive, :index
     live "/topic/:id/reply", PostLive, :index
     live "/topic/post/:id", TopicPostsLive, :index
     live "/viewonline", OnlineUsersLive, :index
     live "/profile/:id", UserProfileLive, :index
 
-    get "/forum/:forum_id/rss.xml", RSSController, :index
+    get "/forums/:forum_id/rss.xml", RSSController, :index
   end
 
   scope "/", SambaWeb do

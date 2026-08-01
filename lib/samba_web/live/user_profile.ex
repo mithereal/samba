@@ -12,7 +12,7 @@ defmodule SambaWeb.UserProfileLive do
       {:ok,
        socket
        |> put_flash(:error, "User not found")
-       |> push_navigate(to: ~p"/forum")}
+       |> push_navigate(to: ~p"/forums")}
     end
   end
 
@@ -88,7 +88,7 @@ defmodule SambaWeb.UserProfileLive do
       <!-- Breadcrumb / Navigation Index -->
       <div class="mb-4">
         <.link
-          navigate={~p"/forum"}
+          navigate={~p"/forums"}
           class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium"
         >
           &laquo; Forum Index
@@ -136,7 +136,7 @@ defmodule SambaWeb.UserProfileLive do
             <div class="w-full pt-4 border-t border-zinc-200 dark:border-zinc-800 text-xs space-y-1 text-indigo-600 dark:text-indigo-400">
               <div>
                 <.link
-                  navigate={~p"/forum/profile/#{@user.username}/buddy/add"}
+                  navigate={~p"/forums/profile/#{@user.username}/buddy/add"}
                   class="hover:underline"
                 >
                   Add to your buddylist
@@ -144,7 +144,7 @@ defmodule SambaWeb.UserProfileLive do
               </div>
               <div>
                 <.link
-                  navigate={~p"/forum/profile/#{@user.username}/ignore/add"}
+                  navigate={~p"/forums/profile/#{@user.username}/ignore/add"}
                   class="hover:underline"
                 >
                   Add to your ignore list
@@ -194,7 +194,7 @@ defmodule SambaWeb.UserProfileLive do
                   </div>
                   <div class="text-xs mt-1">
                     <.link
-                      navigate={~p"/forum/search/#{@user.username}/posts"}
+                      navigate={~p"/forums/search/#{@user.username}/posts"}
                       class="text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
                       Find all posts by {@user.username}
@@ -207,7 +207,7 @@ defmodule SambaWeb.UserProfileLive do
                 </div>
                 <div class="sm:col-span-2 text-xs">
                   <.link
-                    navigate={~p"/forum/search/#{@user.username}/topics"}
+                    navigate={~p"/forums/search/#{@user.username}/topics"}
                     class="text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
                     Find all topics started by {@user.username}
@@ -221,7 +221,7 @@ defmodule SambaWeb.UserProfileLive do
                   <span class="font-bold text-zinc-900 dark:text-zinc-100">{@user.total_photos}</span>
                   <div class="mt-0.5">
                     <.link
-                      navigate={~p"/forum/search/#{@user.username}/photos"}
+                      navigate={~p"/forums/search/#{@user.username}/photos"}
                       class="text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
                       Find all photos from {@user.username}
@@ -236,7 +236,7 @@ defmodule SambaWeb.UserProfileLive do
                   <span class="font-bold text-zinc-900 dark:text-zinc-100">{@user.favorite_photos}</span>
                   <div class="mt-0.5">
                     <.link
-                      navigate={~p"/forum/search/#{@user.username}/photos/favorites"}
+                      navigate={~p"/forums/search/#{@user.username}/photos/favorites"}
                       class="text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
                       Show {@user.username}'s favorite photos
@@ -267,7 +267,7 @@ defmodule SambaWeb.UserProfileLive do
                 </div>
                 <div class="sm:col-span-2 text-xs">
                   <.link
-                    navigate={~p"/forum/search/#{@user.username}/feedback"}
+                    navigate={~p"/forums/search/#{@user.username}/feedback"}
                     class="text-indigo-600 dark:text-indigo-400 hover:underline"
                   >
                     Search for feedback on {@user.username}
@@ -314,7 +314,7 @@ defmodule SambaWeb.UserProfileLive do
                   Private Message:
                 </div>
                 <div class="sm:col-span-2">
-                  <.link navigate={~p"/forum/message/#{@user.username}/new"} class="inline-block">
+                  <.link navigate={~p"/forums/message/#{@user.username}/new"} class="inline-block">
                     <div class="bg-zinc-200 dark:bg-zinc-800 px-3 py-1 rounded text-xs font-medium hover:bg-zinc-300 dark:hover:bg-zinc-700 transition-colors inline-flex items-center space-x-1">
                       <span>Send private message</span>
                     </div>

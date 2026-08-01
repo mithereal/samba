@@ -106,7 +106,7 @@ defmodule SambaWeb.NewForumLive do
         {:noreply,
          socket
          |> put_flash(:info, "Forum created successfully!")
-         |> push_navigate(to: ~p"/forum")}
+         |> push_navigate(to: ~p"/forums")}
 
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}

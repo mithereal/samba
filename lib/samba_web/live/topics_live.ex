@@ -80,7 +80,7 @@ defmodule SambaWeb.ForumTopicsLive do
 
   def handle_event("change-per-page", %{"per_page" => per_page}, socket) do
     {:noreply,
-     push_navigate(socket, to: ~p"/forum/#{socket.assigns.forum_id}?page=1&per_page=#{per_page}")}
+     push_navigate(socket, to: ~p"/forums/#{socket.assigns.forum_id}?page=1&per_page=#{per_page}")}
   end
 
   def render(assigns) do
@@ -96,14 +96,14 @@ defmodule SambaWeb.ForumTopicsLive do
             </h1>
             <p class="text-sm text-gray-400">Moderators: {Enum.join(@moderators, ", ")}</p>
             <.breadcrumb>
-              <:item icon="hero-folder" link="/forum">Forum Index</:item>
+              <:item icon="hero-folder" link="/forums">Forum Index</:item>
               <:item icon="hero-folder-open" link="/{@forum && @forum.forum_name}">
                 {@forum && @forum.forum_name}
               </:item>
             </.breadcrumb>
             <p class="mt-5 text-sm text-gray-400">{@forum && @forum.forum_desc}</p>
             <.link
-              navigate={~p"/forum/#{@forum_id}/topic/new"}
+              navigate={~p"/forums/#{@forum_id}/topic/new"}
               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors"
             >
               Post New Topic
@@ -112,7 +112,7 @@ defmodule SambaWeb.ForumTopicsLive do
         </div>
         <div class="text-black flex flex-col justify-end text-right mr-4 ">
           <.link
-            navigate={~p"/forum/#{@forum_id}/mark_topics"}
+            navigate={~p"/forums/#{@forum_id}/mark_topics"}
             class="inline-flex items-center px-4  text-gray-700  text-sm font-semibold rounded-md shadow transition-colors"
           >
             Mark all topics read
@@ -189,7 +189,7 @@ defmodule SambaWeb.ForumTopicsLive do
         <div class="flex space-x-2">
           <%= if @page > 1 do %>
             <.link
-              patch={~p"/forum/#{@forum_id}?page=#{@page - 1}&per_page=#{@per_page}"}
+              patch={~p"/forums/#{@forum_id}?page=#{@page - 1}&per_page=#{@per_page}"}
               class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-md text-sm font-medium border border-gray-700 transition-colors"
             >
               &larr; Previous
@@ -198,7 +198,7 @@ defmodule SambaWeb.ForumTopicsLive do
 
           <%= if @more? do %>
             <.link
-              patch={~p"/forum/#{@forum_id}?page=#{@page + 1}&per_page=#{@per_page}"}
+              patch={~p"/forums/#{@forum_id}?page=#{@page + 1}&per_page=#{@per_page}"}
               class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-md text-sm font-medium border border-gray-700 transition-colors"
             >
               Next &rarr;

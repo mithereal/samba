@@ -115,7 +115,7 @@ defmodule SambaWeb.ForumIndexLive do
                   </div>
                   <div>
                     <.link
-                      navigate={~p"/forum/#{forum.forum_id}"}
+                      navigate={~p"/forums/#{forum.forum_id}"}
                       class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                     >
                       {forum.forum_name}

@@ -247,26 +247,26 @@ defmodule SambaWeb.Layouts do
             popup_class="relative origin-[var(--transform-origin)]  dark:border-white bg-slate-700 dark:bg-neutral-950 py-1 text-white dark:text-white shadow-[0.25rem_0.25rem_0] shadow-black/12 dark:shadow-none outline-hidden transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0"
           >
             <:trigger>
-              <.link navigate="/forum">Forums</.link>
+              <.link navigate="/forums">Forums</.link>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12 6H4l4 4.5z" /></svg>
             </:trigger>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-slate-700 data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-              <.link navigate="/forum/search">Search</.link>
+              <.link navigate="/forums/search">Search</.link>
             </:item>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-              <.link navigate="/forum/memberlist">Memberlist</.link>
+              <.link navigate="/forums/memberlist">Memberlist</.link>
             </:item>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-              <.link navigate="/forum/rules">Rules</.link>
+              <.link navigate="/forums/rules">Rules</.link>
             </:item>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
               <.link navigate="/chat">Chat</.link>
             </:item>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-              <.link navigate="/forum/rss">RSS</.link>
+              <.link navigate="/forums/rss">RSS</.link>
             </:item>
             <:item class="flex cursor-default py-2 pr-8 pl-4 text-sm select-none outline-hidden data-[highlighted]:relative data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-1 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:-z-10 data-[highlighted]:before:bg-slate-500 dark:data-[highlighted]:before:bg-white data-[highlighted]:text-white dark:data-[highlighted]:text-neutral-950">
-              <.link navigate="/forum/faq">Help/Faqs</.link>
+              <.link navigate="/forums/faq">Help/Faqs</.link>
             </:item>
           </.menu>
 
