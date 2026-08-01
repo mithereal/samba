@@ -3,6 +3,7 @@ alias Samba.Accounts.UserGenerator
 ## Seed default ranks
 
 PhpBB.Ranks.seed_default_ranks()
+Samba.Analytics.DailyStat.seed_default_stats()
 
 # priv/repo/seeds.exs
 # Pull the site name from configuration
