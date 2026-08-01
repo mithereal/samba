@@ -1,60 +1,18 @@
 defmodule SambaWeb.ForumIndexLive do
   use SambaWeb, :live_view
-
-  alias SambaWeb.Presence
-
-  @presence_topic "users:online"
+  use SambaWeb.LiveTracking
 
   def mount(_params, _session, socket) do
-    current_user = socket.assigns[:current_user]
-
-    if connected?(socket) do
-      Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
-
-      user_key =
-        if current_user do
-          to_string(current_user.id)
-        else
-          "guest"
-        end
-
-      user_meta =
-        if current_user do
-          %{
-            username: current_user.username,
-            email: to_string(current_user.email),
-            location: {"Forums Index", "/forums"},
-            online_at: System.system_time(:second),
-            type: :user
-          }
-        else
-          %{
-            username: "Guest",
-            email: nil,
-            online_at: System.system_time(:second),
-            type: :guest
-          }
-        end
-
-      {:ok, _ref} =
-        Presence.track(
-          self(),
-          @presence_topic,
-          user_key,
-          user_meta
-        )
-    end
-
     categories =
       PhpBB.Categories
       |> Ash.Query.sort(cat_order: :asc)
       |> Ash.Query.load(
-           forums: [
-             :forum_topics,
-             :forum_posts,
-             last_post: [poster: []]
-           ]
-         )
+        forums: [
+          :forum_topics,
+          :forum_posts,
+          last_post: [poster: []]
+        ]
+      )
       |> Ash.read!(domain: PhpBB.Domain)
 
     online_users = list_forum_online_users()
@@ -93,7 +51,7 @@ defmodule SambaWeb.ForumIndexLive do
       max_online_date: formatted_peak,
       chat_users: Enum.count(chat_users)
     }
-IO.inspect phpbb_online_users, label: "phpbb_online_users"
+
     socket =
       socket
       |> assign(:page_title, "Forums")
@@ -234,62 +192,6 @@ IO.inspect phpbb_online_users, label: "phpbb_online_users"
     """
   end
 
-  defp list_online_users() do
-    Presence.list(@presence_topic)
-    |> Enum.map(fn {user_id, meta} -> {user_id, meta} end)
-  end
-
-  defp list_forum_online_users() do
-    Presence.list(@presence_topic)
-    |> Enum.reject(fn {user_id, meta} ->
-      user_id == "guest" or Map.get(meta, :type) == :guest
-    end)
-    |> Enum.map(fn {user_id, _meta} -> user_id end)
-  end
-
-  defp list_chat_users() do
-    Presence.list("users:chat")
-    |> Enum.map(fn {user_id, meta} -> user_id end)
-  end
-
-  defp list_guest_users() do
-    Presence.list(@presence_topic)
-    |> Enum.filter(fn {user_id, meta} ->
-      user_id == "guest" or Map.get(meta, :type) == :guest
-    end)
-    |> Enum.map(fn {user_id, _meta} -> user_id end)
-  end
-
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    socket = assign(socket, :online_users, list_online_users())
-    {:noreply, socket}
-  end
-
-  defp format_timestamp(nil), do: ""
-
-  defp format_timestamp(unix_timestamp) when is_integer(unix_timestamp) and unix_timestamp > 0 do
-    post_dt = DateTime.from_unix!(unix_timestamp)
-    post_date = DateTime.to_date(post_dt)
-    today = Date.utc_today()
-
-    day_name = Calendar.strftime(post_dt, "%a") |> String.downcase()
-    time_str = Calendar.strftime(post_dt, "%I:%M %p") |> String.downcase()
-
-    cond do
-      post_date == today ->
-        "#{day_name}, today #{time_str}"
-
-      post_date == Date.add(today, -1) ->
-        "#{day_name}, yesterday #{time_str}"
-
-      true ->
-        date_str = Calendar.strftime(post_dt, "%b %d") |> String.downcase()
-        "#{day_name}, #{date_str}, #{time_str}"
-    end
-  end
-
-  defp format_timestamp(_), do: ""
   import Ash.Query
 
   def get_phpbb_users_by_account_ids(account_user_ids) do

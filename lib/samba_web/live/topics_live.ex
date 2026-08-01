@@ -29,7 +29,6 @@ defmodule SambaWeb.ForumTopicsLive do
         )
     end
 
-
     forum =
       PhpBB.Forums
       |> Ash.Query.filter(forum_id == ^forum_id)

@@ -1,13 +1,10 @@
 defmodule SambaWeb.DashboardLive do
   use SambaWeb, :live_view
+  use SambaWeb.LiveTracking
 
   require Ash.Query
 
   on_mount {SambaWeb.LiveUserAuth, :live_user_required}
-
-  alias SambaWeb.Presence
-
-  @presence_topic "users:online"
 
   def mount(_params, _session, socket) do
     total_users = Ash.count!(Samba.Accounts.User, authorize?: false)
@@ -25,44 +22,6 @@ defmodule SambaWeb.DashboardLive do
       |> assign(:active_teams, active_teams)
 
     current_user = socket.assigns[:current_user]
-
-    if connected?(socket) do
-      Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
-
-      user_key =
-        if current_user do
-          to_string(current_user.id)
-        else
-          "guest:#{inspect(self())}"
-        end
-
-      user_meta =
-        if current_user do
-          %{
-            username: current_user.username,
-            email: to_string(current_user.email),
-            location: {"Forums Index", "/forums"},
-            online_at: System.system_time(:second),
-            type: :user
-          }
-        else
-          %{
-            username: "Guest",
-            email: nil,
-            location: {"Forums Index", "/forums"},
-            online_at: System.system_time(:second),
-            type: :guest
-          }
-        end
-
-      {:ok, _ref} =
-        Presence.track(
-          self(),
-          @presence_topic,
-          user_key,
-          user_meta
-        )
-    end
 
     # Fetch initial presence list and push to socket assigns
     # socket = assign(socket, :online_users, list_online_users())
@@ -177,16 +136,5 @@ defmodule SambaWeb.DashboardLive do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}></Layouts.app>
     """
-  end
-
-  defp list_online_users() do
-    Presence.list(@presence_topic)
-    |> Enum.map(fn {user_id, %{metas: [meta | _]}} -> {user_id, meta} end)
-  end
-
-  @impl true
-  def handle_info(%{event: "presence_diff", payload: _payload}, socket) do
-    socket = assign(socket, :online_users, list_online_users())
-    {:noreply, socket}
   end
 end

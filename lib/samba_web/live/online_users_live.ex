@@ -1,73 +1,21 @@
 defmodule SambaWeb.OnlineUsersLive do
   use SambaWeb, :live_view
+  use SambaWeb.LiveTracking
 
   @impl true
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      SambaWeb.Endpoint.subscribe("online_users")
-      :timer.send_interval(30_000, self(), :tick)
-    end
+    online_users = list_forum_online_users()
+    {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
 
-    {:ok, assign_users(socket)}
-  end
+    guest_users = list_guest_users()
 
-  @impl true
-  def handle_info(:tick, socket) do
-    {:noreply, assign_users(socket)}
-  end
+    socket =
+      socket
+      |> assign(:page_title, "Online Users")
+      |> assign(:registered_users, phpbb_online_users)
+      |> assign(:guests, guest_users)
 
-  @impl true
-  def handle_info({:presence_update, _presence_data}, socket) do
-    {:noreply, assign_users(socket)}
-  end
-
-  defp assign_users(socket) do
-    registered_users = [
-      %{
-        id: 1,
-        username: "Alice",
-        profile_path: ~p"/user/alice",
-        last_updated: ~N[2026-07-26 14:50:00],
-        location: "General Discussion",
-        location_path: ~p"/forum/general"
-      },
-      %{
-        id: 2,
-        username: "Bob",
-        profile_path: ~p"/user/bob",
-        last_updated: ~N[2026-07-26 14:48:20],
-        location: "Elixir & Phoenix",
-        location_path: ~p"/forum/elixir"
-      }
-    ]
-
-    guests = [
-      %{
-        id: 101,
-        username: "Guest_4892",
-        profile_path: nil,
-        last_updated: ~N[2026-07-26 14:49:10],
-        location: "FAQ",
-        location_path: ~p"/forum/faq"
-      },
-      %{
-        id: 102,
-        username: "Guest_1102",
-        profile_path: nil,
-        last_updated: ~N[2026-07-26 14:51:00],
-        location: "Home Page",
-        location_path: ~p"/"
-      }
-    ]
-
-    assign(socket,
-      registered_users: sort_by_last_updated(registered_users),
-      guests: sort_by_last_updated(guests)
-    )
-  end
-
-  defp sort_by_last_updated(users) do
-    Enum.sort_by(users, & &1.last_updated, {:desc, NaiveDateTime})
+    {:ok, socket}
   end
 
   @impl true
@@ -125,9 +73,9 @@ defmodule SambaWeb.OnlineUsersLive do
           <%= for user <- @users do %>
             <div class="flex items-center px-6 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
               <div class="w-1/3 font-medium text-zinc-900 dark:text-zinc-100">
-                <%= if user.id do %>
+                <%= if user.username do %>
                   <.link
-                    navigate={"/profile/#{user.id}"}
+                    navigate={"/profile/#{user.username}"}
                     class="hover:underline text-indigo-600 dark:text-indigo-400"
                   >
                     {user.username}
@@ -136,17 +84,8 @@ defmodule SambaWeb.OnlineUsersLive do
                   <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
                 <% end %>
               </div>
-              <div class="w-1/3 text-zinc-500 dark:text-zinc-400">
-                {format_time(user.last_updated)}
-              </div>
-              <div class="w-1/3">
-                <.link
-                  navigate={user.location_path}
-                  class="hover:underline text-indigo-600 dark:text-indigo-400"
-                >
-                  {user.location}
-                </.link>
-              </div>
+              <div class="w-1/3 text-zinc-500 dark:text-zinc-400"></div>
+              <div class="w-1/3"></div>
             </div>
           <% end %>
         <% end %>
@@ -155,7 +94,43 @@ defmodule SambaWeb.OnlineUsersLive do
     """
   end
 
-  defp format_time(naive_datetime) do
-    Calendar.strftime(naive_datetime, "%I:%M %p")
+  import Ash.Query
+
+  def get_phpbb_users_by_account_ids(account_user_ids) do
+    case Samba.Accounts.User
+         |> filter(id in ^account_user_ids)
+         |> select([:id, :phpbb_user_id])
+         |> Ash.read(authorize?: false) do
+      {:ok, accounts} ->
+        phpbb_ids = Enum.map(accounts, & &1.phpbb_user_id) |> Enum.reject(&is_nil/1)
+
+        if Enum.empty?(phpbb_ids) do
+          {:ok, []}
+        else
+          case PhpBB.Users
+               |> filter(user_id in ^phpbb_ids)
+               |> select([:user_id, :username, :user_rank, :user_allow_viewonline])
+               |> Ash.read(domain: PhpBB.Domain, authorize?: false) do
+            {:ok, phpbb_users} ->
+              result =
+                Enum.map(phpbb_users, fn u ->
+                  %{
+                    id: u.user_id,
+                    username: u.username,
+                    role: u.user_rank,
+                    visible: u.user_allow_viewonline
+                  }
+                end)
+
+              {:ok, result}
+
+            {:error, reason} ->
+              {:error, reason}
+          end
+        end
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 end
