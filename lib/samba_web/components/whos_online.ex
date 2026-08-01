@@ -106,7 +106,6 @@ defmodule SambaWeb.Components.WhosOnline do
                 <.link navigate={~p"/sign-in"}>[ Please login to use chat ]</.link>
               <% end %>
             </span>
-            <span class="italic text-gray-400 dark:text-gray-500">Data based on users active over past 5 minutes</span>
           </div>
         </div>
       </div>

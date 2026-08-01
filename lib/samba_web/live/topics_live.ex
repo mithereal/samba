@@ -2,12 +2,33 @@ defmodule SambaWeb.ForumTopicsLive do
   use SambaWeb, :live_view
 
   require Ash.Query
+  @presence_topic "users:online"
 
   def mount(%{"id" => forum_id} = params, _session, socket) do
     forum_id = parse_int(forum_id)
     page = parse_int(params["page"], 1)
     per_page = parse_int(params["per_page"], 25)
     offset_val = (page - 1) * per_page
+
+    current_user = socket.assigns[:current_user]
+
+    if connected?(socket) and current_user do
+      # Subscribe to presence changes to receive updates
+      Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
+
+      {:ok, _ref} =
+        Presence.track(
+          self(),
+          @presence_topic,
+          to_string(current_user.id),
+          %{
+            username: current_user.username,
+            email: to_string(current_user.email),
+            online_at: System.system_time(:second)
+          }
+        )
+    end
+
 
     forum =
       PhpBB.Forums

@@ -8,20 +8,40 @@ defmodule SambaWeb.ForumIndexLive do
   def mount(_params, _session, socket) do
     current_user = socket.assigns[:current_user]
 
-    if connected?(socket) and current_user do
-      # Subscribe to presence changes to receive updates
+    if connected?(socket) do
       Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
+
+      user_key =
+        if current_user do
+          to_string(current_user.id)
+        else
+          "guest"
+        end
+
+      user_meta =
+        if current_user do
+          %{
+            username: current_user.username,
+            email: to_string(current_user.email),
+            location: {"Forums Index", "/forums"},
+            online_at: System.system_time(:second),
+            type: :user
+          }
+        else
+          %{
+            username: "Guest",
+            email: nil,
+            online_at: System.system_time(:second),
+            type: :guest
+          }
+        end
 
       {:ok, _ref} =
         Presence.track(
           self(),
           @presence_topic,
-          to_string(current_user.id),
-          %{
-            username: current_user.username,
-            email: to_string(current_user.email),
-            online_at: System.system_time(:second)
-          }
+          user_key,
+          user_meta
         )
     end
 
@@ -29,19 +49,21 @@ defmodule SambaWeb.ForumIndexLive do
       PhpBB.Categories
       |> Ash.Query.sort(cat_order: :asc)
       |> Ash.Query.load(
-        forums: [
-          :forum_topics,
-          :forum_posts,
-          last_post: [poster: []]
-        ]
-      )
+           forums: [
+             :forum_topics,
+             :forum_posts,
+             last_post: [poster: []]
+           ]
+         )
       |> Ash.read!(domain: PhpBB.Domain)
 
-    online_users = list_online_users()
+    online_users = list_forum_online_users()
+    {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
+
     guest_users = list_guest_users()
     chat_users = list_chat_users()
 
-    hidden_users = Enum.filter(online_users, fn u -> u.visible == 0 end)
+    hidden_users = Enum.filter(phpbb_online_users, fn u -> u.visible == 0 end)
 
     peak_stat =
       Samba.Analytics.DailyStat
@@ -63,20 +85,20 @@ defmodule SambaWeb.ForumIndexLive do
       end
 
     stats = %{
-      total_online: Enum.count(online_users) + Enum.count(guest_users),
-      registered_count: Enum.count(online_users),
+      total_online: Enum.count(list_online_users()),
+      registered_count: Enum.count(phpbb_online_users),
       hidden_count: Enum.count(hidden_users),
       guest_count: Enum.count(guest_users),
       max_online: peak_users,
       max_online_date: formatted_peak,
       chat_users: Enum.count(chat_users)
     }
-
+IO.inspect phpbb_online_users, label: "phpbb_online_users"
     socket =
       socket
       |> assign(:page_title, "Forums")
       |> assign(:categories, categories)
-      |> assign(:online_users, online_users)
+      |> assign(:phpbb_online_users, phpbb_online_users)
       |> assign(:stats, stats)
 
     {:ok, socket}
@@ -184,7 +206,7 @@ defmodule SambaWeb.ForumIndexLive do
             <% end %>
           <% end %>
         </div>
-        <.whos_online current_user={@current_user} stats={@stats} users={@online_users} />
+        <.whos_online current_user={@current_user} stats={@stats} users={@phpbb_online_users} />
         <!-- Centered Legend Footer -->
         <div class="bg-gray-100 dark:bg-gray-800/80 px-6 py-4 border-t border-gray-300 dark:border-gray-700 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-700 dark:text-gray-300">
           <div class="flex items-center space-x-2">
@@ -213,22 +235,29 @@ defmodule SambaWeb.ForumIndexLive do
   end
 
   defp list_online_users() do
-    users =
-      Presence.list(@presence_topic)
-      |> Enum.map(fn {user_id, %{metas: [meta | _]}} -> user_id end)
+    Presence.list(@presence_topic)
+    |> Enum.map(fn {user_id, meta} -> {user_id, meta} end)
+  end
 
-    {:ok, result} = get_phpbb_users_by_account_ids(users)
-    result
+  defp list_forum_online_users() do
+    Presence.list(@presence_topic)
+    |> Enum.reject(fn {user_id, meta} ->
+      user_id == "guest" or Map.get(meta, :type) == :guest
+    end)
+    |> Enum.map(fn {user_id, _meta} -> user_id end)
   end
 
   defp list_chat_users() do
     Presence.list("users:chat")
-    |> Enum.map(fn {user_id, %{metas: [meta | _]}} -> user_id end)
+    |> Enum.map(fn {user_id, meta} -> user_id end)
   end
 
   defp list_guest_users() do
-    Presence.list("guest:online")
-    |> Enum.map(fn {user_id, %{metas: [meta | _]}} -> user_id end)
+    Presence.list(@presence_topic)
+    |> Enum.filter(fn {user_id, meta} ->
+      user_id == "guest" or Map.get(meta, :type) == :guest
+    end)
+    |> Enum.map(fn {user_id, _meta} -> user_id end)
   end
 
   @impl true

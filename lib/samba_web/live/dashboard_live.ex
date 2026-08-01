@@ -41,6 +41,7 @@ defmodule SambaWeb.DashboardLive do
           %{
             username: current_user.username,
             email: to_string(current_user.email),
+            location: {"Forums Index", "/forums"},
             online_at: System.system_time(:second),
             type: :user
           }
@@ -48,6 +49,7 @@ defmodule SambaWeb.DashboardLive do
           %{
             username: "Guest",
             email: nil,
+            location: {"Forums Index", "/forums"},
             online_at: System.system_time(:second),
             type: :guest
           }
