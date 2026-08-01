@@ -5,10 +5,13 @@ defmodule SambaWeb.OnlineUsersLive do
   @impl true
   def mount(_params, _session, socket) do
 
-    online_users = list_forum_online_users()
-    {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
+    online_users = []
+  #  online_users = list_forum_online_users()
+   # {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
+    phpbb_online_users = []
+    guest_users = []
+#    guest_users = list_guest_users()
 
-    guest_users = list_guest_users()
 
     socket =
       socket
@@ -75,12 +78,6 @@ defmodule SambaWeb.OnlineUsersLive do
             <div class="flex items-center px-6 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
               <div class="w-1/3 font-medium text-zinc-900 dark:text-zinc-100">
                 <%= if user.username do %>
-                  <.link
-                    navigate={"/profile/#{user.username}"}
-                    class="hover:underline text-indigo-600 dark:text-indigo-400"
-                  >
-                    {user.username}
-                  </.link>
                 <% else %>
                   <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
                 <% end %>

@@ -89,16 +89,17 @@ defmodule SambaWeb.LandingLive do
                 >Register</.link></span>
               </div>
 
-              <.form_wrapper for={@login_form}>
+              <.form_wrapper for={@login_form} class="px-2">
                 <.email_field
                   name="email"
                   value=""
                   size="extra_small"
                   border="none"
-                  variant="light"
-                  color="natural"
+                  variant="shadow"
+                  color="silver"
                 />
-                <.password_field name="password" value="" size="extra_small" color="natural" />
+      <div class="mb-4"></div>
+                <.password_field variant="shadow" name="password" value="" size="extra_small" color="silver" />
                 <div class="flex gap-2 p-2">
                   <.checkbox_field name="remember" color="natural" value="false" class="pl-4" />Keep me logged in
                   <.button>Login</.button>
