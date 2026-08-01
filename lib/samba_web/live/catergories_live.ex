@@ -48,13 +48,12 @@ defmodule SambaWeb.CategoryListLive do
     total_pages = max(ceil(total_count / @per_page), 1)
 
     {:noreply,
-      socket
-      |> assign(:page_title, "Categories")
-      |> assign(:page, page_num)
-      |> assign(:total_pages, total_pages)
-      |> assign(:categories, categories)}
+     socket
+     |> assign(:page_title, "Categories")
+     |> assign(:page, page_num)
+     |> assign(:total_pages, total_pages)
+     |> assign(:categories, categories)}
   end
-
 
   @impl true
   def handle_event("reorder", %{"ids" => ids}, socket) do
@@ -72,6 +71,7 @@ defmodule SambaWeb.CategoryListLive do
     end)
 
     offset = (socket.assigns.page - 1) * @per_page
+
     page =
       Categories
       |> Ash.Query.for_read(:read)
@@ -90,10 +90,10 @@ defmodule SambaWeb.CategoryListLive do
         <h1 class="text-2xl font-bold text-gray-900">Categories</h1>
 
         <div class="flex space-x-3">
-
           <.link
             patch={~p"/settings/categories/new"}
-            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+            class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+          >
             New Category
           </.link>
         </div>
@@ -105,33 +105,36 @@ defmodule SambaWeb.CategoryListLive do
             role="list"
             class="divide-y divide-gray-200"
             id="category-list"
-            phx-hook="SortableList">
-
-            <li :for={category <- @categories} id={"category-#{category.cat_id}"} data-id={category.cat_id} class={"px-6 py-4 flex items-center justify-between transition-colors hover:bg-gray-50"}>
+            phx-hook="SortableList"
+          >
+            <li
+              :for={category <- @categories}
+              id={"category-#{category.cat_id}"}
+              data-id={category.cat_id}
+              class="px-6 py-4 flex items-center justify-between transition-colors hover:bg-gray-50"
+            >
               <div class="flex items-center space-x-3 min-w-0 flex-1 pr-4">
-                <span >&#9776;</span>
+                <span>&#9776;</span>
                 <div>
                   <h3 class="text-lg font-medium text-gray-900 truncate">
                     {category.cat_title}
                   </h3>
-
-
-
                 </div>
               </div>
 
               <div class="flex flex-col space-x-3">
-      <div class="text-right">
-                <.link
-                  patch={~p"/settings/categories/#{category.cat_id}/edit"}
-                  class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
-                  Edit
-                </.link>
-      </div>
-                    <div class="flex items-center gap-1 mt-1 text-right">
-                    <span class="text-xs text-gray-500 ml-1">Order: </span>
-                    <span class="text-xs text-gray-500 ml-1">{category.cat_order}</span>
-                  </div>
+                <div class="text-right">
+                  <.link
+                    patch={~p"/settings/categories/#{category.cat_id}/edit"}
+                    class="text-indigo-600 hover:text-indigo-900 text-sm font-medium"
+                  >
+                    Edit
+                  </.link>
+                </div>
+                <div class="flex items-center gap-1 mt-1 text-right">
+                  <span class="text-xs text-gray-500 ml-1">Order: </span>
+                  <span class="text-xs text-gray-500 ml-1">{category.cat_order}</span>
+                </div>
               </div>
             </li>
           </ul>
@@ -140,7 +143,8 @@ defmodule SambaWeb.CategoryListLive do
         <div class="flex items-center justify-between mt-6">
           <div>
             <p class="text-sm text-gray-700">
-              Page <span class="font-medium">{@page}</span> of <span class="font-medium">{@total_pages}</span>
+              Page <span class="font-medium">{@page}</span>
+              of <span class="font-medium">{@total_pages}</span>
             </p>
           </div>
 
@@ -148,14 +152,16 @@ defmodule SambaWeb.CategoryListLive do
             <.link
               :if={@page > 1}
               patch={~p"/settings/categories?page={@page - 1}"}
-              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
               Previous
             </.link>
 
             <.link
               :if={@page < @total_pages}
               patch={~p"/settings/categories?page={@page + 1}"}
-              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            >
               Next
             </.link>
           </div>
@@ -166,13 +172,14 @@ defmodule SambaWeb.CategoryListLive do
   end
 
   defp order_balls(order) when is_integer(order) do
-    color_class = case rem(order, 5) do
-      1 -> "bg-red-500"
-      2 -> "bg-blue-500"
-      3 -> "bg-green-500"
-      4 -> "bg-yellow-500"
-      _ -> "bg-purple-500"
-    end
+    color_class =
+      case rem(order, 5) do
+        1 -> "bg-red-500"
+        2 -> "bg-blue-500"
+        3 -> "bg-green-500"
+        4 -> "bg-yellow-500"
+        _ -> "bg-purple-500"
+      end
 
     for _i <- 1..max(order, 1) do
       color_class

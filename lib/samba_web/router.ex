@@ -31,7 +31,6 @@ defmodule SambaWeb.Router do
     plug :set_actor, :user
   end
 
-
   scope "/api/json" do
     pipe_through [:api]
 
@@ -46,7 +45,6 @@ defmodule SambaWeb.Router do
     pipe_through :browser
 
     ash_authentication_live_session :authenticated_routes do
-
       live "/dashboard", DashboardLive
       live "/faq-import", FaqImportLive
       live "/forum-import", PhpbbCrawlerLive

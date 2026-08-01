@@ -77,7 +77,9 @@ defmodule SambaWeb.ForumTopicsLive do
             <p class="text-sm text-gray-400">Moderators: {Enum.join(@moderators, ", ")}</p>
             <.breadcrumb>
               <:item icon="hero-folder" link="/forum">Forum Index</:item>
-              <:item icon="hero-folder-open" link="/{@forum && @forum.forum_name}">{@forum && @forum.forum_name}</:item>
+              <:item icon="hero-folder-open" link="/{@forum && @forum.forum_name}">
+                {@forum && @forum.forum_name}
+              </:item>
             </.breadcrumb>
             <p class="mt-5 text-sm text-gray-400">{@forum && @forum.forum_desc}</p>
             <.link

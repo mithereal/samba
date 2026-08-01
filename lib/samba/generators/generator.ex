@@ -1,8 +1,8 @@
 defmodule Samba.Accounts.Generator do
   use Ash.Resource,
-      otp_app: :samba,
-      domain: Samba.Accounts,
-      data_layer: :not_persisted
+    otp_app: :samba,
+    domain: Samba.Accounts,
+    data_layer: :not_persisted
 
   actions do
     action :generate_user, {:array, :struct} do
@@ -14,9 +14,9 @@ defmodule Samba.Accounts.Generator do
         users =
           Samba.Accounts.UserGenerator.user()
           |> Ash.Generator.generate_many(
-               input.arguments.count,
-               authorize?: false
-             )
+            input.arguments.count,
+            authorize?: false
+          )
 
         {:ok, users}
       end

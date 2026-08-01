@@ -105,14 +105,12 @@ defmodule PhpBB.Forums do
     end
 
     attribute :forum_status, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :forum_order, :integer do
-
       public? true
       default 1
     end
@@ -130,77 +128,66 @@ defmodule PhpBB.Forums do
     end
 
     attribute :auth_view, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_read, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_post, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_reply, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_edit, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_delete, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_announce, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_sticky, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_pollcreate, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_vote, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0
     end
 
     attribute :auth_attachments, :integer do
-
       public? true
       constraints min: -32768, max: 32767
       default 0

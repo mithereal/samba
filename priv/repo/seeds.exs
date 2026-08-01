@@ -1,4 +1,3 @@
-
 alias Ash.Generator
 alias Samba.Accounts.UserGenerator
 ## Seed default ranks
@@ -23,6 +22,4 @@ admin_user =
 
 IO.puts("Successfully created admin user: #{admin_user.username} (#{admin_user.email})")
 
-
 users = Generator.generate_many(UserGenerator.user(), 3)
-

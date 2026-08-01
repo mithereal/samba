@@ -195,7 +195,6 @@ defmodule SambaWeb.PostsLive do
           </select>
         </form>
       </div>
-
     </div>
     """
   end

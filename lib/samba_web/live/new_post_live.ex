@@ -29,18 +29,18 @@ defmodule SambaWeb.NewPostLive do
       PhpBB.Posts
       |> AshPhoenix.Form.for_create(:create,
         as: "form",
-           params: %{
-             "poster_id" => poster_id,
-             "topic_id" => topic_id,
-             "forum_id" => topic.forum_id,
-             "post_time" => post_time,
-             "bbcode_uid" => "",
-             "enable_bbcode" => 1,
-             "enable_smilies" => 1,
-             "enable_sig" => 1,
-             "enable_html" => 0,
-             "post_edit_count" => 0
-           }
+        params: %{
+          "poster_id" => poster_id,
+          "topic_id" => topic_id,
+          "forum_id" => topic.forum_id,
+          "post_time" => post_time,
+          "bbcode_uid" => "",
+          "enable_bbcode" => 1,
+          "enable_smilies" => 1,
+          "enable_sig" => 1,
+          "enable_html" => 0,
+          "post_edit_count" => 0
+        }
       )
       |> to_form()
 
@@ -94,17 +94,17 @@ defmodule SambaWeb.NewPostLive do
     """
   end
 
-#  def handle_event("validate", %{"form" => params}, socket) do
-#    # Ensure system assigns aren't wiped out if missing from live validation payload
-#    merged_params =
-#      params
-#      |> Map.put("topic_id", socket.assigns.topic_id)
-#      |> Map.put("forum_id", socket.assigns.forum_id)
-#      |> Map.put("poster_id", socket.assigns.poster_id)
-#
-#    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
-#    {:noreply, assign(socket, form: to_form(form))}
-#  end
+  #  def handle_event("validate", %{"form" => params}, socket) do
+  #    # Ensure system assigns aren't wiped out if missing from live validation payload
+  #    merged_params =
+  #      params
+  #      |> Map.put("topic_id", socket.assigns.topic_id)
+  #      |> Map.put("forum_id", socket.assigns.forum_id)
+  #      |> Map.put("poster_id", socket.assigns.poster_id)
+  #
+  #    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
+  #    {:noreply, assign(socket, form: to_form(form))}
+  #  end
 
   def handle_event("save", %{"form" => params}, socket) do
     submission_params =

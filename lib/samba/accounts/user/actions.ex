@@ -118,6 +118,7 @@ defmodule Samba.Accounts.User.Actions do
           email when is_binary(email) or not is_nil(email) ->
             [username | _] = String.split(to_string(email), "@")
             Ash.Changeset.force_change_attribute(changeset, :username, username)
+
           _ ->
             changeset
         end
@@ -134,7 +135,6 @@ defmodule Samba.Accounts.User.Actions do
 
       # validates that the password matches the confirmation
       validate AshAuthentication.Strategy.Password.PasswordConfirmationValidation
-
 
       metadata :token, :string do
         description "A JWT that can be used to authenticate the user."
@@ -238,6 +238,7 @@ defmodule Samba.Accounts.User.Actions do
     update :update_phpbb_user_id do
       description "Set phpbbid"
       accept []
+
       argument :phpbb_user_id, :integer do
         allow_nil? false
         sensitive? false

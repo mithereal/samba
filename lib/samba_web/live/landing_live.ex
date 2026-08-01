@@ -11,10 +11,9 @@ defmodule SambaWeb.LandingLive do
       Samba.Accounts.LoginForm
       |> to_form()
 
-    socket = socket
-             |> assign(:login_form, login_form)
-
-
+    socket =
+      socket
+      |> assign(:login_form, login_form)
 
     {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end

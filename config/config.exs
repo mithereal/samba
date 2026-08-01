@@ -93,7 +93,8 @@ config :samba,
   ash_domains: [
     Samba.Ledger,
     Samba.Accounts,
-    PhpBB.Domain
+    PhpBB.Domain,
+    Samba.Analytics
   ]
 
 # Configure super admin users who are allowed to do

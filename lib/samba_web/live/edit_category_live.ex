@@ -6,18 +6,23 @@ defmodule SambaWeb.CategoryLive.Edit do
 
   @impl true
   def mount(%{"id" => category_id}, _session, socket) do
-
     category = Ash.get!(PhpBB.Categories, category_id, domain: Domain)
 
     form =
       category
       |> AshPhoenix.Form.for_update(:update,
-           domain: Domain,
-           as: "form"
-         )
+        domain: Domain,
+        as: "form"
+      )
       |> to_form()
 
-    {:ok, assign(socket, form: form, category: category, current_user: socket.assigns[:current_user], uri: socket.assigns[:uri])}
+    {:ok,
+     assign(socket,
+       form: form,
+       category: category,
+       current_user: socket.assigns[:current_user],
+       uri: socket.assigns[:uri]
+     )}
   end
 
   @impl true
@@ -35,9 +40,9 @@ defmodule SambaWeb.CategoryLive.Edit do
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_params) do
       {:ok, _category} ->
         {:noreply,
-          socket
-          |> put_flash(:info, "Category created successfully!")
-          |> push_navigate(to: ~p"/settings/categories")}
+         socket
+         |> put_flash(:info, "Category created successfully!")
+         |> push_navigate(to: ~p"/settings/categories")}
 
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}
@@ -51,21 +56,36 @@ defmodule SambaWeb.CategoryLive.Edit do
       <div class="max-w-2xl mx-auto px-4 py-8">
         <div class="mb-6 flex items-center justify-between">
           <h1 class="text-2xl font-bold text-gray-900">New Category</h1>
-          <.link patch={~p"/settings/categories"} class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+          <.link
+            patch={~p"/settings/categories"}
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-900"
+          >
             &larr; Back to Categories
           </.link>
         </div>
 
         <div class="bg-white shadow sm:rounded-lg p-6">
           <.form for={@form} phx-change="validate" phx-submit="save" class="space-y-6">
-            <.input field={@form[:cat_title]} value={@category.cat_title}type="text" label="Category Title" required />
+            <.input
+              field={@form[:cat_title]}
+              value={@category.cat_title}
+              type="text"
+              label="Category Title"
+              required
+            />
             <.input field={@form[:cat_order]} value={@category.cat_order} type="text" hidden required />
 
             <div class="flex justify-end space-x-3">
-              <.link patch={~p"/settings/categories"} class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              <.link
+                patch={~p"/settings/categories"}
+                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
                 Cancel
               </.link>
-              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+              <button
+                type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
                 Create Category
               </button>
             </div>
@@ -75,5 +95,4 @@ defmodule SambaWeb.CategoryLive.Edit do
     </Layouts.app>
     """
   end
-
 end

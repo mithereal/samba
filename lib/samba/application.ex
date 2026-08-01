@@ -16,6 +16,7 @@ defmodule Samba.Application do
       # Start a worker by calling: Samba.Worker.start_link(arg)
       # {Samba.Worker, arg},
       # Start to serve requests, typically the last entry
+      Samba.Analytics.OnlineTracker,
       SambaWeb.Presence,
       SambaWeb.Endpoint,
       {AshAuthentication.Supervisor, [otp_app: :samba]}

@@ -12,6 +12,7 @@ defmodule SambaWeb.DashboardLive do
   def mount(_params, _session, socket) do
     total_users = Ash.count!(Samba.Accounts.User, authorize?: false)
     total_teams = Ash.count!(Samba.Accounts.Team, authorize?: false)
+
     active_teams =
       Samba.Accounts.Team
       |> Ash.Query.filter(active == true)
@@ -25,31 +26,48 @@ defmodule SambaWeb.DashboardLive do
 
     current_user = socket.assigns[:current_user]
 
-    if connected?(socket) and current_user do
-      # Subscribe to presence changes to receive updates
+    if connected?(socket) do
       Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
 
-      # Track the current user's LiveView process
-      {:ok, _ref} = Presence.track(
-        self(),
-        @presence_topic,
-        to_string(current_user.id),
-        %{
-          username: current_user.username,
-          email: to_string(current_user.email),
-          online_at: System.system_time(:second)
-        }
-      )
+      user_key =
+        if current_user do
+          to_string(current_user.id)
+        else
+          "guest:#{inspect(self())}"
+        end
+
+      user_meta =
+        if current_user do
+          %{
+            username: current_user.username,
+            email: to_string(current_user.email),
+            online_at: System.system_time(:second),
+            type: :user
+          }
+        else
+          %{
+            username: "Guest",
+            email: nil,
+            online_at: System.system_time(:second),
+            type: :guest
+          }
+        end
+
+      {:ok, _ref} =
+        Presence.track(
+          self(),
+          @presence_topic,
+          user_key,
+          user_meta
+        )
     end
 
     # Fetch initial presence list and push to socket assigns
-   # socket = assign(socket, :online_users, list_online_users())
+    # socket = assign(socket, :online_users, list_online_users())
     socket = assign(socket, :active_users, Enum.count(list_online_users()))
 
     {:ok, socket}
   end
-
-
 
   @impl Phoenix.LiveView
   def render(assigns) do
@@ -160,9 +178,9 @@ defmodule SambaWeb.DashboardLive do
   end
 
   defp list_online_users() do
-  Presence.list(@presence_topic)
-|> Enum.map(fn {user_id, %{metas: [meta | _]}} -> {user_id, meta} end)
- end
+    Presence.list(@presence_topic)
+    |> Enum.map(fn {user_id, %{metas: [meta | _]}} -> {user_id, meta} end)
+  end
 
   @impl true
   def handle_info(%{event: "presence_diff", payload: _payload}, socket) do

@@ -17,13 +17,13 @@ defmodule Samba.Accounts.User.Changes.CreatePhpbbUser do
 
       case PhpBB.Users
            |> Ash.Changeset.for_create(:create, %{
-        username: username,
-        user_email: to_string(email),
-        user_password: hashed_password,
-        user_regdate: System.system_time(:second),
-        user_rank: 3,
-        user_active: 1
-      })
+             username: username,
+             user_email: to_string(email),
+             user_password: hashed_password,
+             user_regdate: System.system_time(:second),
+             user_rank: 3,
+             user_active: 1
+           })
            |> Ash.create(domain: PhpBB.Domain, authorize?: false) do
         {:ok, phpbb_user} ->
           Logger.warning("--- SUCCESSFULLY CREATED PHPBB USER ID: #{phpbb_user.user_id} ---")

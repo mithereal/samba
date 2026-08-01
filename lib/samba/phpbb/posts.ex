@@ -1,8 +1,8 @@
 defmodule PhpBB.Posts do
   use Ash.Resource,
-      domain: Elixir.PhpBB.Domain,
-      data_layer: AshPostgres.DataLayer,
-      notifiers: Ash.Notifier.PubSub
+    domain: Elixir.PhpBB.Domain,
+    data_layer: AshPostgres.DataLayer,
+    notifiers: Ash.Notifier.PubSub
 
   postgres do
     table "phpbb_posts"
@@ -30,16 +30,18 @@ defmodule PhpBB.Posts do
 
       argument :post_subject, :string, allow_nil?: false
       argument :post_text, :string, allow_nil?: false
-      argument :bbcode_uid, :string,  default: ""
+      argument :bbcode_uid, :string, default: ""
 
       change fn changeset, _context ->
         subject = Ash.Changeset.get_argument(changeset, :post_subject)
         text = Ash.Changeset.get_argument(changeset, :post_text)
+
         bbcode_uid_val =
           case Ash.Changeset.get_argument(changeset, :bbcode_uid) do
             val when val in [nil, ""] -> "0"
             val -> val
           end
+
         Ash.Changeset.after_action(changeset, fn changeset, post ->
           text_params = %{
             post_id: post.post_id,
@@ -82,92 +84,92 @@ defmodule PhpBB.Posts do
       end
     end
 
-#    update :update do
-#      primary? true
-#
-#      accept [
-#        :topic_id,
-#        :forum_id,
-#        :poster_id,
-#        :post_username,
-#        :post_time,
-#        :poster_ip,
-#        :enable_bbcode,
-#        :enable_html,
-#        :enable_smilies,
-#        :enable_sig,
-#        :post_edit_time,
-#        :post_edit_count
-#      ]
-#
-#      argument :post_subject, :string, allow_nil?: true
-#      argument :post_text, :string, allow_nil?: true
-#
-#      change fn changeset, _context ->
-#        subject = Ash.Changeset.get_argument(changeset, :post_subject)
-#        text = Ash.Changeset.get_argument(changeset, :post_text)
-#        bbcode_uid_val = Ash.Changeset.get_attribute(changeset, :bbcode_uid) || ""
-#
-#        Ash.Changeset.after_action(changeset, fn _changeset, post ->
-#          if subject || text do
-#            posts_text_record =
-#              PhpBB.PostsText
-#              |> Ash.get(post.post_id)
-#
-#            text_params =
-#              %{}
-#              |> then(fn map ->
-#                if subject, do: Map.put(map, :post_subject, subject), else: map
-#              end)
-#              |> then(fn map -> if text, do: Map.put(map, :post_text, text), else: map end)
-#              |> Map.put(:bbcode_uid, bbcode_uid_val)
-#
-#            case posts_text_record do
-#              nil ->
-#                full_params =
-#                  Map.merge(
-#                    %{
-#                      post_id: post.post_id,
-#                      bbcode_uid: bbcode_uid_val
-#                    },
-#                    text_params
-#                  )
-#
-#                case PhpBB.PostsText
-#                     |> Ash.Changeset.for_create(:create, full_params)
-#                     |> Ash.create() do
-#                  {:ok, _} ->
-#                    {:ok, post}
-#
-#                  {:error, error} ->
-#                    require Logger
-#
-#                    Logger.error(
-#                      "Failed to create missing PostsText during update: #{inspect(error, pretty: true)}"
-#                    )
-#
-#                    {:error, error}
-#                end
-#
-#              existing_text ->
-#                case PhpBB.PostsText
-#                     |> Ash.Changeset.for_update(:update, text_params, record: existing_text)
-#                     |> Ash.update() do
-#                  {:ok, _} ->
-#                    {:ok, post}
-#
-#                  {:error, error} ->
-#                    require Logger
-#                    Logger.error("Failed to update PostsText: #{inspect(error, pretty: true)}")
-#                    {:error, error}
-#                end
-#            end
-#          else
-#            {:ok, post}
-#          end
-#        end)
-#      end
-#    end
+    #    update :update do
+    #      primary? true
+    #
+    #      accept [
+    #        :topic_id,
+    #        :forum_id,
+    #        :poster_id,
+    #        :post_username,
+    #        :post_time,
+    #        :poster_ip,
+    #        :enable_bbcode,
+    #        :enable_html,
+    #        :enable_smilies,
+    #        :enable_sig,
+    #        :post_edit_time,
+    #        :post_edit_count
+    #      ]
+    #
+    #      argument :post_subject, :string, allow_nil?: true
+    #      argument :post_text, :string, allow_nil?: true
+    #
+    #      change fn changeset, _context ->
+    #        subject = Ash.Changeset.get_argument(changeset, :post_subject)
+    #        text = Ash.Changeset.get_argument(changeset, :post_text)
+    #        bbcode_uid_val = Ash.Changeset.get_attribute(changeset, :bbcode_uid) || ""
+    #
+    #        Ash.Changeset.after_action(changeset, fn _changeset, post ->
+    #          if subject || text do
+    #            posts_text_record =
+    #              PhpBB.PostsText
+    #              |> Ash.get(post.post_id)
+    #
+    #            text_params =
+    #              %{}
+    #              |> then(fn map ->
+    #                if subject, do: Map.put(map, :post_subject, subject), else: map
+    #              end)
+    #              |> then(fn map -> if text, do: Map.put(map, :post_text, text), else: map end)
+    #              |> Map.put(:bbcode_uid, bbcode_uid_val)
+    #
+    #            case posts_text_record do
+    #              nil ->
+    #                full_params =
+    #                  Map.merge(
+    #                    %{
+    #                      post_id: post.post_id,
+    #                      bbcode_uid: bbcode_uid_val
+    #                    },
+    #                    text_params
+    #                  )
+    #
+    #                case PhpBB.PostsText
+    #                     |> Ash.Changeset.for_create(:create, full_params)
+    #                     |> Ash.create() do
+    #                  {:ok, _} ->
+    #                    {:ok, post}
+    #
+    #                  {:error, error} ->
+    #                    require Logger
+    #
+    #                    Logger.error(
+    #                      "Failed to create missing PostsText during update: #{inspect(error, pretty: true)}"
+    #                    )
+    #
+    #                    {:error, error}
+    #                end
+    #
+    #              existing_text ->
+    #                case PhpBB.PostsText
+    #                     |> Ash.Changeset.for_update(:update, text_params, record: existing_text)
+    #                     |> Ash.update() do
+    #                  {:ok, _} ->
+    #                    {:ok, post}
+    #
+    #                  {:error, error} ->
+    #                    require Logger
+    #                    Logger.error("Failed to update PostsText: #{inspect(error, pretty: true)}")
+    #                    {:error, error}
+    #                end
+    #            end
+    #          else
+    #            {:ok, post}
+    #          end
+    #        end)
+    #      end
+    #    end
   end
 
   attributes do

@@ -1,7 +1,7 @@
 defmodule Samba.Accounts.LoginForm do
   use Ash.Resource,
-      otp_app: :samba,
-      domain: Samba.Accounts
+    otp_app: :samba,
+    domain: Samba.Accounts
 
   actions do
     action :submit, :struct do
@@ -19,11 +19,19 @@ defmodule Samba.Accounts.LoginForm do
             if Argon2.verify_pass(password, user.hashed_password) do
               {:ok, user}
             else
-              {:error, Ash.Error.Changes.InvalidAttribute.exception(field: :password, message: "Invalid password")}
+              {:error,
+               Ash.Error.Changes.InvalidAttribute.exception(
+                 field: :password,
+                 message: "Invalid password"
+               )}
             end
 
           {:error, _} ->
-            {:error, Ash.Error.Changes.InvalidAttribute.exception(field: :username, message: "User not found")}
+            {:error,
+             Ash.Error.Changes.InvalidAttribute.exception(
+               field: :username,
+               message: "User not found"
+             )}
         end
       end
     end

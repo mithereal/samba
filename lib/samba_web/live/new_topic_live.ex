@@ -29,9 +29,9 @@ defmodule SambaWeb.NewTopicLive do
       PhpBB.Topics
       |> AshPhoenix.Form.for_create(:create,
         as: "form",
-           params: %{
-             "forum_id" => forum.forum_id,
-           }
+        params: %{
+          "forum_id" => forum.forum_id
+        }
       )
       |> to_form()
 
@@ -82,17 +82,17 @@ defmodule SambaWeb.NewTopicLive do
     """
   end
 
-#  def handle_event("validate", %{"form" => params}, socket) do
-#    # Ensure system assigns aren't wiped out if missing from live validation payload
-#    merged_params =
-#      params
-#      |> Map.put("topic_id", socket.assigns.topic_id)
-#      |> Map.put("forum_id", socket.assigns.forum_id)
-#      |> Map.put("poster_id", socket.assigns.poster_id)
-#
-#    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
-#    {:noreply, assign(socket, form: to_form(form))}
-#  end
+  #  def handle_event("validate", %{"form" => params}, socket) do
+  #    # Ensure system assigns aren't wiped out if missing from live validation payload
+  #    merged_params =
+  #      params
+  #      |> Map.put("topic_id", socket.assigns.topic_id)
+  #      |> Map.put("forum_id", socket.assigns.forum_id)
+  #      |> Map.put("poster_id", socket.assigns.poster_id)
+  #
+  #    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
+  #    {:noreply, assign(socket, form: to_form(form))}
+  #  end
 
   def handle_event("save", %{"form" => params}, socket) do
     submission_params =

@@ -11,12 +11,18 @@ defmodule SambaWeb.CategoryLive.New do
     form =
       Categories
       |> AshPhoenix.Form.for_create(:create,
-           domain: Domain,
-           as: "form"
-         )
+        domain: Domain,
+        as: "form"
+      )
       |> to_form()
 
-    {:ok, assign(socket, form: form, cat_order: next_order, current_user: socket.assigns[:current_user], uri: socket.assigns[:uri])}
+    {:ok,
+     assign(socket,
+       form: form,
+       cat_order: next_order,
+       current_user: socket.assigns[:current_user],
+       uri: socket.assigns[:uri]
+     )}
   end
 
   @impl true
@@ -34,9 +40,9 @@ defmodule SambaWeb.CategoryLive.New do
     case AshPhoenix.Form.submit(socket.assigns.form, params: form_params) do
       {:ok, _category} ->
         {:noreply,
-          socket
-          |> put_flash(:info, "Category created successfully!")
-          |> push_navigate(to: ~p"/settings/categories")}
+         socket
+         |> put_flash(:info, "Category created successfully!")
+         |> push_navigate(to: ~p"/settings/categories")}
 
       {:error, form} ->
         {:noreply, assign(socket, form: to_form(form))}
@@ -50,7 +56,10 @@ defmodule SambaWeb.CategoryLive.New do
       <div class="max-w-2xl mx-auto px-4 py-8">
         <div class="mb-6 flex items-center justify-between">
           <h1 class="text-2xl font-bold text-gray-900">New Category</h1>
-          <.link patch={~p"/settings/categories"} class="text-sm font-medium text-indigo-600 hover:text-indigo-900">
+          <.link
+            patch={~p"/settings/categories"}
+            class="text-sm font-medium text-indigo-600 hover:text-indigo-900"
+          >
             &larr; Back to Categories
           </.link>
         </div>
@@ -61,10 +70,16 @@ defmodule SambaWeb.CategoryLive.New do
             <.input field={@form[:cat_order]} value={@cat_order} type="text" hidden required />
 
             <div class="flex justify-end space-x-3">
-              <.link patch={~p"/settings/categories"} class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+              <.link
+                patch={~p"/settings/categories"}
+                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
+              >
                 Cancel
               </.link>
-              <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
+              <button
+                type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
                 Create Category
               </button>
             </div>
@@ -84,9 +99,9 @@ defmodule SambaWeb.CategoryLive.New do
       |> Ash.read!(domain: Domain)
       |> List.first()
       |> case do
-           nil -> 0
-           cat -> cat.cat_order || 0
-         end
+        nil -> 0
+        cat -> cat.cat_order || 0
+      end
 
     max_order + 1
   end
