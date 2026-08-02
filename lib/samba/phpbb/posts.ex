@@ -127,6 +127,11 @@ defmodule PhpBB.Posts do
       source_attribute :forum_id
       attribute_type :integer
     end
+
+    has_one :post_text, PhpBB.PostsText do
+      destination_attribute :post_id
+      source_attribute :post_id
+    end
   end
 end
 
