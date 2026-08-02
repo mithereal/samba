@@ -22,7 +22,7 @@ defmodule Samba.Accounts.User.Changes.CreatePhpbbUser do
              user_password: hashed_password,
              user_regdate: System.system_time(:second),
              user_rank: 3,
-             user_active: 1
+             user_active: true
            })
            |> Ash.create(domain: PhpBB.Domain, authorize?: false) do
         {:ok, phpbb_user} ->

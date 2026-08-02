@@ -124,7 +124,7 @@ defmodule PhpBB.Topics do
 
     attribute :topic_title, :string do
       allow_nil? false
-      default ""
+      default " "
       public? true
     end
 
@@ -146,10 +146,13 @@ defmodule PhpBB.Topics do
       public? true
     end
 
-    attribute :topic_status, :boolean do
-      public? true
-      default true
+    attribute :topic_status, :integer do
+      constraints min: -32768, max: 32767
+      default 0
       allow_nil? false
+      public? true
+
+      description "0 (UNLOCKED / NORMAL): A standard, open discussion thread where users with proper permissions can freely reply, post, and engage.1 (LOCKED): The thread is closed. Normal users can still read the posts, but the reply button is disabled, and only moderators or administrators can add new posts or unlock it.2 (STICKY): The thread is prioritized and pinned to the top of the forum index above normal topics, ensuring high visibility regardless of recent activity.3 (ANNOUNCEMENT): A board-wide or section-wide announcement that typically pins the topic to the top of every forum category rather than just a single local board."
     end
 
     attribute :topic_vote, :boolean do
@@ -163,6 +166,8 @@ defmodule PhpBB.Topics do
       default 0
       allow_nil? false
       public? true
+
+      description "0 (POST_NORMAL): A standard discussion thread that moves up or down the board based purely on the timestamp of the most recent reply (standard chronological sorting).1 (POST_STICKY): A sticky thread that stays pinned to the top of its specific parent forum's index, making it easily visible above all normal topics regardless of how old it is or when it was last replied to.2 (POST_ANNOUNCE): An announcement thread that is automatically duplicated or surfaced across multiple categories or pinned to the very top of the board, demanding high-priority visibility from all members.3 (POST_GLOBAL_ANNOUNCE): (In some extended mods/later versions) A global announcement that displays across every single forum on the entire board."
     end
   end
 

@@ -17,7 +17,6 @@ defmodule PhpBB.Categories do
     end
 
     update :update do
-      # Make sure :cat_order is included here!
       accept [:cat_title, :cat_order]
     end
   end

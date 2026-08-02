@@ -68,6 +68,8 @@ defmodule PhpBB.Privmsgs do
       default 0
       allow_nil? false
       public? true
+
+      description "0 (PRIVMSGS_READ_MAIL / PRIVMSGS_NEW_MAIL):Represents an incoming message that has been delivered to the recipient's inbox.Initially flagged as new/unread when it arrives, it often transitions programmatically to a standard read state once the recipient opens and views the message.1 (PRIVMSGS_READ_MAIL):Standard flag for a message that resides in the user's Inbox and has already been opened or acknowledged.2 (PRIVMSGS_SEND_MAIL):Used transiently or during the queueing phase when a message is actively being dispatched from the sender.3 (PRIVMSGS_SAVED_OUT_MAIL):Represents a message stored in the sender's Outbox. These are messages that have been successfully sent but have not yet been read or picked up by the recipient.4 (PRIVMSGS_SAVED_IN_MAIL):Represents a message that the recipient has explicitly moved to their Saved / Archive folder to prevent it from being purged by inbox capacity limits."
     end
 
     attribute :privmsgs_subject, :string do

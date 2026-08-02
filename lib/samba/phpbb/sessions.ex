@@ -52,11 +52,14 @@ defmodule PhpBB.Sessions do
     attribute :session_start, :string do
       allow_nil? true
       public? true
+      description "the exact Unix timestamp when a user's session was initially created"
     end
 
     attribute :session_time, :string do
       allow_nil? true
       public? true
+
+      description "a timestamp column located in the phpbb_sessions table that records the exact Unix timestamp of a user's last active request on the board."
     end
 
     attribute :session_ip, :string do
@@ -67,14 +70,15 @@ defmodule PhpBB.Sessions do
     attribute :session_page, :string do
       allow_nil? true
       public? true
+      description "the numeric identifier of the page or script the user is currently viewing."
     end
 
-    attribute :session_logged_in, :string do
+    attribute :session_logged_in, :boolean do
       allow_nil? true
       public? true
     end
 
-    attribute :session_admin, :string do
+    attribute :session_admin, :boolean do
       allow_nil? true
       public? true
     end

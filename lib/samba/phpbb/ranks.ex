@@ -35,7 +35,7 @@ defmodule PhpBB.Ranks do
 
     attribute :rank_title, :string do
       allow_nil? false
-      default ""
+      default " "
       public? true
     end
 
@@ -49,6 +49,8 @@ defmodule PhpBB.Ranks do
       public? true
       default false
       allow_nil? false
+
+      description "0 (Normal / Post-Count Rank): This is a standard, automated rank. Users automatically graduate to this rank once their total post count crosses a specific threshold defined in the database (stored in rank_min)."
     end
 
     attribute :rank_image, :string do
@@ -60,9 +62,9 @@ defmodule PhpBB.Ranks do
   def seed_default_ranks do
     default_ranks = [
       %{rank_title: "Site Admin", rank_min: -1, rank_special: 1, rank_image: ""},
-      %{rank_title: "Junior Member", rank_min: 0, rank_special: 0, rank_image: ""},
-      %{rank_title: "Member", rank_min: 20, rank_special: 0, rank_image: ""},
-      %{rank_title: "Senior Member", rank_min: 50, rank_special: 0, rank_image: ""}
+      %{rank_title: "Junior Member", rank_min: 0, rank_special: false, rank_image: ""},
+      %{rank_title: "Member", rank_min: 20, rank_special: false, rank_image: ""},
+      %{rank_title: "Senior Member", rank_min: 50, rank_special: false, rank_image: ""}
     ]
 
     Enum.each(default_ranks, fn rank_attrs ->

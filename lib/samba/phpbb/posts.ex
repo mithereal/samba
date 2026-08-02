@@ -62,37 +62,37 @@ defmodule PhpBB.Posts do
 
     attribute :post_username, :string do
       public? true
-      default ""
+      default " "
       allow_nil? true
     end
 
     attribute :poster_ip, :string do
       public? true
-      default "00000000"
+      default "127.0.0.1"
       allow_nil? false
     end
 
-    attribute :enable_bbcode, :integer do
+    attribute :enable_bbcode, :boolean do
       public? true
-      default 1
+      default true
       allow_nil? false
     end
 
-    attribute :enable_html, :integer do
+    attribute :enable_html, :boolean do
       public? true
-      default 0
+      default true
       allow_nil? false
     end
 
-    attribute :enable_smilies, :integer do
+    attribute :enable_smilies, :boolean do
       public? true
-      default 1
+      default true
       allow_nil? false
     end
 
-    attribute :enable_sig, :integer do
+    attribute :enable_sig, :boolean do
       public? true
-      default 1
+      default true
       allow_nil? false
     end
 

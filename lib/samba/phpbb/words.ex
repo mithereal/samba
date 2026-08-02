@@ -33,13 +33,13 @@ defmodule PhpBB.Words do
 
     attribute :word, :string do
       allow_nil? false
-      default ""
+      default " "
       public? true
     end
 
     attribute :replacement, :string do
       allow_nil? false
-      default ""
+      default " "
       public? true
     end
   end

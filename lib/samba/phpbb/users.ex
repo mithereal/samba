@@ -173,10 +173,13 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_session_page, :boolean do
-      public? true
-      default true
+    attribute :user_session_page, :integer do
+      constraints min: -32768, max: 32767
+      default 0
       allow_nil? false
+      public? true
+
+      description "Integer Mapping: Rather than storing a bulky URL string, user_session_page typically stores an integer corresponding to a specific script file or module ID mapped inside the forum logic (for example, representing index.php, viewforum.php, viewtopic.php, or the User Control Panel)."
     end
 
     attribute :user_lastvisit, :integer do
@@ -256,6 +259,8 @@ defmodule PhpBB.Users do
       default 0
       allow_nil? false
       public? true
+
+      description "Positive Integers (1, 2, 3, etc.): Represents the exact count of unread incoming private messages that have not yet been opened or read by the user."
     end
 
     attribute :user_unread_privmsg, :integer do
@@ -263,12 +268,16 @@ defmodule PhpBB.Users do
       default 0
       allow_nil? false
       public? true
+
+      description "Real-Time Badge Updates: Instead of querying the entire phpbb_privmsgs table every time a page loads to count messages flagged as unread (privs_type or read status), phpBB maintains this cached integer directly on the user record. UI Notification: When a new private message arrives, this integer increments by 1. The forum engine reads this value on every page load to instantly decide whether to display the flashing New Messages banner or notification box in the header navigation. Once the user opens and reads the message, the system decrements this counter."
     end
 
     attribute :user_last_privmsg, :integer do
       default 0
       allow_nil? false
       public? true
+
+      description "Tracking Activity: The board updates this value whenever a new private message hits the user's inbox or when they dispatch an outbound message. Session & Notification Triggers: While columns like user_unread_privmsg handle the unread badge count, user_last_privmsg helps the engine track private message history timelines and can be used to coordinate popup notification alerts when a fresh message arrives during an active session."
     end
 
     attribute :user_login_tries, :integer do
@@ -289,54 +298,54 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_viewemail, :integer do
-      constraints min: -32768, max: 32767
+    attribute :user_viewemail, :boolean do
       public? true
-    end
-
-    attribute :user_attachsig, :integer do
-      constraints min: -32768, max: 32767
-      allow_nil? true
-      public? true
-    end
-
-    attribute :user_allowhtml, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      public? true
-    end
-
-    attribute :user_allowbbcode, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      public? true
-    end
-
-    attribute :user_allowsmile, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      public? true
-    end
-
-    attribute :user_allow_pm, :integer do
-      constraints min: -32768, max: 32767
-      default 0
+      default true
       allow_nil? false
-      public? true
+
+      description "0 (Hidden / Private): The user's email address is kept private. Other members cannot see the email address in user profiles, and they must use phpBB's internal web-based email form (profile.php?mode=email) to contact the user without revealing the underlying address. 1 (Visible / Public): The user's email address is publicly exposed in their profile view, allowing anyone browsing the forum to see their raw email address."
     end
 
-    attribute :user_allowavatar, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      allow_nil? false
+    attribute :user_attachsig, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :user_allow_viewonline, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      allow_nil? false
+    attribute :user_allowhtml, :boolean do
       public? true
+      default true
+      allow_nil? false
+    end
+
+    attribute :user_allowbbcode, :boolean do
+      public? true
+      default true
+      allow_nil? false
+    end
+
+    attribute :user_allowsmile, :boolean do
+      public? true
+      default true
+      allow_nil? false
+    end
+
+    attribute :user_allow_pm, :boolean do
+      public? true
+      default true
+      allow_nil? false
+    end
+
+    attribute :user_allowavatar, :boolean do
+      public? true
+      default true
+      allow_nil? false
+    end
+
+    attribute :user_allow_viewonline, :boolean do
+      public? true
+      default true
+      allow_nil? false
     end
 
     relationships do
@@ -350,6 +359,8 @@ defmodule PhpBB.Users do
     attribute :user_avatar, :string do
       allow_nil? true
       public? true
+
+      description "If Avatar Type is Remote (2): It stores the full external URL pointing to an image hosted on a third-party server (e.g., [https://example.com/my-avatar.png](https://example.com/my-avatar.png)). If Avatar Type is Upload (1) or Gallery (3): It stores the specific filename or relative path identifier assigned by the forum's upload handler (e.g., 12345678904f2b1a.jpg or gallery/cat_01.gif). If Avatar Type is None (0): The field remains empty (NULL or an empty string)."
     end
 
     attribute :user_avatar_type, :integer do
@@ -357,12 +368,16 @@ defmodule PhpBB.Users do
       default 0
       allow_nil? false
       public? true
+
+      description "0 (None / No Avatar): The user has no avatar selected or displayed. 1 (Upload / Gallery): The avatar image file is stored directly on the server's local filesystem (typically inside an images/avatars/uploaded/ or gallery directory). The database stores the filename generated during upload. 2 (Remote / Linked URL): The avatar is hotlinked from an external website. The corresponding avatar text column stores a full external URL pointing to an image hosted elsewhere. 3 (Gallery Preset): The avatar is selected from a predefined pack of standard images bundled locally with the forum installation."
     end
 
     attribute :user_level, :integer do
       allow_nil? true
       default 0
       public? true
+
+      description "0 (Standard User / Registered User): The default tier for normal members. These users have standard posting, reading, and private messaging rights based on group permissions, but hold no administrative or moderator privileges. 1 (Administrator): Grants full administrative access, allowing the user to manage board configurations, user accounts, ranks, categories, database backups, and global permissions via the administration control panel (ACP). 2 (Moderator): Grants global moderation privileges, allowing the user to edit, delete, move, lock, and split posts and topics across all forums on the board without needing individual forum-by-forum moderator assignments."
     end
 
     attribute :user_lang, :string do
@@ -382,24 +397,25 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_notify_pm, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :user_notify_pm, :boolean do
       public? true
+      default true
+      allow_nil? false
+
+      description "0 (Disabled): The user does not want email alerts. They will only see the private message notification badge or popup when actively browsing the forum. 1 (Enabled): The user wants to be notified via email whenever someone sends them a private message"
     end
 
-    attribute :user_popup_pm, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :user_popup_pm, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :user_notify, :integer do
-      constraints min: -32768, max: 32767
-      allow_nil? true
+    attribute :user_notify, :boolean do
       public? true
+      default true
+      allow_nil? false
+      description "The system automatically send an email to the user's registered address"
     end
 
     attribute :user_actkey, :string do

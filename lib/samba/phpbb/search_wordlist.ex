@@ -33,7 +33,7 @@ defmodule PhpBB.SearchWordlist do
 
     attribute :word_text, :string do
       allow_nil? false
-      default ""
+      default " "
       public? true
     end
 

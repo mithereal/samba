@@ -24,19 +24,18 @@ defmodule PhpBB.Confirm do
   end
 
   attributes do
-    attribute :confirm_id, :string do
+    attribute :confirm_id, :integer do
       public? true
       generated? true
       primary_key? true
       allow_nil? false
-      default ""
     end
 
     attribute :session_id, :integer do
       public? true
       allow_nil? false
       primary_key? true
-      default ""
+      default 0
     end
 
     relationships do
