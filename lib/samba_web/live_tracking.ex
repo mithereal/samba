@@ -3,7 +3,10 @@ defmodule SambaWeb.LiveTracking do
     quote do
       @presence_topic "users:online"
 
+      socket = Keyword.get(unquote(opts), :socket, nil)
+
       @page_name Keyword.get(unquote(opts), :page_name, nil)
+      @page_url Keyword.get(unquote(opts), :page_url, nil)
 
       on_mount({SambaWeb.LiveTracking, :track_presence})
 
@@ -165,17 +168,44 @@ defmodule SambaWeb.LiveTracking do
     end
   end
 
-  def on_mount(:track_presence, _params, session, socket) do
-    current_user = socket.assigns[:current_user]
-    presence_topic = "users:online"
+  def url_path(nil) do
+    nil
+  end
 
+  def url_path(socket) do
     uri_path =
       case socket.private[:live_view_uri] do
         %URI{path: path} ->
           path
 
         _ ->
-          session["request_path"] || session["live_socket_path"] || "/"
+          nil
+      end
+  end
+
+  def on_mount(:track_presence, _params, session, socket) do
+    current_user = socket.assigns[:current_user]
+    presence_topic = "users:online"
+
+    uri_path = url_path(socket) || session["request_path"] || session["live_socket_path"] || nil
+
+    uri_path =
+      case is_nil(uri_path) do
+        false ->
+          case socket.assigns[:page_url] do
+            url when is_binary(url) ->
+              url
+
+            _ ->
+              if Code.ensure_loaded?(socket.view) && function_exported?(socket.view, :page_url, 0) do
+                socket.view.page_url()
+              else
+                @page_url
+              end
+          end
+
+        true ->
+          "/"
       end
 
     page_name =
