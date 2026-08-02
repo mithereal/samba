@@ -1,33 +1,13 @@
 defmodule SambaWeb.ForumTopicsLive do
   use SambaWeb, :live_view
-
+  use SambaWeb.LiveTracking
   require Ash.Query
-  @presence_topic "users:online"
 
   def mount(%{"id" => forum_id} = params, _session, socket) do
     forum_id = parse_int(forum_id)
     page = parse_int(params["page"], 1)
     per_page = parse_int(params["per_page"], 25)
     offset_val = (page - 1) * per_page
-
-    current_user = socket.assigns[:current_user]
-
-    if connected?(socket) and current_user do
-      # Subscribe to presence changes to receive updates
-      Phoenix.PubSub.subscribe(Samba.PubSub, @presence_topic)
-
-      {:ok, _ref} =
-        Presence.track(
-          self(),
-          @presence_topic,
-          to_string(current_user.id),
-          %{
-            username: current_user.username,
-            email: to_string(current_user.email),
-            online_at: System.system_time(:second)
-          }
-        )
-    end
 
     forum =
       PhpBB.Forums
@@ -353,14 +333,4 @@ defmodule SambaWeb.ForumTopicsLive do
   end
 
   defp parse_int(_, default), do: default
-
-  defp format_timestamp(nil), do: ""
-
-  defp format_timestamp(unix_timestamp) when is_integer(unix_timestamp) and unix_timestamp > 0 do
-    unix_timestamp
-    |> DateTime.from_unix!()
-    |> Calendar.strftime("%b %d, %Y, %I:%M %p")
-  end
-
-  defp format_timestamp(_), do: ""
 end

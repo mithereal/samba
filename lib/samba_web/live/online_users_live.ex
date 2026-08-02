@@ -1,17 +1,20 @@
 defmodule SambaWeb.OnlineUsersLive do
   use SambaWeb, :live_view
   use SambaWeb.LiveTracking
-
   @impl true
-  def mount(_params, _session, socket) do
 
-    online_users = []
-  #  online_users = list_forum_online_users()
-   # {:ok, phpbb_online_users} = get_phpbb_users_by_account_ids(online_users)
+  def page_name() do
+    "Online Users"
+  end
+
+  def mount(_params, _session, socket) do
+    # online_users = []
     phpbb_online_users = []
     guest_users = []
-#    guest_users = list_guest_users()
-
+    online_users = list_registered_users()
+    {:ok, phpbb_online_users} = get_phpbb_users(online_users)
+    guest_users = list_guest_users()
+    guest_users = marshall_guest_users(guest_users)
 
     socket =
       socket
@@ -77,16 +80,13 @@ defmodule SambaWeb.OnlineUsersLive do
           <%= for user <- @users do %>
             <div class="flex items-center px-6 py-4 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors">
               <div class="w-1/3 font-medium text-zinc-900 dark:text-zinc-100">
-                <%= if user.username do %>
-                <% else %>
-                  <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
-                <% end %>
+                <span class="text-zinc-500 dark:text-zinc-400">{user.username}</span>
               </div>
               <div class="w-1/3 text-zinc-500 dark:text-zinc-400">
-
+                <span class="text-zinc-500 dark:text-zinc-400">{format_timestamp(user.online_at)}</span>
               </div>
               <div class="w-1/3">
-
+                <span class="text-zinc-500 dark:text-zinc-400">{user.location.page_name}</span>
               </div>
             </div>
           <% end %>
@@ -95,31 +95,58 @@ defmodule SambaWeb.OnlineUsersLive do
     </div>
     """
   end
+
   import Ash.Query
 
-  def get_phpbb_users_by_account_ids(account_user_ids) do
+  defp get_phpbb_users(presence_list) do
+    import Ash.Query
+
+    account_user_ids =
+      presence_list
+      |> Enum.map(fn {user_id, _meta} ->
+        user_id
+      end)
+      |> Enum.reject(&is_nil/1)
+
     case Samba.Accounts.User
          |> filter(id in ^account_user_ids)
          |> select([:id, :phpbb_user_id])
          |> Ash.read(authorize?: false) do
       {:ok, accounts} ->
-        phpbb_ids = Enum.map(accounts, & &1.phpbb_user_id) |> Enum.reject(&is_nil/1)
+        account_to_phpbb = Map.new(accounts, fn acc -> {to_string(acc.id), acc.phpbb_user_id} end)
+        phpbb_ids = accounts |> Enum.map(& &1.phpbb_user_id) |> Enum.reject(&is_nil/1)
 
         if Enum.empty?(phpbb_ids) do
-          {:ok, []}
+          result =
+            Enum.map(presence_list, fn {user_id, meta} ->
+              Map.merge(sanitize_meta(meta), %{phpbb: nil})
+            end)
+
+          {:ok, result}
         else
           case PhpBB.Users
                |> filter(user_id in ^phpbb_ids)
                |> select([:user_id, :username, :user_rank, :user_allow_viewonline])
                |> Ash.read(domain: PhpBB.Domain, authorize?: false) do
             {:ok, phpbb_users} ->
+              phpbb_users_map = Map.new(phpbb_users, fn u -> {u.user_id, u} end)
+
               result =
-                Enum.map(phpbb_users, fn u ->
+                Enum.map(presence_list, fn {user_id, meta} ->
+                  sanitized_meta = List.first(sanitize_meta(meta).metas)
+                  phpbb_id = Map.get(account_to_phpbb, user_id)
+                  phpbb_user = phpbb_id && Map.get(phpbb_users_map, phpbb_id)
+
                   %{
-                    id: u.user_id,
-                    username: u.username,
-                    role: u.user_rank,
-                    visible: u.user_allow_viewonline
+                    id: phpbb_user.user_id,
+                    username: phpbb_user.username,
+                    role: phpbb_user.user_rank,
+                    visible: phpbb_user.user_allow_viewonline,
+                    location: %{
+                      page_name: sanitized_meta.page_name,
+                      link: sanitized_meta.location
+                    },
+                    online_at: sanitized_meta.online_at
                   }
                 end)
 
@@ -133,5 +160,39 @@ defmodule SambaWeb.OnlineUsersLive do
       {:error, reason} ->
         {:error, reason}
     end
+  end
+
+  def marshall_guest_users(users) do
+    Enum.flat_map(users, fn
+      {_, %{metas: metas}} when is_list(metas) ->
+        Enum.map(metas, fn meta ->
+          %{
+            username: "guest",
+            location: %{page_name: Map.get(meta, :page_name)},
+            online_at: Map.get(meta, :online_at)
+          }
+        end)
+
+      {_, %{metas: metas}} when is_map(metas) ->
+        [
+          %{
+            username: "guest",
+            location: %{page_name: Map.get(metas, :page_name)},
+            online_at: Map.get(metas, :online_at)
+          }
+        ]
+
+      {_, path} when is_binary(path) ->
+        [
+          %{
+            username: "guest",
+            location: %{page_name: "Private Area"},
+            online_at: DateTime.utc_now()
+          }
+        ]
+
+      _ ->
+        []
+    end)
   end
 end

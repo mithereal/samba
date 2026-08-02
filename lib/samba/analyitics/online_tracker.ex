@@ -3,7 +3,7 @@ defmodule Samba.Analytics.OnlineTracker do
 
   @name __MODULE__
   @presence_topic "users:online"
-  @db_persist_interval :timer.minutes(5)
+  @db_persist_interval :timer.minutes(1)
 
   def start_link(opts \\ []) do
     GenServer.start_link(@name, opts, name: @name)
@@ -17,12 +17,13 @@ defmodule Samba.Analytics.OnlineTracker do
     # Defer looking up presence until after the supervisor finishes starting processes
     send(self(), :init_tracker)
 
-    {:ok, %{
-      max_count: 0,
-      current_date: Date.utc_today(),
-      recorded_at: DateTime.utc_now(),
-      dirty?: false
-    }}
+    {:ok,
+     %{
+       max_count: 0,
+       current_date: Date.utc_today(),
+       recorded_at: DateTime.utc_now(),
+       dirty?: false
+     }}
   end
 
   @impl true
@@ -55,7 +56,8 @@ defmodule Samba.Analytics.OnlineTracker do
           {state.max_count, state.current_date, state.dirty?}
       end
 
-    {:noreply, %{state | max_count: max_count, current_date: current_date, recorded_at: now, dirty?: dirty?}}
+    {:noreply,
+     %{state | max_count: max_count, current_date: current_date, recorded_at: now, dirty?: dirty?}}
   end
 
   @impl true

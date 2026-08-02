@@ -17,6 +17,7 @@ defmodule SambaWeb.DashboardLive do
 
     socket =
       socket
+      |> assign(:page_title, "Dashboard")
       |> assign(:total_users, total_users)
       |> assign(:total_teams, total_teams)
       |> assign(:active_teams, active_teams)

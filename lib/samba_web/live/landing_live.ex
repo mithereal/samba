@@ -98,8 +98,14 @@ defmodule SambaWeb.LandingLive do
                   variant="shadow"
                   color="silver"
                 />
-      <div class="mb-4"></div>
-                <.password_field variant="shadow" name="password" value="" size="extra_small" color="silver" />
+                <div class="mb-4"></div>
+                <.password_field
+                  variant="shadow"
+                  name="password"
+                  value=""
+                  size="extra_small"
+                  color="silver"
+                />
                 <div class="flex gap-2 p-2">
                   <.checkbox_field name="remember" color="natural" value="false" class="pl-4" />Keep me logged in
                   <.button>Login</.button>
