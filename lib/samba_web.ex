@@ -216,6 +216,7 @@ defmodule SambaWeb do
       import SambaWeb.Components.Jumbotron
       import SambaWeb.Components.Pagination
       import SambaWeb.Components.PasswordField
+      import SambaWeb.Components.RadioCard
       import SambaWeb.Components.SearchField
       import SambaWeb.Components.Stat
       import SambaWeb.Components.TextField

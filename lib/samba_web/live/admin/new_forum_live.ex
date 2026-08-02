@@ -111,28 +111,25 @@ defmodule SambaWeb.Admin.New.Forum.Live do
             />
             <div class="mb-4"></div>
 
-            <div class="flex flex-col">
-              <!-- Forum Status -->
-              <div>
-                <.select
-                  id="forum-status-select"
-                  name="form[forum_status]"
-                  label="Forum Status"
-                  options={[
-                    %{value: "0", label: "Unlocked"},
-                    %{value: "1", label: "Locked"}
-                  ]}
-                  value={to_string(@form[:forum_status].value || "0")}
-                  class="flex flex-col items-start gap-1"
-                  label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
-                  trigger_class="flex h-8 w-full items-center justify-between gap-3 pl-2 pr-1 text-sm border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white"
-                  popup_class="bg-white dark:bg-neutral-950 border border-neutral-950 dark:border-white text-neutral-950 dark:text-white shadow-md z-10 py-1"
-                  item_class="py-1.5 px-2.5 text-sm data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950 cursor-default"
-                />
+          <div>
+                <.radio_card field={@form[:topic_status]} space="small" cols="two" color="misc" size="extra_small" variant="shadow" color="info" field={@form[:forum_status]}>
+                  <:radio
+                    value="0"
+                    title="Unlocked"
+                    description="Members can freely reply and participate in this discussion."
+                    icon="hero-lock-open"
+                  />
+                  <:radio
+                    value="1"
+                    title="Locked"
+                    description="Discussion is closed; only moderators can reply."
+                    icon="hero-lock-closed"
+                  />
+                </.radio_card>
               </div>
-            </div>
 
-            <div class="[&_.ck-editor__editable]:!min-h-[56rem] mt-4">
+
+            <div class="[&_.ck-editor__editable]:!min-h-[56rem] mt-4 mb-4">
               <.ckeditor
                 id="content-editor"
                 field={@form[:forum_desc]}
@@ -141,6 +138,24 @@ defmodule SambaWeb.Admin.New.Forum.Live do
               />
             </div>
 
+    <div class="flex flex-row">
+                <.radio_card  space="small" cols="one" size="extra_small" variant="bordered" color="success" field={@form[:auth_announce]}>
+                  <:radio
+                    value="announcement"
+                    title="Announcement"
+                    description="Important global or forum-specific notice pinned at the top."
+                    icon="hero-megaphone"
+                  />
+      </.radio_card>
+                <.radio_card space="small" cols="one" size="extra_small" variant="bordered" color="success" field={@form[:auth_sticky]}>
+                  <:radio
+                    value="sticky"
+                    title="Sticky"
+                    description="Stays fixed near the top of the topic list for high visibility."
+                    icon="hero-bookmark"
+                  />
+                </.radio_card>
+              </div>
             <div class="flex flex-row justify-end space-x-2 mt-4">
               <.button type="submit">Submit</.button>
             </div>
