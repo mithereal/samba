@@ -225,7 +225,11 @@ defmodule SambaWeb.LiveTracking do
           end
 
         true ->
-          "/"
+          if Code.ensure_loaded?(socket.view) && function_exported?(socket.view, :page_url, 0) do
+            socket.view.page_url()
+          else
+            @page_url
+          end
       end
 
     page_name =
