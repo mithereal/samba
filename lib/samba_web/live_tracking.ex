@@ -28,7 +28,27 @@ defmodule SambaWeb.LiveTracking do
           user_key = if current_user, do: to_string(current_user.id), else: "guest"
 
           parsed_uri = URI.parse(uri)
-          uri_path = parsed_uri.path || "/"
+          uri_path = parsed_uri.path || nil
+
+          uri_path =
+            case is_nil(uri_path) do
+              false ->
+                case socket.assigns[:page_url] do
+                  url when is_binary(url) ->
+                    url
+
+                  _ ->
+                    if Code.ensure_loaded?(socket.view) &&
+                         function_exported?(socket.view, :page_url, 0) do
+                      socket.view.page_url()
+                    else
+                      @page_url
+                    end
+                end
+
+              true ->
+                "/"
+            end
 
           page_name =
             case socket.assigns[:page_name] do

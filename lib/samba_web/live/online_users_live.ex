@@ -7,6 +7,10 @@ defmodule SambaWeb.OnlineUsersLive do
     "Online Users"
   end
 
+  def page_url() do
+    "/onlineusers"
+  end
+
   def mount(_params, _session, socket) do
     # online_users = []
     phpbb_online_users = []
@@ -86,7 +90,7 @@ defmodule SambaWeb.OnlineUsersLive do
                 <span class="text-zinc-500 dark:text-zinc-400">{format_timestamp(user.online_at)}</span>
               </div>
               <div class="w-1/3">
-                <span class="text-zinc-500 dark:text-zinc-400">{user.location.page_name}</span>
+                <span class="text-zinc-500 dark:text-zinc-400"><.link navigate={user.location.link}>{user.location.page_name}</.link></span>
               </div>
             </div>
           <% end %>
@@ -168,7 +172,7 @@ defmodule SambaWeb.OnlineUsersLive do
         Enum.map(metas, fn meta ->
           %{
             username: "guest",
-            location: %{page_name: Map.get(meta, :page_name)},
+            location: %{page_name: Map.get(meta, :page_name), link: Map.get(meta, :location)},
             online_at: Map.get(meta, :online_at)
           }
         end)
@@ -177,7 +181,7 @@ defmodule SambaWeb.OnlineUsersLive do
         [
           %{
             username: "guest",
-            location: %{page_name: Map.get(metas, :page_name)},
+            location: %{page_name: Map.get(metas, :page_name), link: Map.get(metas, :location)},
             online_at: Map.get(metas, :online_at)
           }
         ]
@@ -186,7 +190,7 @@ defmodule SambaWeb.OnlineUsersLive do
         [
           %{
             username: "guest",
-            location: %{page_name: "Private Area"},
+            location: %{page_name: "Private Area", link: "/"},
             online_at: DateTime.utc_now()
           }
         ]
