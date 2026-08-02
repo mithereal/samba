@@ -72,6 +72,14 @@ defmodule SambaWeb.Admin.Forums.List.Live do
   end
 
   @impl true
+  def handle_event("pagination", %{"page" => page_num}, socket) do
+    {:noreply,
+     push_navigate(socket,
+       to: ~p"/settings/forums?cat_id=#{socket.assigns.selected_cat_id}&page=#{page_num}"
+     )}
+  end
+
+  @impl true
   def handle_event("reorder", %{"ids" => ids}, socket) do
     base_offset = (socket.assigns.page - 1) * @per_page
 
@@ -118,20 +126,10 @@ defmodule SambaWeb.Admin.Forums.List.Live do
             <.select
               id="category-filter-select"
               name="category_id"
-              placeholder="Select Category"
-              class="flex flex-col items-start gap-1"
-              label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
-              trigger_class="flex h-8 min-w-40 items-center justify-between gap-3 pl-2 pr-1 text-sm leading-none whitespace-nowrap border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white select-none hover:not-data-[disabled]:bg-neutral-100 dark:hover:not-data-[disabled]:bg-neutral-800 active:not-data-[disabled]:bg-neutral-200 dark:active:not-data-[disabled]:bg-neutral-700 data-[disabled]:border-neutral-500 data-[disabled]:text-neutral-500 disabled:border-neutral-500 disabled:text-neutral-500 dark:data-[disabled]:border-neutral-400 dark:data-[disabled]:text-neutral-400 data-[popup-open]:bg-neutral-100 dark:data-[popup-open]:bg-neutral-800 font-normal focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
-              value_class="data-[placeholder]:text-neutral-500 dark:data-[placeholder]:text-neutral-400"
-              icon_class="flex items-center"
-              positioner_class="outline-hidden select-none z-10"
-              popup_class="group min-w-[var(--anchor-width)] origin-[var(--transform-origin)] py-1 bg-clip-padding border border-neutral-950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[side=none]:translate-y-px data-[side=none]:min-w-[calc(var(--anchor-width)+1.75rem)] data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:border-white dark:bg-neutral-950 dark:text-white dark:shadow-none"
-              item_class="grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 py-1.5 pr-4 pl-2.5 text-sm outline-hidden select-none data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950"
-              item_indicator_class="col-start-1"
-              item_text_class="col-start-2"
               options={@category_options}
               value={@selected_cat_id}
               on_change="change_category"
+              placeholder="Select Category"
             />
           </div>
 
@@ -185,31 +183,13 @@ defmodule SambaWeb.Admin.Forums.List.Live do
           </ul>
         </div>
 
-        <div class="flex items-center justify-between mt-6">
-          <div>
-            <p class="text-sm text-gray-700">
-              Page <span class="font-medium">{@page}</span>
-              of <span class="font-medium">{@total_pages}</span>
-            </p>
-          </div>
-
-          <div class="flex space-x-2">
-            <.link
-              :if={@page > 1}
-              navigate={~p"/settings/forums?cat_id={@selected_cat_id}&page={@page - 1}"}
-              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Previous
-            </.link>
-
-            <.link
-              :if={@page < @total_pages}
-              navigate={~p"/settings/forums?cat_id={@selected_cat_id}&page={@page + 1}"}
-              class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-            >
-              Next
-            </.link>
-          </div>
+        <div :if={@total_pages > 1} class="flex items-center justify-end mt-6">
+          <.pagination
+            id="forums-pagination"
+            total={@total_pages}
+            active={@page}
+            color="primary"
+          />
         </div>
       </div>
     </Layouts.app>

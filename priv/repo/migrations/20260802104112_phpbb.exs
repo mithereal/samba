@@ -10,17 +10,17 @@ defmodule Samba.Repo.Migrations.Phpbb do
   def up do
     create table(:phpbb_posts, primary_key: false) do
       add :post_id, :bigserial, null: false, primary_key: true
-      add :topic_id, :bigint, null: false, default: 0
-      add :forum_id, :bigint, null: false, default: 0
-      add :poster_id, :bigint, null: false, default: 0
-      add :post_username, :text
-      add :post_time, :bigint, null: false, default: 0
+      add :topic_id, :bigint, null: false
+      add :forum_id, :bigint, null: false
+      add :poster_id, :bigint, null: false
+      add :post_time, :bigint, null: false
+      add :post_username, :text, default: ""
       add :poster_ip, :text, null: false, default: "00000000"
       add :enable_bbcode, :bigint, null: false, default: 1
       add :enable_html, :bigint, null: false, default: 0
       add :enable_smilies, :bigint, null: false, default: 1
       add :enable_sig, :bigint, null: false, default: 1
-      add :post_edit_time, :bigint
+      add :post_edit_time, :bigint, default: 0
       add :post_edit_count, :bigint, null: false, default: 0
     end
 
@@ -146,22 +146,22 @@ defmodule Samba.Repo.Migrations.Phpbb do
           null: false
 
       add :forum_name, :text, null: false
-      add :forum_desc, :text
-      add :forum_status, :bigint, null: false, default: 0
-      add :forum_order, :bigint, null: false, default: 1
-      add :prune_enable, :bigint, null: false, default: 0
+      add :forum_desc, :text, null: false
+      add :forum_status, :bigint, default: 0
+      add :forum_order, :bigint, default: 1
+      add :prune_enable, :bigint, default: 0
       add :prune_next, :bigint
-      add :auth_view, :bigint, null: false, default: 0
-      add :auth_read, :bigint, null: false, default: 0
-      add :auth_post, :bigint, null: false, default: 0
-      add :auth_reply, :bigint, null: false, default: 0
-      add :auth_edit, :bigint, null: false, default: 0
-      add :auth_delete, :bigint, null: false, default: 0
-      add :auth_announce, :bigint, null: false, default: 0
-      add :auth_sticky, :bigint, null: false, default: 0
-      add :auth_pollcreate, :bigint, null: false, default: 0
-      add :auth_vote, :bigint, null: false, default: 0
-      add :auth_attachments, :bigint, null: false, default: 0
+      add :auth_view, :bigint, default: 0
+      add :auth_read, :bigint, default: 0
+      add :auth_post, :bigint, default: 0
+      add :auth_reply, :bigint, default: 0
+      add :auth_edit, :bigint, default: 0
+      add :auth_delete, :bigint, default: 0
+      add :auth_announce, :bigint, default: 0
+      add :auth_sticky, :bigint, default: 0
+      add :auth_pollcreate, :bigint, default: 0
+      add :auth_vote, :bigint, default: 0
+      add :auth_attachments, :bigint, default: 0
     end
 
     create unique_index(:phpbb_forums, [:forum_id],
@@ -280,22 +280,10 @@ defmodule Samba.Repo.Migrations.Phpbb do
     end
 
     create table(:phpbb_posts_text, primary_key: false) do
-      add :post_id,
-          references(:phpbb_posts,
-            column: :post_id,
-            name: "phpbb_posts_text_post_id_fkey",
-            type: :bigint,
-            prefix: "public"
-          ), primary_key: true, null: false
-
-      add :topic_id, :bigint, null: false, default: 0
-      add :forum_id, :bigint, null: false, default: 0
-      add :poster_id, :bigint, null: false, default: 0
-      add :post_subject, :text
-      add :post_text, :text, null: false
+      add :post_id, :bigint, null: false, primary_key: true
       add :bbcode_uid, :text, null: false, default: ""
-      add :post_checksum, :text
-      add :post_edit_reason, :text
+      add :post_subject, :text, default: ""
+      add :post_text, :text
     end
 
     create table(:phpbb_forum_prune, primary_key: false) do
@@ -335,27 +323,7 @@ defmodule Samba.Repo.Migrations.Phpbb do
 
     create table(:phpbb_topics, primary_key: false) do
       add :topic_id, :bigserial, null: false, primary_key: true
-    end
 
-    alter table(:phpbb_posts) do
-      modify :topic_id,
-             references(:phpbb_topics,
-               column: :topic_id,
-               name: "phpbb_posts_topic_id_fkey",
-               type: :bigint,
-               prefix: "public"
-             )
-
-      modify :forum_id,
-             references(:phpbb_forums,
-               column: :forum_id,
-               name: "phpbb_posts_forum_id_fkey",
-               type: :bigint,
-               prefix: "public"
-             )
-    end
-
-    alter table(:phpbb_topics) do
       add :forum_id,
           references(:phpbb_forums,
             column: :forum_id,
@@ -519,16 +487,6 @@ defmodule Samba.Repo.Migrations.Phpbb do
 
     create table(:phpbb_users, primary_key: false) do
       add :user_id, :bigserial, null: false, primary_key: true
-    end
-
-    alter table(:phpbb_posts) do
-      modify :poster_id,
-             references(:phpbb_users,
-               column: :user_id,
-               name: "phpbb_posts_poster_id_fkey",
-               type: :bigint,
-               prefix: "public"
-             )
     end
 
     alter table(:phpbb_user_group) do
@@ -879,12 +837,6 @@ defmodule Samba.Repo.Migrations.Phpbb do
       modify :user_id, :bigint
     end
 
-    drop constraint(:phpbb_posts, "phpbb_posts_poster_id_fkey")
-
-    alter table(:phpbb_posts) do
-      modify :poster_id, :bigint
-    end
-
     drop table(:phpbb_users)
 
     alter table(:phpbb_groups) do
@@ -967,30 +919,6 @@ defmodule Samba.Repo.Migrations.Phpbb do
 
     drop constraint(:phpbb_topics, "phpbb_topics_forum_id_fkey")
 
-    alter table(:phpbb_topics) do
-      remove :topic_type
-      remove :topic_vote
-      remove :topic_status
-      remove :topic_replies
-      remove :topic_views
-      remove :topic_time
-      remove :topic_title
-      remove :topic_moved_id
-      remove :last_post_id
-      remove :first_post_id
-      remove :topic_poster
-      remove :forum_id
-    end
-
-    drop constraint(:phpbb_posts, "phpbb_posts_topic_id_fkey")
-
-    drop constraint(:phpbb_posts, "phpbb_posts_forum_id_fkey")
-
-    alter table(:phpbb_posts) do
-      modify :forum_id, :bigint
-      modify :topic_id, :bigint
-    end
-
     drop table(:phpbb_topics)
 
     drop_if_exists unique_index(:phpbb_search_wordmatch, [:word_id],
@@ -1008,8 +936,6 @@ defmodule Samba.Repo.Migrations.Phpbb do
     drop constraint(:phpbb_forum_prune, "phpbb_forum_prune_forum_id_fkey")
 
     drop table(:phpbb_forum_prune)
-
-    drop constraint(:phpbb_posts_text, "phpbb_posts_text_post_id_fkey")
 
     drop table(:phpbb_posts_text)
 

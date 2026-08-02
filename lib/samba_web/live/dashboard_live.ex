@@ -15,9 +15,11 @@ defmodule SambaWeb.DashboardLive do
       |> Ash.Query.filter(active == true)
       |> Ash.count!(authorize?: false)
 
+    page_name = "Online Users"
+
     socket =
       socket
-      |> assign(:page_title, "Dashboard")
+      |> assign(:page_name, page_name)
       |> assign(:total_users, total_users)
       |> assign(:total_teams, total_teams)
       |> assign(:active_teams, active_teams)

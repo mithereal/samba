@@ -9,24 +9,13 @@ defmodule Samba.Repo.Migrations.AddUsername do
 
   def up do
     alter table(:users) do
-      add :phpbb_user_id,
-          references(:phpbb_users,
-            column: :user_id,
-            name: "users_phpbb_user_id_fkey",
-            type: :bigint,
-            prefix: "public"
-          )
-
       add :username, :text
     end
   end
 
   def down do
-    drop constraint(:users, "users_phpbb_user_id_fkey")
-
     alter table(:users) do
       remove :username
-      remove :phpbb_user_id
     end
   end
 end

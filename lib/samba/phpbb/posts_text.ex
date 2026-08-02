@@ -1,6 +1,6 @@
 defmodule PhpBB.PostsText do
   use Ash.Resource,
-    domain: Elixir.PhpBB.Domain,
+    domain: PhpBB.Domain,
     data_layer: AshPostgres.DataLayer,
     notifiers: Ash.Notifier.PubSub
 
@@ -10,31 +10,16 @@ defmodule PhpBB.PostsText do
   end
 
   actions do
-    defaults [:read, :destroy]
+    defaults [:read, :update, :destroy]
 
     create :create do
       primary? true
 
       accept [
         :post_id,
-        :topic_id,
-        :forum_id,
-        :poster_id,
-        :post_subject,
-        :post_text,
-        :bbcode_uid
-      ]
-    end
-
-    update :update do
-      primary? true
-
-      accept [
-        :post_subject,
-        :post_text,
         :bbcode_uid,
-        :post_checksum,
-        :post_edit_reason
+        :post_subject,
+        :post_text
       ]
     end
   end
@@ -46,54 +31,29 @@ defmodule PhpBB.PostsText do
       allow_nil? false
     end
 
-    attribute :topic_id, :integer do
+    attribute :bbcode_uid, :string do
       public? true
+      default ""
       allow_nil? false
-      default 0
-    end
-
-    attribute :forum_id, :integer do
-      public? true
-      allow_nil? false
-      default 0
-    end
-
-    attribute :poster_id, :integer do
-      public? true
-      allow_nil? false
-      default 0
     end
 
     attribute :post_subject, :string do
       public? true
+      default ""
       allow_nil? true
     end
 
     attribute :post_text, :string do
       public? true
-      allow_nil? false
-    end
-
-    attribute :bbcode_uid, :string do
-      public? true
-      allow_nil? false
-      default ""
-    end
-
-    attribute :post_checksum, :string do
-      public? true
-    end
-
-    attribute :post_edit_reason, :string do
-      public? true
+      allow_nil? true
     end
   end
 
-  relationships do
-    belongs_to :post, PhpBB.Posts do
-      destination_attribute :post_id
-      source_attribute :post_id
-      attribute_type :integer
-    end
-  end
+  #  relationships do
+  #    belongs_to :post, PhpBB.Posts do
+  #      destination_attribute :post_id
+  #      source_attribute :post_id
+  #      attribute_type :integer
+  #    end
+  #  end
 end

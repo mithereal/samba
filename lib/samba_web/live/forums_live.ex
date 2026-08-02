@@ -141,7 +141,7 @@ defmodule SambaWeb.ForumIndexLive do
                   <%= if forum.last_post do %>
                     <div class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-[200px] md:max-w-none">
                       <.link
-                        navigate={~p"/topic/post/#{forum.last_post.post_id}"}
+                        navigate={~p"/topics/post/#{forum.last_post.post_id}"}
                         class="hover:underline"
                       >
                         {Map.get(forum.last_post, :subject, "View Post")}

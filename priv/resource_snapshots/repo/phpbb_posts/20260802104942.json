@@ -14,7 +14,7 @@
     },
     {
       "allow_nil?": false,
-      "default": "0",
+      "default": "nil",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
@@ -45,7 +45,7 @@
     },
     {
       "allow_nil?": false,
-      "default": "0",
+      "default": "nil",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
@@ -76,7 +76,7 @@
     },
     {
       "allow_nil?": false,
-      "default": "0",
+      "default": "nil",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
@@ -106,20 +106,8 @@
       "type": "bigint"
     },
     {
-      "allow_nil?": true,
-      "default": "nil",
-      "generated?": false,
-      "precision": null,
-      "primary_key?": false,
-      "references": null,
-      "scale": null,
-      "size": null,
-      "source": "post_username",
-      "type": "text"
-    },
-    {
       "allow_nil?": false,
-      "default": "0",
+      "default": "nil",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
@@ -128,6 +116,18 @@
       "size": null,
       "source": "post_time",
       "type": "bigint"
+    },
+    {
+      "allow_nil?": true,
+      "default": "\"\"",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "post_username",
+      "type": "text"
     },
     {
       "allow_nil?": false,
@@ -191,7 +191,7 @@
     },
     {
       "allow_nil?": true,
-      "default": "nil",
+      "default": "0",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
@@ -220,7 +220,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "C0B5A06399E95B2FD5900FE953FFD764A10EC0C2F9FD6BBAF6318E8B66794A6B",
+  "hash": "9FDF755AFE54DB66CF4A102429931524233B4192244C5B2E4228FED8B9E08550",
   "identities": [],
   "multitenancy": {
     "attribute": null,

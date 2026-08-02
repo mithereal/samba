@@ -1,5 +1,6 @@
 defmodule SambaWeb.MemberListLive do
   use SambaWeb, :live_view
+  use SambaWeb.LiveTracking
 
   def mount(_params, _session, socket) do
     members =

@@ -58,9 +58,10 @@ defmodule SambaWeb.NewPostLive do
 
   def render(assigns) do
     ~H"""
+    <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
       <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
-        <.form for={@form} phx-submit="save" phx-change="validate">
+        <.form for={@form} phx-submit="save">
           <%!-- Hidden inputs for backend state that shouldn't be controlled by visible form inputs --%>
           <input type="hidden" name="form[topic_id]" value={@topic_id} />
           <input type="hidden" name="form[forum_id]" value={@forum_id} />

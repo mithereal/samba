@@ -74,9 +74,10 @@ defmodule SambaWeb.Router do
 
       live "/forums", ForumIndexLive, :index
       live "/forums/:id", ForumTopicsLive, :index
-      live "/forum/:id/topic/new", NewTopicLive, :index
+      live "/forums/:id/topic/new", NewTopicLive, :index
+      live "/topics/:id/new", NewPostLive, :index
 
-      live "/topic/:id", PostsLive, :index
+      live "/topics/:id", PostsLive, :index
 
       live "/memberlist", MemberListLive, :index
       live "/viewonline", OnlineUsersLive, :index
@@ -115,9 +116,9 @@ defmodule SambaWeb.Router do
     live "/forums/rss_feeds", RSSIndexLive, :index
     live "/forums/:id", ForumTopicsLive, :index
     live "/forums/new", NewForumLive, :index
-    live "/topic/:id", PostsLive, :index
-    live "/topic/:id/reply", PostLive, :index
-    live "/topic/post/:id", TopicPostsLive, :index
+    live "/topics/:id", PostsLive, :index
+    live "/topics/:id/reply", PostLive, :index
+    live "/topics/post/:id", TopicPostsLive, :index
     live "/viewonline", OnlineUsersLive, :index
     live "/profile/:id", UserProfileLive, :index
 

@@ -69,7 +69,7 @@ defmodule SambaWeb.Admin.New.Forum.Live do
               name="form[cat_id]"
               label="Categories"
               placeholder="Select Category"
-              class="flex flex-col items-start gap-1"
+              class="flex flex-col items-start gap-1 mb-4"
               label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
               trigger_class="flex h-8 min-w-40 items-center justify-between gap-3 pl-2 pr-1 text-sm leading-none whitespace-nowrap border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white select-none hover:not-data-[disabled]:bg-neutral-100 dark:hover:not-data-[disabled]:bg-neutral-800 active:not-data-[disabled]:bg-neutral-200 dark:active:not-data-[disabled]:bg-neutral-700 data-[disabled]:border-neutral-500 data-[disabled]:text-neutral-500 disabled:border-neutral-500 disabled:text-neutral-500 dark:data-[disabled]:border-neutral-400 dark:data-[disabled]:text-neutral-400 data-[popup-open]:bg-neutral-100 dark:data-[popup-open]:bg-neutral-800 font-normal focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               value_class="data-[placeholder]:text-neutral-500 dark:data-[placeholder]:text-neutral-400"
@@ -111,15 +111,37 @@ defmodule SambaWeb.Admin.New.Forum.Live do
             />
             <div class="mb-4"></div>
 
-            <.ckeditor
-              id="content-editor"
-              field={@form[:forum_desc]}
-              preset={@preset}
-              type="classic"
-            />
+            <div class="flex flex-col">
+              <!-- Forum Status -->
+              <div>
+                <.select
+                  id="forum-status-select"
+                  name="form[forum_status]"
+                  label="Forum Status"
+                  options={[
+                    %{value: "0", label: "Unlocked"},
+                    %{value: "1", label: "Locked"}
+                  ]}
+                  value={to_string(@form[:forum_status].value || "0")}
+                  class="flex flex-col items-start gap-1"
+                  label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
+                  trigger_class="flex h-8 w-full items-center justify-between gap-3 pl-2 pr-1 text-sm border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white"
+                  popup_class="bg-white dark:bg-neutral-950 border border-neutral-950 dark:border-white text-neutral-950 dark:text-white shadow-md z-10 py-1"
+                  item_class="py-1.5 px-2.5 text-sm data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950 cursor-default"
+                />
+              </div>
+            </div>
+
+            <div class="[&_.ck-editor__editable]:!min-h-[56rem] mt-4">
+              <.ckeditor
+                id="content-editor"
+                field={@form[:forum_desc]}
+                preset={@preset}
+                type="classic"
+              />
+            </div>
 
             <div class="flex flex-row justify-end space-x-2 mt-4">
-              <.button type="button">Preview</.button>
               <.button type="submit">Submit</.button>
             </div>
           </.form>
