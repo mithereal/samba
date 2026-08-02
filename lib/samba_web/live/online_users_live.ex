@@ -90,7 +90,7 @@ defmodule SambaWeb.OnlineUsersLive do
                 <span class="text-zinc-500 dark:text-zinc-400">{format_timestamp(user.online_at)}</span>
               </div>
               <div class="w-1/3">
-                <span class="text-zinc-500 dark:text-zinc-400"><.link navigate={user.location.link}>{user.location.page_name}</.link></span>
+                <span class="text-zinc-500 dark:text-zinc-400"></span>
               </div>
             </div>
           <% end %>
@@ -123,7 +123,7 @@ defmodule SambaWeb.OnlineUsersLive do
         if Enum.empty?(phpbb_ids) do
           result =
             Enum.map(presence_list, fn {user_id, meta} ->
-              Map.merge(sanitize_meta(meta), %{phpbb: nil})
+              Map.merge(meta, %{phpbb: nil})
             end)
 
           {:ok, result}
@@ -137,7 +137,7 @@ defmodule SambaWeb.OnlineUsersLive do
 
               result =
                 Enum.map(presence_list, fn {user_id, meta} ->
-                  sanitized_meta = List.first(sanitize_meta(meta).metas)
+                  meta = List.first(meta.metas)
                   phpbb_id = Map.get(account_to_phpbb, user_id)
                   phpbb_user = phpbb_id && Map.get(phpbb_users_map, phpbb_id)
 
@@ -146,11 +146,7 @@ defmodule SambaWeb.OnlineUsersLive do
                     username: phpbb_user.username,
                     role: phpbb_user.user_rank,
                     visible: phpbb_user.user_allow_viewonline,
-                    location: %{
-                      page_name: sanitized_meta.page_name,
-                      link: sanitized_meta.location
-                    },
-                    online_at: sanitized_meta.online_at
+                    online_at: meta.online_at
                   }
                 end)
 
@@ -172,7 +168,6 @@ defmodule SambaWeb.OnlineUsersLive do
         Enum.map(metas, fn meta ->
           %{
             username: "guest",
-            location: %{page_name: Map.get(meta, :page_name), link: Map.get(meta, :location)},
             online_at: Map.get(meta, :online_at)
           }
         end)
@@ -181,7 +176,6 @@ defmodule SambaWeb.OnlineUsersLive do
         [
           %{
             username: "guest",
-            location: %{page_name: Map.get(metas, :page_name), link: Map.get(metas, :location)},
             online_at: Map.get(metas, :online_at)
           }
         ]
@@ -190,7 +184,6 @@ defmodule SambaWeb.OnlineUsersLive do
         [
           %{
             username: "guest",
-            location: %{page_name: "Private Area", link: "/"},
             online_at: DateTime.utc_now()
           }
         ]

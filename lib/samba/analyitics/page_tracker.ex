@@ -1,4 +1,4 @@
-defmodule SambaWeb.PageTracker do
+defmodule Samba.Analytics.PageTracker do
   use GenServer
 
   # Client API
