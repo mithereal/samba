@@ -1,0 +1,104 @@
+{
+  "attributes": [
+    {
+      "allow_nil?": false,
+      "default": "0",
+      "generated?": true,
+      "precision": null,
+      "primary_key?": true,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "group_id",
+      "type": "bigint"
+    },
+    {
+      "allow_nil?": false,
+      "default": "0",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": {
+        "deferrable": false,
+        "destination_attribute": "user_id",
+        "destination_attribute_default": null,
+        "destination_attribute_generated": null,
+        "index?": false,
+        "match_type": null,
+        "match_with": null,
+        "multitenancy": {
+          "attribute": null,
+          "global": null,
+          "strategy": null
+        },
+        "name": "phpbb_user_group_user_id_fkey",
+        "on_delete": null,
+        "on_update": null,
+        "primary_key?": true,
+        "schema": "public",
+        "table": "phpbb_users"
+      },
+      "scale": null,
+      "size": null,
+      "source": "user_id",
+      "type": "bigint"
+    },
+    {
+      "allow_nil?": false,
+      "default": "true",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "user_pending",
+      "type": "boolean"
+    }
+  ],
+  "base_filter": null,
+  "check_constraints": [],
+  "create_table_options": null,
+  "custom_indexes": [],
+  "custom_statements": [],
+  "has_create_action": true,
+  "hash": "CA9BD158DD669C2521D297E7A0ADEF5A94D6699F8E9D7140E9C0A6B9E3A8B303",
+  "identities": [
+    {
+      "all_tenants?": false,
+      "base_filter": null,
+      "index_name": "phpbb_user_group_group_id_phpbb_user_group_index_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "group_id"
+        }
+      ],
+      "name": "group_id_phpbb_user_group_index",
+      "nils_distinct?": true,
+      "where": null
+    },
+    {
+      "all_tenants?": false,
+      "base_filter": null,
+      "index_name": "phpbb_user_group_user_id_phpbb_user_group_index_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "user_id"
+        }
+      ],
+      "name": "user_id_phpbb_user_group_index",
+      "nils_distinct?": true,
+      "where": null
+    }
+  ],
+  "multitenancy": {
+    "attribute": null,
+    "global": null,
+    "strategy": null
+  },
+  "repo": "Elixir.Samba.Repo",
+  "schema": null,
+  "table": "phpbb_user_group"
+}
