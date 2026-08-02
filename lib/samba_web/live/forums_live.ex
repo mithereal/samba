@@ -2,6 +2,14 @@ defmodule SambaWeb.ForumIndexLive do
   use SambaWeb, :live_view
   use SambaWeb.LiveTracking
 
+  def page_name() do
+    "Forums Index"
+  end
+
+  def page_url() do
+    "/forums"
+  end
+
   def mount(_params, _session, socket) do
     categories =
       PhpBB.Categories

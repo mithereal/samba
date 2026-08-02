@@ -7,6 +7,10 @@ defmodule SambaWeb.OnlineUsersLive do
     "Online Users"
   end
 
+  def page_url() do
+    "/viewonline"
+  end
+
   def mount(_params, _session, socket) do
     # online_users = []
     phpbb_online_users = []
