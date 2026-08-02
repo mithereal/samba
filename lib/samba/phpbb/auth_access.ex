@@ -69,81 +69,70 @@ defmodule PhpBB.AuthAccess do
       default 0
     end
 
-    attribute :auth_read, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_read, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_post, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_post, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_reply, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_reply, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_edit, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_edit, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_delete, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_delete, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_sticky, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_sticky, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_announce, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_announce, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_vote, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_vote, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_pollcreate, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_pollcreate, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_attachments, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_attachments, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
-    attribute :auth_mod, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 0
+    attribute :auth_mod, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
   end
 end

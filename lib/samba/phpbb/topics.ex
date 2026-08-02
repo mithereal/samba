@@ -146,18 +146,16 @@ defmodule PhpBB.Topics do
       public? true
     end
 
-    attribute :topic_status, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :topic_status, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :topic_vote, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :topic_vote, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
     attribute :topic_type, :integer do

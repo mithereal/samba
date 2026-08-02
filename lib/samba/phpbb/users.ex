@@ -144,9 +144,10 @@ defmodule PhpBB.Users do
       allow_nil? false
     end
 
-    attribute :user_active, :integer do
-      constraints min: -32768, max: 32767
+    attribute :user_active, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
     attribute :username, :string do
@@ -172,11 +173,10 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_session_page, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :user_session_page, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
     attribute :user_lastvisit, :integer do

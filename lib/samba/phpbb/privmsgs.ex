@@ -87,32 +87,28 @@ defmodule PhpBB.Privmsgs do
       public? true
     end
 
-    attribute :privmsgs_enable_bbcode, :integer do
-      allow_nil? false
-      constraints min: -32768, max: 32767
-      default 1
+    attribute :privmsgs_enable_bbcode, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :privmsgs_enable_html, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :privmsgs_enable_html, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :privmsgs_enable_smilies, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      allow_nil? false
+    attribute :privmsgs_enable_smilies, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
 
-    attribute :privmsgs_attach_sig, :integer do
-      constraints min: -32768, max: 32767
-      default 1
-      allow_nil? false
+    attribute :privmsgs_attach_sig, :boolean do
       public? true
+      default true
+      allow_nil? false
     end
   end
 

@@ -49,11 +49,11 @@ defmodule PhpBB.PostsText do
     end
   end
 
-    relationships do
-      belongs_to :post, PhpBB.Posts do
-        destination_attribute :post_id
-        source_attribute :post_id
-        attribute_type :integer
-      end
+  relationships do
+    belongs_to :post, PhpBB.Posts do
+      destination_attribute :post_id
+      source_attribute :post_id
+      attribute_type :integer
     end
+  end
 end

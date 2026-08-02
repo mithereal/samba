@@ -130,23 +130,32 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               class="mb-4"
               color="white"
             />
-    <!-- Forum Status -->
-              <div>
-                <.radio_card field={@form[:topic_status]} space="small" cols="two" color="misc" size="extra_small" variant="shadow" color="info" field={@form[:forum_status]}>
-                  <:radio
-                    value="0"
-                    title="Unlocked"
-                    description="Members can freely reply and participate in this discussion."
-                    icon="hero-lock-open"
-                  />
-                  <:radio
-                    value="1"
-                    title="Locked"
-                    description="Discussion is closed; only moderators can reply."
-                    icon="hero-lock-closed"
-                  />
-                </.radio_card>
-              </div>
+            <!-- Forum Status -->
+            <div>
+              <.radio_card
+                field={@form[:topic_status]}
+                space="small"
+                cols="two"
+                color="misc"
+                size="extra_small"
+                variant="shadow"
+                color="info"
+                field={@form[:forum_status]}
+              >
+                <:radio
+                  value="0"
+                  title="Unlocked"
+                  description="Members can freely reply and participate in this discussion."
+                  icon="hero-lock-open"
+                />
+                <:radio
+                  value="1"
+                  title="Locked"
+                  description="Discussion is closed; only moderators can reply."
+                  icon="hero-lock-closed"
+                />
+              </.radio_card>
+            </div>
 
             <!-- Forum Description (CKEditor) -->
             <div class="mt-4 mb-4">
@@ -161,25 +170,38 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               </div>
             </div>
 
-              <div class="flex flex-row">
-                <.radio_card  space="small" cols="one" size="extra_small" variant="bordered" color="success" field={@form[:auth_announce]}>
-                  <:radio
-                    value="announcement"
-                    title="Announcement"
-                    description="Important global or forum-specific notice pinned at the top."
-                    icon="hero-megaphone"
-                  />
-      </.radio_card>
-                <.radio_card space="small" cols="one" size="extra_small" variant="bordered" color="success" field={@form[:auth_sticky]}>
-                  <:radio
-                    value="sticky"
-                    title="Sticky"
-                    description="Stays fixed near the top of the topic list for high visibility."
-                    icon="hero-bookmark"
-                  />
-                </.radio_card>
-              </div>
-
+            <div class="flex flex-row">
+              <.radio_card
+                space="small"
+                cols="one"
+                size="extra_small"
+                variant="bordered"
+                color="success"
+                field={@form[:auth_announce]}
+              >
+                <:radio
+                  value="announcement"
+                  title="Announcement"
+                  description="Important global or forum-specific notice pinned at the top."
+                  icon="hero-megaphone"
+                />
+              </.radio_card>
+              <.radio_card
+                space="small"
+                cols="one"
+                size="extra_small"
+                variant="bordered"
+                color="success"
+                field={@form[:auth_sticky]}
+              >
+                <:radio
+                  value="sticky"
+                  title="Sticky"
+                  description="Stays fixed near the top of the topic list for high visibility."
+                  icon="hero-bookmark"
+                />
+              </.radio_card>
+            </div>
 
             <div class="flex flex-row justify-end space-x-2 mt-6">
               <.link

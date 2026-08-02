@@ -156,7 +156,7 @@ defmodule SambaWeb.Components.RadioCard do
             name={@name}
             id={"#{@id}-#{index}"}
             value={radio[:value]}
-            checked={radio[:checked] || (to_string(@value) == to_string(radio[:value]))}
+            checked={radio[:checked] || to_string(@value) == to_string(radio[:value])}
             class={[
               "radio-card-input shrink-0 focus:ring-0 focus:ring-offset-0 appearance-none cursor-pointer",
               "size-[18px] rounded-full border-2 border-current bg-clip-content p-[3px] checked:bg-current",

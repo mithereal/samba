@@ -119,10 +119,9 @@ defmodule PhpBB.Forums do
       public? true
     end
 
-    attribute :forum_status, :integer do
+    attribute :forum_status, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
     attribute :forum_order, :integer do
@@ -130,82 +129,70 @@ defmodule PhpBB.Forums do
       default 1
     end
 
-    attribute :prune_enable, :integer do
+    attribute :prune_enable, :boolean do
       public? true
-
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :prune_next, :integer do
-      allow_nil? true
+    attribute :prune_next, :boolean do
+      allow_nil? false
       public? true
+      default false
     end
 
-    attribute :auth_view, :integer do
+    attribute :auth_view, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default true
     end
 
-    attribute :auth_read, :integer do
+    attribute :auth_read, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default true
     end
 
-    attribute :auth_post, :integer do
+    attribute :auth_post, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_reply, :integer do
+    attribute :auth_reply, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_edit, :integer do
+    attribute :auth_edit, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_delete, :integer do
+    attribute :auth_delete, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_announce, :integer do
+    attribute :auth_announce, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_sticky, :integer do
+    attribute :auth_sticky, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_pollcreate, :integer do
+    attribute :auth_pollcreate, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_vote, :integer do
+    attribute :auth_vote, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
 
-    attribute :auth_attachments, :integer do
+    attribute :auth_attachments, :boolean do
       public? true
-      constraints min: -32768, max: 32767
-      default 0
+      default false
     end
   end
 

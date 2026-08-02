@@ -45,11 +45,10 @@ defmodule PhpBB.Ranks do
       public? true
     end
 
-    attribute :rank_special, :integer do
-      constraints min: -32768, max: 32767
-      default 0
-      allow_nil? false
+    attribute :rank_special, :boolean do
       public? true
+      default false
+      allow_nil? false
     end
 
     attribute :rank_image, :string do
