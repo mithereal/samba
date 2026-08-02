@@ -23,30 +23,30 @@ import { LiveSocket } from "phoenix_live_view";
 import { hooks as colocatedHooks } from "phoenix-colocated/samba";
 import topbar from "../vendor/topbar";
 import MishkaComponents from "../vendor/mishka_components.js";
-import { Hooks } from 'ckeditor5_phoenix';
-
-import Sortable from "sortablejs"
-
+import { Hooks } from "ckeditor5_phoenix";
+import Sortable from "sortablejs";
 let Sortables = {};
-
 Sortables.SortableList = {
   mounted() {
     this.sortable = Sortable.create(this.el, {
       animation: 150,
       ghostClass: "bg-indigo-50",
       onEnd: (e) => {
-        let ids = Array.from(this.el.querySelectorAll("li")).map(li => li.dataset.id);
-        this.pushEvent("reorder", { ids: ids });
-      }
+        let ids = Array.from(this.el.querySelectorAll("li")).map(
+          (li) => li.dataset.id,
+        );
+        this.pushEvent("reorder", {
+          ids: ids,
+        });
+      },
     });
   },
   destroyed() {
     if (this.sortable) {
       this.sortable.destroy();
     }
-  }
-}
-
+  },
+};
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
@@ -59,7 +59,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
     ...colocatedHooks,
     ...MishkaComponents,
     ...Hooks,
-    ...Sortables
+    ...Sortables,
   },
 });
 // Show progress bar on live navigation and form submits

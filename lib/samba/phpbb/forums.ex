@@ -47,7 +47,8 @@ defmodule PhpBB.Forums do
         :forum_desc,
         :forum_status,
         :forum_last_post_id,
-        :cat_id
+        :cat_id,
+        :forum_order
       ]
     end
   end

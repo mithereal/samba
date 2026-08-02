@@ -7,6 +7,7 @@ import Avatar from "./avatar.js";
 import Toggle from "./toggle.js";
 import CheckboxGroup from "./checkbox_group.js";
 import Carousel from "./carousel.js";
+import Select from "./select.js";
 const Components = {
   Floating,
   Menu,
@@ -17,5 +18,6 @@ const Components = {
   Toggle,
   CheckboxGroup,
   Carousel,
+  Select,
 };
 export default Components;

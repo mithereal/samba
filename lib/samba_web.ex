@@ -227,6 +227,7 @@ defmodule SambaWeb do
       import SambaWeb.Components.Headless.Menubar
       import SambaWeb.Components.Headless.ScrollArea
       import SambaWeb.Components.Headless.Separator
+      import SambaWeb.Components.Headless.Select
       import SambaWeb.Components.WhosOnline
 
       # Common modules used in templates

@@ -1,4 +1,4 @@
-defmodule SambaWeb.NewForumLive do
+defmodule SambaWeb.Admin.New.Forum.Live do
   use SambaWeb, :live_view
   use CKEditor5
 
@@ -23,6 +23,14 @@ defmodule SambaWeb.NewForumLive do
         }
       })
 
+    category_options =
+      Enum.map(categories, fn category ->
+        %{
+          value: to_string(category.cat_id),
+          label: category.cat_title
+        }
+      end)
+
     form =
       PhpBB.Forums
       |> AshPhoenix.Form.for_create(:create,
@@ -36,13 +44,18 @@ defmodule SambaWeb.NewForumLive do
 
     socket =
       socket
-      |> assign(:page_title, "Forums")
+      |> assign(:page_title, "Add Forum")
       |> assign(:preset, preset)
       |> assign(:form, form)
-      |> assign(:categories, categories)
+      |> assign(:categories, category_options)
+      |> assign(:selected_category_id, List.first(category_options).value)
       |> assign(:forum_order, next_order)
 
     {:ok, socket}
+  end
+
+  def handle_event("validate", %{"category_id" => category_id}, socket) do
+    {:noreply, assign(socket, :selected_category_id, category_id)}
   end
 
   def render(assigns) do
@@ -53,7 +66,8 @@ defmodule SambaWeb.NewForumLive do
           <.form for={@form} phx-submit="save" phx-change="validate">
             <.select
               id="baseui-select-hero"
-              label="Category"
+              name="form[cat_id]"
+              label="Categories"
               placeholder="Select Category"
               class="flex flex-col items-start gap-1"
               label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
@@ -65,6 +79,8 @@ defmodule SambaWeb.NewForumLive do
               item_class="grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 py-1.5 pr-4 pl-2.5 text-sm outline-hidden select-none data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950"
               item_indicator_class="col-start-1"
               item_text_class="col-start-2"
+              options={@categories}
+              value={@selected_category_id}
             >
               <:icon>
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="block">
@@ -83,15 +99,9 @@ defmodule SambaWeb.NewForumLive do
                   <path d="m2.5 8.5 4 4 7-9" />
                 </svg>
               </:item_indicator>
-              <:option value="gala">Gala</:option>
-              <:option value="fuji">Fuji</:option>
-              <:option value="honeycrisp">Honeycrisp</:option>
-              <:option value="granny-smith">Granny Smith</:option>
-              <:option value="pink-lady">Pink Lady</:option>
             </.select>
-
             <.text_field
-              id="post_forum_name"
+              id="name"
               field={@form[:forum_name]}
               space="small"
               placeholder="Name"
@@ -99,20 +109,17 @@ defmodule SambaWeb.NewForumLive do
               class="mb-4"
               color="white"
             />
+            <div class="mb-4"></div>
 
-            <.text_field
-              id="post_forum_desc"
+            <.ckeditor
+              id="content-editor"
               field={@form[:forum_desc]}
-              space="small"
-              placeholder="Description"
-              variant="default"
-              class="mb-4"
-              color="white"
+              preset={@preset}
+              type="classic"
             />
 
-            <.input field={@form[:forum_order]} value={@forum_order} type="text" hidden required />
-
             <div class="flex flex-row justify-end space-x-2 mt-4">
+              <.button type="button">Preview</.button>
               <.button type="submit">Submit</.button>
             </div>
           </.form>
@@ -126,6 +133,7 @@ defmodule SambaWeb.NewForumLive do
     # Ensure system assigns aren't wiped out if missing from live validation payload
     merged_params =
       params
+      |> Map.put("cat_id", socket.assigns.cat_id)
       |> Map.put("forum_name", socket.assigns.forum_name)
       |> Map.put("forum_desc", socket.assigns.forum_desc)
 
@@ -136,6 +144,7 @@ defmodule SambaWeb.NewForumLive do
   def handle_event("save", %{"form" => params}, socket) do
     submission_params =
       params
+      |> Map.put("cat_id", socket.assigns.cat_id)
       |> Map.put("forum_name", socket.assigns.forum_name)
       |> Map.put("forum_desc", socket.assigns.forum_desc)
 
@@ -161,7 +170,7 @@ defmodule SambaWeb.NewForumLive do
       |> List.first()
       |> case do
         nil -> 0
-        cat -> cat.forum_order || 0
+        data -> data.forum_order || 0
       end
 
     max_order + 1

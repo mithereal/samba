@@ -1,4 +1,4 @@
-defmodule SambaWeb.CategoryListLive do
+defmodule SambaWeb.Admin.Category.List.Live do
   use SambaWeb, :live_view
 
   alias PhpBB.Categories

@@ -72,20 +72,23 @@ defmodule SambaWeb.Router do
       live "/ledger/chart-of-accounts", Ledger.ChartOfAccountsLive
       live "/ledger/chart-of-accounts/new", Ledger.CreateNewAccountLive
 
-      live "/ussd", Ussd.UssdsLive
-
-      live "/forums/:id", ForumTopicsLive, :index
       live "/forums", ForumIndexLive, :index
-      live "/topic/:id", PostsLive, :index
+      live "/forums/:id", ForumTopicsLive, :index
       live "/forum/:id/topic/new", NewTopicLive, :index
+
+      live "/topic/:id", PostsLive, :index
+
       live "/memberlist", MemberListLive, :index
-      live "/settings/categories", CategoryListLive, :index
-      live "/settings/categories/new", CategoryLive.New, :index
-      live "/settings/categories/:id/edit", CategoryLive.Edit, :index
-      live "/settings/forums", AdminForumsListLive, :index
-      live "/settings/forums/new", NewForumLive, :index
       live "/viewonline", OnlineUsersLive, :index
       live "/profile/:id", UserProfileLive, :index
+
+      live "/settings/categories", Admin.Category.List.Live, :index
+      live "/settings/categories/new", Admin.Category.Live.New, :index
+      live "/settings/categories/:id/edit", Admin.Category.Live.Edit, :index
+
+      live "/settings/forums", Admin.Forums.List.Live, :index
+      live "/settings/forums/new", Admin.New.Forum.Live, :index
+      live "/settings/forums/:id/edit", Admin.Edit.Forum.Live, :index
     end
   end
 
@@ -93,18 +96,6 @@ defmodule SambaWeb.Router do
     get "/page/:page", PageController, :show
 
     #    get "/forums/album_search.php", PhpController, :album_search #?search_author=lera.robel
-  end
-
-  scope "/", SambaWeb do
-    #    live "/forum/profile/:name/buddy/add", ForumIndexLive, :index
-    #    live "/forum/search/:name/posts", ForumIndexLive, :index
-    #    live "/forum/search/:name/topics", ForumIndexLive, :index
-    #    live "/forum/search/:name/feedback", ForumIndexLive, :index
-    #    live "/forum/search/:name/photos", ForumIndexLive, :index
-    #    live "/forum/search/:name/photos/favorites", ForumIndexLive, :index
-    #    live "/forum/profile/:name/ignore/add", ForumIndexLive, :index
-    #    live "/classifieds/search/:name", ForumIndexLive, :index
-    #    live "/classifieds/profile/:name/ignore/add", ForumIndexLive, :index
   end
 
   scope "/api/ckeditor5" do
@@ -143,7 +134,6 @@ defmodule SambaWeb.Router do
     live "/", LandingLive, :index
 
     live "/premium_membership", FaqLive, :index
-
     live "/faq", FaqLive, :index
 
     auth_routes AuthController, Samba.Accounts.User, path: "/auth"

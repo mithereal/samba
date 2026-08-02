@@ -1,16 +1,16 @@
-defmodule SambaWeb.CategoryLive.Edit do
+defmodule SambaWeb.Admin.Category.Live.New do
   use SambaWeb, :live_view
 
   alias PhpBB.Domain
   alias PhpBB.Categories
 
   @impl true
-  def mount(%{"id" => category_id}, _session, socket) do
-    category = Ash.get!(PhpBB.Categories, category_id, domain: Domain)
+  def mount(_params, _session, socket) do
+    next_order = get_next_order()
 
     form =
-      category
-      |> AshPhoenix.Form.for_update(:update,
+      Categories
+      |> AshPhoenix.Form.for_create(:create,
         domain: Domain,
         as: "form"
       )
@@ -19,7 +19,7 @@ defmodule SambaWeb.CategoryLive.Edit do
     {:ok,
      assign(socket,
        form: form,
-       category: category,
+       cat_order: next_order,
        current_user: socket.assigns[:current_user],
        uri: socket.assigns[:uri]
      )}
@@ -66,14 +66,8 @@ defmodule SambaWeb.CategoryLive.Edit do
 
         <div class="bg-white shadow sm:rounded-lg p-6">
           <.form for={@form} phx-change="validate" phx-submit="save" class="space-y-6">
-            <.input
-              field={@form[:cat_title]}
-              value={@category.cat_title}
-              type="text"
-              label="Category Title"
-              required
-            />
-            <.input field={@form[:cat_order]} value={@category.cat_order} type="text" hidden required />
+            <.input field={@form[:cat_title]} type="text" label="Category Title" required />
+            <.input field={@form[:cat_order]} value={@cat_order} type="text" hidden required />
 
             <div class="flex justify-end space-x-3">
               <.link
@@ -94,5 +88,21 @@ defmodule SambaWeb.CategoryLive.Edit do
       </div>
     </Layouts.app>
     """
+  end
+
+  defp get_next_order do
+    max_order =
+      Categories
+      |> Ash.Query.for_read(:read)
+      |> Ash.Query.sort(cat_order: :desc)
+      |> Ash.Query.limit(1)
+      |> Ash.read!(domain: Domain)
+      |> List.first()
+      |> case do
+        nil -> 0
+        cat -> cat.cat_order || 0
+      end
+
+    max_order + 1
   end
 end

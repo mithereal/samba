@@ -2,14 +2,6 @@ defmodule SambaWeb.ForumIndexLive do
   use SambaWeb, :live_view
   use SambaWeb.LiveTracking
 
-  def page_name() do
-    "Forums Index"
-  end
-
-  def page_url() do
-    "/forums"
-  end
-
   def mount(_params, _session, socket) do
     categories =
       PhpBB.Categories
@@ -128,7 +120,7 @@ defmodule SambaWeb.ForumIndexLive do
                     >
                       {forum.forum_name}
                     </.link>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">{forum.forum_desc}</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">{raw(forum.forum_desc)}</p>
                   </div>
                 </div>
 
