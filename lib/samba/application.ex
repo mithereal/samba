@@ -17,6 +17,7 @@ defmodule Samba.Application do
       # {Samba.Worker, arg},
       # Start to serve requests, typically the last entry
       Samba.Analytics.OnlineTracker,
+      Samba.Analytics.PageTracker,
       SambaWeb.Presence,
       SambaWeb.Endpoint,
       {AshAuthentication.Supervisor, [otp_app: :samba]}
