@@ -96,7 +96,9 @@ defmodule Samba.MixProject do
       {:faker, "~> 0.19.0"},
       {:makeup, "~> 1.2.2", override: true},
       {:ckeditor5_phoenix, "~> 1.28.2"},
-      {:ash_ops, "~> 0.2.4"}
+      {:ash_ops, "~> 0.2.4"},
+      {:bbcode, "~> 0.1.1"},
+      {:nimble_parsec, "~> 1.4.2", override: true}
     ]
   end
 

@@ -34,7 +34,7 @@ defmodule PhpBB.PostsText do
     attribute :bbcode_uid, :string do
       public? true
       default " "
-      allow_nil? false
+      allow_nil? true
 
       description "When a user submits a post containing BBCode (such as [b]bold text[/b]), phpBB2 generates a randomized 10-character identifier—for example, [b:1a2b3c4d5e]bold text[/b:1a2b3c4d5e]—and stores this altered string directly in the database."
     end

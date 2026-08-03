@@ -17,7 +17,7 @@ defmodule SambaWeb.ForumTopicsLive do
     # Fetch groups with moderator access for this forum, then load their moderator user record
     moderators =
       PhpBB.AuthAccess
-      |> Ash.Query.filter(forum_id == ^forum_id and auth_mod == true)
+      |> Ash.Query.filter(forum_id == ^forum_id)
       |> Ash.Query.load(group: [:moderator])
       |> Ash.read!(domain: PhpBB.Domain)
       |> Enum.map(fn access ->

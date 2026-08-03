@@ -34,11 +34,10 @@ defmodule SambaWeb.NewPostLive do
           "topic_id" => topic_id,
           "forum_id" => topic.forum_id,
           "post_time" => post_time,
-          "bbcode_uid" => "",
-          "enable_bbcode" => 1,
-          "enable_smilies" => 1,
-          "enable_sig" => 1,
-          "enable_html" => 0,
+          "enable_bbcode" => true,
+          "enable_smilies" => true,
+          "enable_sig" => true,
+          "enable_html" => true,
           "post_edit_count" => 0
         }
       )

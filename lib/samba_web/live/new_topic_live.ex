@@ -174,6 +174,15 @@ defmodule SambaWeb.NewTopicLive do
 
     topic_title = String.trim(params["topic_title"])
     post_text_content = String.trim(params["post_text"])
+    topic_status = 0
+    topic_type = 0
+    enable_html = true
+    enable_smilies = true
+    enable_sig = true
+    topic_vote = false
+    enable_bbcode = true
+    bbcode_uid = " "
+    post_username = " "
 
     if String.length(topic_title) < 3 || String.length(post_text_content) < 3 do
       form = AshPhoenix.Form.validate(socket.assigns.form, params)
@@ -192,9 +201,9 @@ defmodule SambaWeb.NewTopicLive do
           "topic_time" => post_time,
           "topic_replies" => 0,
           "topic_views" => 0,
-          "topic_status" => true,
-          "topic_vote" => false,
-          "topic_type" => 0,
+          "topic_status" => topic_status,
+          "topic_vote" => topic_vote,
+          "topic_type" => topic_type,
           "first_post_id" => nil,
           "last_post_id" => nil,
           "topic_moved_id" => nil
@@ -208,12 +217,11 @@ defmodule SambaWeb.NewTopicLive do
           "forum_id" => forum_id,
           "poster_id" => poster_id,
           "post_time" => post_time,
-          "post_username" => "",
-          "poster_ip" => "00000000",
-          "enable_bbcode" => 1,
-          "enable_html" => 1,
-          "enable_smilies" => 1,
-          "enable_sig" => 1,
+          "post_username" => post_username,
+          "enable_bbcode" => enable_bbcode,
+          "enable_html" => enable_html,
+          "enable_smilies" => enable_smilies,
+          "enable_sig" => enable_sig,
           "post_edit_time" => 0,
           "post_edit_count" => 0
         })
@@ -223,7 +231,6 @@ defmodule SambaWeb.NewTopicLive do
         PhpBB.PostsText
         |> Ash.Changeset.for_create(:create, %{
           "post_id" => post.post_id,
-          "bbcode_uid" => "0",
           "post_subject" => topic_title,
           "post_text" => post_text_content
         })
