@@ -97,8 +97,8 @@ defmodule Samba.MixProject do
       {:makeup, "~> 1.2.2", override: true},
       {:ckeditor5_phoenix, "~> 1.28.2"},
       {:ash_ops, "~> 0.2.4"},
-      {:bbcode, "~> 0.1.1"},
-      {:nimble_parsec, "~> 1.4.2", override: true}
+      {:nimble_parsec, "~> 1.4"},
+      {:ex_bbcode, github: "/mithereal/ex_bbcode"}
     ]
   end
 
