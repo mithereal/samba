@@ -155,10 +155,11 @@ defmodule PhpBB.Topics do
       description "0 (UNLOCKED / NORMAL): A standard, open discussion thread where users with proper permissions can freely reply, post, and engage.1 (LOCKED): The thread is closed. Normal users can still read the posts, but the reply button is disabled, and only moderators or administrators can add new posts or unlock it.2 (STICKY): The thread is prioritized and pinned to the top of the forum index above normal topics, ensuring high visibility regardless of recent activity.3 (ANNOUNCEMENT): A board-wide or section-wide announcement that typically pins the topic to the top of every forum category rather than just a single local board."
     end
 
-    attribute :topic_vote, :boolean do
-      public? true
-      default false
+    attribute :topic_vote, :integer do
+      constraints min: -32768, max: 32767
+      default 0
       allow_nil? false
+      public? true
     end
 
     attribute :topic_type, :integer do

@@ -129,6 +129,22 @@
       <excludeFolder url="file://$MODULE_DIR$/deps" />
       <excludeFolder url="file://$MODULE_DIR$/doc" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/abnf_parsec" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/bbcode" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/dotenvy" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_bbcode" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/jsv" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/llm_db" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/lotus" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/lotus_web" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mdex" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mdex_native" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/req_llm" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/server_sent_events" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/texture" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/toml" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/websockex" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/zoi" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -349,5 +365,33 @@
     <orderEntry type="library" name="thoas" level="project" />
     <orderEntry type="library" name="tidewave" level="project" />
     <orderEntry type="library" name="mochiweb" level="project" />
+    <orderEntry type="library" name="bbcode" level="project" />
+    <orderEntry type="library" name="ex_bbcode" level="project" />
+    <orderEntry type="library" name="lotus" level="project" />
+    <orderEntry type="library" name="cachex" level="project" />
+    <orderEntry type="library" name="req_llm" level="project" />
+    <orderEntry type="library" name="dotenvy" level="project" />
+    <orderEntry type="library" name="goth" level="project" />
+    <orderEntry type="library" name="ex_aws_auth" level="project" />
+    <orderEntry type="library" name="server_sent_events" level="project" />
+    <orderEntry type="library" name="websockex" level="project" />
+    <orderEntry type="library" name="zoi" level="project" />
+    <orderEntry type="library" name="jsv" level="project" />
+    <orderEntry type="library" name="llm_db" level="project" />
+    <orderEntry type="library" name="abnf_parsec" level="project" />
+    <orderEntry type="library" name="texture" level="project" />
+    <orderEntry type="library" name="eflambe" level="project" />
+    <orderEntry type="library" name="meck" level="project" />
+    <orderEntry type="library" name="libdev" level="project" />
+    <orderEntry type="library" name="readmix" level="project" />
+    <orderEntry type="library" name="briefly" level="project" />
+    <orderEntry type="library" name="patch" level="project" />
+    <orderEntry type="library" name="json_schema_test_suite" level="project" />
+    <orderEntry type="library" name="modkit" level="project" />
+    <orderEntry type="library" name="toml" level="project" />
+    <orderEntry type="library" name="lotus_web" level="project" />
+    <orderEntry type="library" name="mdex" level="project" />
+    <orderEntry type="library" name="mdex_native" level="project" />
+    <orderEntry type="library" name="lumis" level="project" />
   </component>
 </module>

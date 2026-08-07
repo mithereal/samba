@@ -1,9 +1,9 @@
 defmodule PhpBB.PostsText do
   use Ash.Resource,
-      domain: PhpBB.Domain,
-      data_layer: AshPostgres.DataLayer,
-      notifiers: Ash.Notifier.PubSub,
-      primary_read_warning?: false
+    domain: PhpBB.Domain,
+    data_layer: AshPostgres.DataLayer,
+    notifiers: Ash.Notifier.PubSub,
+    primary_read_warning?: false
 
   postgres do
     table "phpbb_posts_text"
@@ -100,7 +100,10 @@ defmodule PhpBB.PostsText do
             |> Ash.Changeset.force_change_attribute(:post_text, uid_infused_bbcode)
 
           {:error, reason} ->
-            Ash.Changeset.add_error(changeset, field: :post_text, message: "failed to transform HTML to BBCode: #{inspect(reason)}")
+            Ash.Changeset.add_error(changeset,
+              field: :post_text,
+              message: "failed to transform HTML to BBCode: #{inspect(reason)}"
+            )
         end
     end
   end
@@ -109,30 +112,34 @@ defmodule PhpBB.PostsText do
 
   def deserialize_on_read(query, _context) do
     Ash.Query.after_action(query, fn _query, results ->
-      deserialized_results = Enum.map(results, fn record ->
-        case record.post_text do
-          nil ->
-            record
-          text ->
-            # 1. Strip the phpBB uid from tags
-            clean_bbcode = strip_bbcode_uid(text, record.bbcode_uid)
+      deserialized_results =
+        Enum.map(results, fn record ->
+          case record.post_text do
+            nil ->
+              record
 
-            # 2. Parse the clean BBCode string into an AST
-            {ast, html_output} = case BBCode.Parser.parse(clean_bbcode) do
-              {:ok, parsed_ast} ->
-                # 3. Generate HTML from the AST using your generator
-                case BBCode.Generator.to_html(parsed_ast) do
-                  {:ok, html} -> {parsed_ast, html}
-                  {:error, _} -> {parsed_ast, ""}
+            text ->
+              # 1. Strip the phpBB uid from tags
+              clean_bbcode = strip_bbcode_uid(text, record.bbcode_uid)
+
+              # 2. Parse the clean BBCode string into an AST
+              {ast, html_output} =
+                case BBCode.Parser.parse(clean_bbcode) do
+                  {:ok, parsed_ast} ->
+                    # 3. Generate HTML from the AST using your generator
+                    case BBCode.Generator.to_html(parsed_ast) do
+                      {:ok, html} -> {parsed_ast, html}
+                      {:error, _} -> {parsed_ast, ""}
+                    end
+
+                  {:error, _} ->
+                    {[], ""}
                 end
-              {:error, _} ->
-                {[], ""}
-            end
 
-            # 4. Return record with post_text replaced by plain HTML, plus preserved metadata
-            %{record | post_text: html_output}
-        end
-      end)
+              # 4. Return record with post_text replaced by plain HTML, plus preserved metadata
+              %{record | post_text: html_output}
+          end
+        end)
 
       {:ok, deserialized_results}
     end)
@@ -154,6 +161,7 @@ defmodule PhpBB.PostsText do
 
   defp strip_bbcode_uid(bbcode_string, nil), do: bbcode_string
   defp strip_bbcode_uid(bbcode_string, ""), do: bbcode_string
+
   defp strip_bbcode_uid(bbcode_string, uid) do
     escaped_uid = Regex.escape(String.trim(uid))
 

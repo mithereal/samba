@@ -9,6 +9,12 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
   def mount(%{"id" => forum_id}, _session, socket) do
     current_forum = Ash.get!(PhpBB.Forums, forum_id, domain: Domain)
 
+    # Fetch existing forum prune settings if available
+    current_prune =
+      PhpBB.ForumPrune
+      |> Ash.Query.filter(forum_id == current_forum.forum_id)
+      |> Ash.read_one(domain: PhpBB.Domain)
+
     categories =
       PhpBB.Categories
       |> Ash.Query.sort(cat_order: :asc)
@@ -35,7 +41,12 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
       current_forum
       |> AshPhoenix.Form.for_update(:update,
         domain: Domain,
-        as: "form"
+        as: "form",
+        params: %{
+          "prune_enable" => current_forum.prune_enable || false,
+          "prune_days" => current_prune && to_string(current_prune.prune_days),
+          "prune_freq" => current_prune && to_string(current_prune.prune_freq)
+        }
       )
       |> to_form()
 
@@ -48,13 +59,20 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
       |> assign(:selected_category_id, to_string(current_forum.cat_id))
       |> assign(:forum_order, current_forum.forum_order)
       |> assign(:current_forum, current_forum)
+      |> assign(:current_prune, current_prune)
 
     {:ok, socket}
   end
 
   def handle_event("validate", %{"form" => params}, socket) do
     category_id = params["cat_id"] || socket.assigns.selected_category_id
-    form = AshPhoenix.Form.validate(socket.assigns.form, params)
+
+    normalized_params =
+      Map.update(params, "prune_enable", false, fn val ->
+        val in ["true", "1", "on", true]
+      end)
+
+    form = AshPhoenix.Form.validate(socket.assigns.form, normalized_params)
 
     {:noreply,
      socket
@@ -63,8 +81,15 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
   end
 
   def handle_event("save", %{"form" => params}, socket) do
-    case AshPhoenix.Form.submit(socket.assigns.form, params: params) do
-      {:ok, _} ->
+    normalized_params =
+      Map.update(params, "prune_enable", false, fn val ->
+        val in ["true", "1", "on", true]
+      end)
+
+    case AshPhoenix.Form.submit(socket.assigns.form, params: normalized_params) do
+      {:ok, forum} ->
+        handle_forum_prune_update(forum.forum_id, socket.assigns.current_prune, normalized_params)
+
         {:noreply,
          socket
          |> put_flash(:info, "Forum updated successfully!")
@@ -74,6 +99,48 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
         {:noreply, assign(socket, form: to_form(form))}
     end
   end
+
+  defp handle_forum_prune_update(forum_id, current_prune, params) do
+    prune_enabled = params["prune_enable"] == true
+    days = parse_int(params["prune_days"])
+    freq = parse_int(params["prune_freq"])
+
+    cond do
+      prune_enabled && current_prune && days && freq ->
+        Ash.Changeset.for_update(current_prune, :update, %{
+          prune_days: days,
+          prune_freq: freq
+        })
+        |> Ash.update!(domain: PhpBB.Domain)
+
+      prune_enabled && !current_prune && days && freq ->
+        Ash.create!(PhpBB.ForumPrune,
+          domain: PhpBB.Domain,
+          action: :create,
+          input: %{
+            forum_id: forum_id,
+            prune_days: days,
+            prune_freq: freq
+          }
+        )
+
+      !prune_enabled && current_prune ->
+        Ash.destroy!(current_prune, domain: PhpBB.Domain)
+
+      true ->
+        :ok
+    end
+  end
+
+  defp parse_int(val) when is_binary(val) do
+    case Integer.parse(val) do
+      {int, _} -> int
+      :error -> nil
+    end
+  end
+
+  defp parse_int(val) when is_integer(val), do: val
+  defp parse_int(_), do: nil
 
   def render(assigns) do
     ~H"""
@@ -130,31 +197,26 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               class="mb-4"
               color="white"
             />
-            <!-- Forum Status -->
-            <div>
-              <.radio_card
-                field={@form[:topic_status]}
-                space="small"
-                cols="two"
-                color="misc"
-                size="extra_small"
-                variant="shadow"
-                color="info"
+
+            <!-- Forum Status (Radio Fields) -->
+            <div class="mb-4 flex flex-col gap-2">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Forum Status</label>
+              <.radio_field
+                id="forum_status_unlocked"
                 field={@form[:forum_status]}
-              >
-                <:radio
-                  value="0"
-                  title="Unlocked"
-                  description="Members can freely reply and participate in this discussion."
-                  icon="hero-lock-open"
-                />
-                <:radio
-                  value="1"
-                  title="Locked"
-                  description="Discussion is closed; only moderators can reply."
-                  icon="hero-lock-closed"
-                />
-              </.radio_card>
+                value={false}
+                label="Unlocked (Members can freely reply and participate)"
+                color="info"
+                space="small"
+              />
+              <.radio_field
+                id="forum_status_locked"
+                field={@form[:forum_status]}
+                value={true}
+                label="Locked (Discussion is closed; only moderators can reply)"
+                color="info"
+                space="small"
+              />
             </div>
 
             <!-- Forum Description (CKEditor) -->
@@ -170,37 +232,41 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               </div>
             </div>
 
-            <div class="flex flex-row">
-              <.radio_card
+            <!-- Prune Enable Checkbox -->
+            <div class="mb-4">
+              <.checkbox_field
+                id="prune_enable"
+                field={@form[:prune_enable]}
+                label="Enable Prune"
                 space="small"
-                cols="one"
-                size="extra_small"
-                variant="bordered"
-                color="success"
-                field={@form[:auth_announce]}
-              >
-                <:radio
-                  value="announcement"
-                  title="Announcement"
-                  description="Important global or forum-specific notice pinned at the top."
-                  icon="hero-megaphone"
-                />
-              </.radio_card>
-              <.radio_card
+                color="white"
+              />
+            </div>
+
+            <!-- Prune Days -->
+            <div class="mb-4">
+              <.text_field
+                id="prune_days"
+                label="Remove topics that have not been posted to in X Days"
+                field={@form[:prune_days]}
                 space="small"
-                cols="one"
-                size="extra_small"
-                variant="bordered"
-                color="success"
-                field={@form[:auth_sticky]}
-              >
-                <:radio
-                  value="sticky"
-                  title="Sticky"
-                  description="Stays fixed near the top of the topic list for high visibility."
-                  icon="hero-bookmark"
-                />
-              </.radio_card>
+                placeholder=""
+                variant="default"
+                color="white"
+              />
+            </div>
+
+            <!-- Prune Frequency -->
+            <div class="mb-4">
+              <.text_field
+                id="prune_freq"
+                label="Check for Topic Age every X Days"
+                field={@form[:prune_freq]}
+                space="small"
+                placeholder=""
+                variant="default"
+                color="white"
+              />
             </div>
 
             <div class="flex flex-row justify-end space-x-2 mt-6">

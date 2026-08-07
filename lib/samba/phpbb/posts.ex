@@ -72,27 +72,27 @@ defmodule PhpBB.Posts do
       allow_nil? false
     end
 
-    attribute :enable_bbcode, :boolean do
+    attribute :enable_bbcode, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :enable_html, :boolean do
+    attribute :enable_html, :integer do
       public? true
-      default true
+      default 0
       allow_nil? false
     end
 
-    attribute :enable_smilies, :boolean do
+    attribute :enable_smilies, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :enable_sig, :boolean do
+    attribute :enable_sig, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 

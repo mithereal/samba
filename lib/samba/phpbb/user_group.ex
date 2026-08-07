@@ -38,9 +38,9 @@ defmodule PhpBB.UserGroup do
       allow_nil? false
     end
 
-    attribute :user_pending, :boolean do
+    attribute :user_pending, :integer do
       public? true
-      default true
+      constraints min: -32768, max: 32767
       allow_nil? false
 
       description "0 (Approved / Active): The user is an active, fully approved member of that user group."

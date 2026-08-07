@@ -1,0 +1,71 @@
+defmodule Mix.Tasks.Phpbb.ConvertPermissions do
+  use Mix.Task
+
+  @shortdoc "Migrates phpBB 2 forum permissions and inserts them into ash-phoenix-starter"
+
+  def run(_args) do
+    Mix.Task.run("app.start")
+
+    IO.puts("Starting phpBB 2 permission migration & seeding...")
+
+    # 1. Load data via the dedicated loader module
+    group_map = BBCode.PhpBb2PermissionLoader.fetch_group_id_map()
+    Mix.shell().info("Loaded #{map_size(group_map)} groups from legacy database.")
+
+    forums = BBCode.PhpBb2PermissionLoader.fetch_all_forums()
+    Mix.shell().info("Found #{length(forums)} forums to process.\n")
+
+    # 2. Process and seed each forum
+    Enum.each(forums, fn forum ->
+      forum_id = forum[:forum_id]
+      forum_name = forum[:forum_name]
+
+      auth_access_rows = BBCode.PhpBb2PermissionLoader.fetch_auth_access_for_forum(forum_id)
+
+      result = BBCode.PhpBb2PermissionConverter.convert_forum_permissions(
+        forum,
+        auth_access_rows,
+        group_map
+      )
+
+      Mix.shell().info("Processing Forum: [#{forum_id}] #{forum_name}")
+
+      Enum.each(result.permissions, fn perm ->
+        upsert_ash_permission(forum_name, perm.role, perm.permission)
+      end)
+    end)
+
+    Mix.shell().info("\nMigration completed successfully!")
+  end
+
+  defp upsert_ash_permission(forum_name, role_name, permission_string) do
+    try do
+      # 1. Resolve or create the Group resource
+      group =
+        case AshPhoenixStarter.Accounts.Group
+      Jx.Query.filter(name == ^role_name)
+      |> Ash.read_one() do
+           {:ok, nil} ->
+             AshPhoenixStarter.Accounts.Group
+             |> Ash.Changeset.for_create(:create, %{name: role_name})
+             |> Ash.create!()
+           {:ok, existing_group} ->
+             existing_group
+         end
+
+      # 2. Link the GroupPermission resource
+      AshPhoenixStarter.Permissions.GroupPermission
+      |> Ash.Changeset.for_create(:create, %{
+        group_id: group.id,
+        target_resource: forum_name,
+        permission: permission_string
+      })
+      |> Ash.create!(authorize?: false)
+
+      Mix.shell().info("  + Granted [#{permission_string}] to Group [#{role_name}] on [#{forum_name}]")
+    catch
+      _, error ->
+        Mix.shell().error("  x Failed to assign [#{permission_string}] to [#{role_name}]: #{inspect(error)}")
+    end
+  end
+end

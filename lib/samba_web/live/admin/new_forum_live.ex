@@ -37,7 +37,11 @@ defmodule SambaWeb.Admin.New.Forum.Live do
         as: "form",
         params: %{
           "forum_name" => "",
-          "forum_desc" => ""
+          "forum_desc" => "",
+          "forum_status" => false,
+          "prune_enable" => false,
+          "prune_days" => "",
+          "prune_freq" => ""
         }
       )
       |> to_form()
@@ -54,20 +58,117 @@ defmodule SambaWeb.Admin.New.Forum.Live do
     {:ok, socket}
   end
 
-  def handle_event("validate", %{"category_id" => category_id}, socket) do
-    {:noreply, assign(socket, :selected_category_id, category_id)}
+  def handle_event("validate", %{"form" => params}, socket) do
+    category_id = params["cat_id"] || socket.assigns.selected_category_id
+
+    normalized_params =
+      params
+      |> Map.update("prune_enable", false, fn val -> val in ["true", "1", "on", true] end)
+      |> cast_numeric_params(["prune_days", "prune_freq", "forum_order"])
+
+    form = AshPhoenix.Form.validate(socket.assigns.form, normalized_params)
+
+    {:noreply,
+     socket
+     |> assign(:selected_category_id, category_id)
+     |> assign(:form, to_form(form))}
   end
+
+  def handle_event("save", %{"form" => params}, socket) do
+    normalized_params =
+      params
+      |> Map.update("prune_enable", false, fn val -> val in ["true", "1", "on", true] end)
+      |> cast_numeric_params(["prune_days", "prune_freq", "forum_order"])
+
+    submission_params =
+      normalized_params
+      |> Map.put_new("cat_id", socket.assigns.selected_category_id)
+      |> Map.put("forum_order", socket.assigns.forum_order)
+
+    case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
+      {:ok, forum} ->
+        if submission_params["prune_enable"] == true do
+          create_forum_prune(forum.forum_id, submission_params)
+        end
+
+        {:noreply,
+         socket
+         |> put_flash(:info, "Forum saved successfully!")
+         |> push_navigate(to: ~p"/settings/forums")}
+
+      {:error, form} ->
+        {:noreply, assign(socket, form: to_form(form))}
+    end
+  end
+
+  defp cast_numeric_params(params, keys) do
+    Enum.reduce(keys, params, fn key, acc ->
+      case Map.get(acc, key) do
+        val when val == "" or val == nil ->
+          Map.put(acc, key, nil)
+
+        val when is_binary(val) ->
+          case Integer.parse(val) do
+            {int, _} -> Map.put(acc, key, int)
+            :error -> Map.put(acc, key, nil)
+          end
+
+        _ ->
+          acc
+      end
+    end)
+  end
+
+  defp sanitize_empty_numeric_fields(params) do
+    params
+    |> Map.update("prune_days", nil, fn
+      val when val == "" or val == nil -> nil
+      val -> val
+    end)
+    |> Map.update("prune_freq", nil, fn
+      val when val == "" or val == nil -> nil
+      val -> val
+    end)
+  end
+
+  defp create_forum_prune(forum_id, params) do
+    days = parse_int(params["prune_days"])
+    freq = parse_int(params["prune_freq"])
+
+    if days && freq do
+      Ash.create!(PhpBB.ForumPrune,
+        domain: PhpBB.Domain,
+        action: :create,
+        input: %{
+          forum_id: forum_id,
+          prune_days: days,
+          prune_freq: freq
+        }
+      )
+    end
+  end
+
+  defp parse_int(val) when is_binary(val) do
+    case Integer.parse(val) do
+      {int, _} -> int
+      :error -> nil
+    end
+  end
+
+  defp parse_int(val) when is_integer(val), do: val
+  defp parse_int(_), do: nil
 
   def render(assigns) do
     ~H"""
     <Layouts.app flash={@flash} current_user={@current_user} uri={@uri}>
       <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
-        <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
+        <div class="w-3/4 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
           <.form for={@form} phx-submit="save" phx-change="validate">
+            <!-- Category Selection -->
             <.select
               id="baseui-select-hero"
               name="form[cat_id]"
-              label="Categories"
+              label="Category"
               placeholder="Select Category"
               class="flex flex-col items-start gap-1 mb-4"
               label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
@@ -75,7 +176,7 @@ defmodule SambaWeb.Admin.New.Forum.Live do
               value_class="data-[placeholder]:text-neutral-500 dark:data-[placeholder]:text-neutral-400"
               icon_class="flex items-center"
               positioner_class="outline-hidden select-none z-10"
-              popup_class="group min-w-[var(--anchor-width)] origin-[var(--transform-origin)] py-1 bg-clip-padding border border-neutral-950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out data-[ending-style]:scale-[0.98] data-[ending-style]:opacity-0 data-[side=none]:translate-y-px data-[side=none]:min-w-[calc(var(--anchor-width)+1.75rem)] data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-[0.98] data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:border-white dark:bg-neutral-950 dark:text-white dark:shadow-none"
+              popup_class="group min-w-[var(--anchor-width)] origin-[var(--transform-origin)] py-1 bg-clip-padding border border-neutral-950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out dark:border-white dark:bg-neutral-950 dark:text-white"
               item_class="grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 py-1.5 pr-4 pl-2.5 text-sm outline-hidden select-none data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950"
               item_indicator_class="col-start-1"
               item_text_class="col-start-2"
@@ -100,86 +201,103 @@ defmodule SambaWeb.Admin.New.Forum.Live do
                 </svg>
               </:item_indicator>
             </.select>
+
+            <!-- Forum Name -->
             <.text_field
               id="name"
               field={@form[:forum_name]}
               space="small"
-              placeholder="Name"
+              label="Forum Name"
+              placeholder="Enter forum name..."
               variant="default"
               class="mb-4"
               color="white"
             />
-            <div class="mb-4"></div>
 
-            <div>
-              <.radio_card
-                field={@form[:topic_status]}
-                space="small"
-                cols="two"
-                color="misc"
-                size="extra_small"
-                variant="shadow"
-                color="info"
+            <!-- Forum Status (Radio Fields) -->
+            <div class="mb-4 flex flex-col gap-2">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Forum Status</label>
+              <.radio_field
+                id="forum_status_unlocked"
                 field={@form[:forum_status]}
-              >
-                <:radio
-                  value="0"
-                  title="Unlocked"
-                  description="Members can freely reply and participate in this discussion."
-                  icon="hero-lock-open"
-                />
-                <:radio
-                  value="1"
-                  title="Locked"
-                  description="Discussion is closed; only moderators can reply."
-                  icon="hero-lock-closed"
-                />
-              </.radio_card>
-            </div>
-
-            <div class="[&_.ck-editor__editable]:!min-h-[56rem] mt-4 mb-4">
-              <.ckeditor
-                id="content-editor"
-                field={@form[:forum_desc]}
-                preset={@preset}
-                type="classic"
+                value={false}
+                label="Unlocked (Members can freely reply and participate)"
+                color="info"
+                space="small"
+              />
+              <.radio_field
+                id="forum_status_locked"
+                field={@form[:forum_status]}
+                value={true}
+                label="Locked (Discussion is closed; only moderators can reply)"
+                color="info"
+                space="small"
               />
             </div>
 
-            <div class="flex flex-row">
-              <.radio_card
-                space="small"
-                cols="one"
-                size="extra_small"
-                variant="bordered"
-                color="success"
-                field={@form[:auth_announce]}
-              >
-                <:radio
-                  value="announcement"
-                  title="Announcement"
-                  description="Important global or forum-specific notice pinned at the top."
-                  icon="hero-megaphone"
+            <!-- Forum Description (CKEditor) -->
+            <div class="mt-4 mb-4">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Forum Description</label>
+              <div class="[&_.ck-editor__editable]:!min-h-[24rem]">
+                <.ckeditor
+                  id="content-editor"
+                  field={@form[:forum_desc]}
+                  preset={@preset}
+                  type="classic"
                 />
-              </.radio_card>
-              <.radio_card
-                space="small"
-                cols="one"
-                size="extra_small"
-                variant="bordered"
-                color="success"
-                field={@form[:auth_sticky]}
-              >
-                <:radio
-                  value="sticky"
-                  title="Sticky"
-                  description="Stays fixed near the top of the topic list for high visibility."
-                  icon="hero-bookmark"
-                />
-              </.radio_card>
+              </div>
             </div>
-            <div class="flex flex-row justify-end space-x-2 mt-4">
-              <.button type="submit">Submit</.button>
+
+            <!-- Prune Enable Checkbox -->
+            <div class="mb-4">
+              <.checkbox_field
+                id="prune_enable"
+                field={@form[:prune_enable]}
+                label="Enable Prune"
+                space="small"
+                color="white"
+              />
+            </div>
+
+            <!-- Prune Days -->
+            <div class="mb-4">
+              <.text_field
+                id="prune_days"
+                label="Remove topics that have not been posted to in X Days"
+                field={@form[:prune_days]}
+                space="small"
+                placeholder=""
+                variant="default"
+                color="white"
+              />
+            </div>
+
+            <!-- Prune Frequency -->
+            <div class="mb-4">
+              <.text_field
+                id="prune_freq"
+                label="Check for Topic Age every X Days"
+                field={@form[:prune_freq]}
+                space="small"
+                placeholder=""
+                variant="default"
+                color="white"
+              />
+            </div>
+
+            <div class="flex flex-row justify-end space-x-2 mt-6">
+              <.link
+                navigate={~p"/settings/forums"}
+                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+              >
+                Cancel
+              </.link>
+              <.button
+                type="submit"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                Create Forum
+              </.button>
             </div>
           </.form>
         </div>
@@ -188,44 +306,13 @@ defmodule SambaWeb.Admin.New.Forum.Live do
     """
   end
 
-  def handle_event("validate", %{"form" => params}, socket) do
-    # Ensure system assigns aren't wiped out if missing from live validation payload
-    merged_params =
-      params
-      |> Map.put("cat_id", socket.assigns.cat_id)
-      |> Map.put("forum_name", socket.assigns.forum_name)
-      |> Map.put("forum_desc", socket.assigns.forum_desc)
-
-    form = AshPhoenix.Form.validate(socket.assigns.form, merged_params)
-    {:noreply, assign(socket, form: to_form(form))}
-  end
-
-  def handle_event("save", %{"form" => params}, socket) do
-    submission_params =
-      params
-      |> Map.put("cat_id", socket.assigns.cat_id)
-      |> Map.put("forum_name", socket.assigns.forum_name)
-      |> Map.put("forum_desc", socket.assigns.forum_desc)
-
-    case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
-      {:ok, _} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Forum created successfully!")
-         |> push_navigate(to: ~p"/forums")}
-
-      {:error, form} ->
-        {:noreply, assign(socket, form: to_form(form))}
-    end
-  end
-
   defp get_next_order do
     max_order =
       PhpBB.Forums
       |> Ash.Query.for_read(:read)
       |> Ash.Query.sort(forum_order: :desc)
       |> Ash.Query.limit(1)
-      |> Ash.read!(domain: Domain)
+      |> Ash.read!(domain: PhpBB.Domain)
       |> List.first()
       |> case do
         nil -> 0

@@ -73,12 +73,12 @@ defmodule PhpBB.Sessions do
       description "the numeric identifier of the page or script the user is currently viewing."
     end
 
-    attribute :session_logged_in, :boolean do
+    attribute :session_logged_in, :string do
       allow_nil? true
       public? true
     end
 
-    attribute :session_admin, :boolean do
+    attribute :session_admin, :string do
       allow_nil? true
       public? true
     end

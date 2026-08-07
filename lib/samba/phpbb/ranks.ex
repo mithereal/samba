@@ -45,10 +45,11 @@ defmodule PhpBB.Ranks do
       public? true
     end
 
-    attribute :rank_special, :boolean do
-      public? true
-      default false
+    attribute :rank_special, :integer do
+      constraints min: -32768, max: 32767
+      default 0
       allow_nil? false
+      public? true
 
       description "0 (Normal / Post-Count Rank): This is a standard, automated rank. Users automatically graduate to this rank once their total post count crosses a specific threshold defined in the database (stored in rank_min)."
     end

@@ -144,9 +144,10 @@ defmodule PhpBB.Users do
       allow_nil? false
     end
 
-    attribute :user_active, :boolean do
+    attribute :user_active, :integer do
+      constraints min: -32768, max: 32767
       public? true
-      default true
+      default 0
       allow_nil? false
     end
 
@@ -298,53 +299,53 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_viewemail, :boolean do
+    attribute :user_viewemail, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
 
       description "0 (Hidden / Private): The user's email address is kept private. Other members cannot see the email address in user profiles, and they must use phpBB's internal web-based email form (profile.php?mode=email) to contact the user without revealing the underlying address. 1 (Visible / Public): The user's email address is publicly exposed in their profile view, allowing anyone browsing the forum to see their raw email address."
     end
 
-    attribute :user_attachsig, :boolean do
+    attribute :user_attachsig, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allowhtml, :boolean do
+    attribute :user_allowhtml, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allowbbcode, :boolean do
+    attribute :user_allowbbcode, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allowsmile, :boolean do
+    attribute :user_allowsmile, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allow_pm, :boolean do
+    attribute :user_allow_pm, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allowavatar, :boolean do
+    attribute :user_allowavatar, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_allow_viewonline, :boolean do
+    attribute :user_allow_viewonline, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
@@ -397,23 +398,23 @@ defmodule PhpBB.Users do
       public? true
     end
 
-    attribute :user_notify_pm, :boolean do
+    attribute :user_notify_pm, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
 
       description "0 (Disabled): The user does not want email alerts. They will only see the private message notification badge or popup when actively browsing the forum. 1 (Enabled): The user wants to be notified via email whenever someone sends them a private message"
     end
 
-    attribute :user_popup_pm, :boolean do
+    attribute :user_popup_pm, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
     end
 
-    attribute :user_notify, :boolean do
+    attribute :user_notify, :integer do
       public? true
-      default true
+      default 1
       allow_nil? false
       description "The system automatically send an email to the user's registered address"
     end

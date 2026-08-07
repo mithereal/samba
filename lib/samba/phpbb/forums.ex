@@ -119,9 +119,10 @@ defmodule PhpBB.Forums do
       public? true
     end
 
-    attribute :forum_status, :boolean do
+    attribute :forum_status, :integer do
       public? true
-      default false
+      constraints min: -32768, max: 32767
+      default 0
 
       description "0 (Unlocked / Open): The forum is fully operational. Registered users can create new topics, post replies, and interact normally based on their standard group permissions."
     end
@@ -131,15 +132,16 @@ defmodule PhpBB.Forums do
       default 1
     end
 
-    attribute :prune_enable, :boolean do
+    attribute :prune_enable, :integer do
       public? true
-      default false
+      default 0
 
       description "0 (Disabled): Automatic pruning is turned off for this forum. Topics will remain indefinitely regardless of how old they are or when the last reply was made."
     end
 
     attribute :prune_next, :integer do
       allow_nil? true
+      constraints min: -32768, max: 32767
       public? true
     end
 
