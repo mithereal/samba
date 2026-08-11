@@ -36,6 +36,7 @@ defmodule PhpBB.PostsText do
       public? true
       primary_key? true
       allow_nil? false
+      writable? true
     end
 
     attribute :bbcode_uid, :string do
@@ -89,11 +90,15 @@ defmodule PhpBB.PostsText do
         changeset
 
       html ->
-        uid = generate_bbcode_uid()
-
-        case BBCode.HtmlToBbcode.convert(html) do
+        case BBCode.from_html(html) do
           {:ok, base_bbcode} ->
-            uid_infused_bbcode = inject_bbcode_uid(base_bbcode, uid)
+            # Ensure base_bbcode is a string. If it's returned as a keyword list or
+            # similar structure, convert it (e.g., using inspect or a custom stringify function,
+            # or if BBCode library has a string conversion. If it's a list/iodata/tuple, stringify appropriately):
+            bbcode_string = to_bbcode_string(base_bbcode)
+
+            uid = generate_bbcode_uid()
+            uid_infused_bbcode = inject_bbcode_uid(bbcode_string, uid)
 
             changeset
             |> Ash.Changeset.force_change_attribute(:bbcode_uid, uid)
@@ -107,6 +112,19 @@ defmodule PhpBB.PostsText do
         end
     end
   end
+
+  # Helper to normalize base_bbcode into a string if it comes back as a structure/keyword list
+  defp to_bbcode_string(base_bbcode) when is_binary(base_bbcode), do: base_bbcode
+
+  defp to_bbcode_string(base_bbcode) when is_list(base_bbcode) do
+    Enum.map_join(base_bbcode, "", fn
+      {tag, content} -> "[#{tag}]#{content}[/#{tag}]"
+      binary when is_binary(binary) -> binary
+      other -> to_string(other)
+    end)
+  end
+
+  defp to_bbcode_string(base_bbcode), do: to_string(base_bbcode)
 
   # --- Read Action Deserialization (Transforms to HTML) ---
 
@@ -154,9 +172,8 @@ defmodule PhpBB.PostsText do
   end
 
   defp inject_bbcode_uid(bbcode_string, uid) do
-    bbcode_string
-    |> Regex.replace(~r/\[([a-z0-9\*]+)(=[^\]]+)?\]/ui, "[\\1\\2:#{uid}]")
-    |> Regex.replace(~r/\[\/([a-z0-9\*]+)\]/ui, "[/\\1:#{uid}]")
+    text = Regex.replace(~r/\[([a-z0-9\*]+)(=[^\]]+)?\]/ui, bbcode_string, "[\\1\\2:#{uid}]")
+    Regex.replace(~r/\[\/([a-z0-9\*]+)\]/ui, text, "[/\\1:#{uid}]")
   end
 
   defp strip_bbcode_uid(bbcode_string, nil), do: bbcode_string
@@ -165,7 +182,6 @@ defmodule PhpBB.PostsText do
   defp strip_bbcode_uid(bbcode_string, uid) do
     escaped_uid = Regex.escape(String.trim(uid))
 
-    bbcode_string
-    |> Regex.replace(~r/:#{escaped_uid}\b/ui, "")
+    Regex.replace(~r/:#{escaped_uid}\b/ui, bbcode_string, "")
   end
 end

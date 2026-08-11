@@ -142,7 +142,8 @@ defmodule Samba.Repo.Migrations.Phpbb do
             name: "phpbb_forums_cat_id_fkey",
             type: :bigint,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :forum_name, :text, null: false
       add :forum_desc, :text, null: false
@@ -358,7 +359,8 @@ defmodule Samba.Repo.Migrations.Phpbb do
             name: "phpbb_topics_forum_id_fkey",
             type: :bigint,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :topic_poster, :bigint, null: false
       add :first_post_id, :bigint
@@ -397,7 +399,8 @@ defmodule Samba.Repo.Migrations.Phpbb do
             name: "phpbb_topic_watch_topic_id_fkey",
             type: :bigint,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :user_id, :bigint, null: false
       add :notify_status, :text, null: false
@@ -646,7 +649,8 @@ defmodule Samba.Repo.Migrations.Phpbb do
             name: "phpbb_users_user_rank_fkey",
             type: :bigint,
             prefix: "public"
-          ), null: false
+          ),
+          null: false
 
       add :user_active, :bigint, null: false, default: 0
       add :username, :text, null: false

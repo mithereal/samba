@@ -25,7 +25,7 @@ defmodule SambaWeb.Layouts do
     default: nil,
     doc: "the current [scope](https://hexdocs.pm/phoenix/scopes.html)"
 
-  attr :current_user, Samba.Accounts.User
+  attr :current_user, Samba.Accounts.User, required: true
   slot :inner_block, required: true
   attr :uri, URI, default: %URI{}
 

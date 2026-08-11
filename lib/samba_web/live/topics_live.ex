@@ -81,7 +81,7 @@ defmodule SambaWeb.ForumTopicsLive do
                 {@forum && @forum.forum_name}
               </:item>
             </.breadcrumb>
-            <p class="mt-5 text-sm text-gray-400">{@forum && @forum.forum_desc}</p>
+            <p class="mt-5 text-sm text-black">{@forum && raw(@forum.forum_desc)}</p>
             <.link
               navigate={~p"/forums/#{@forum_id}/topic/new"}
               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors"

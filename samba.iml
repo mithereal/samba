@@ -145,6 +145,11 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/toml" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/websockex" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/zoi" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/abatap" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/cc_precompiler" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/image" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/sweet_xml" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/vix" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -393,5 +398,7 @@
     <orderEntry type="library" name="mdex" level="project" />
     <orderEntry type="library" name="mdex_native" level="project" />
     <orderEntry type="library" name="lumis" level="project" />
+    <orderEntry type="library" name="abatap" level="project" />
+    <orderEntry type="library" name="image" level="project" />
   </component>
 </module>

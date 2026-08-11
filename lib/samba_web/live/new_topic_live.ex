@@ -4,14 +4,18 @@ defmodule SambaWeb.NewTopicLive do
   use SambaWeb.LiveTracking
 
   require Logger
+  import Ash.Query
 
   alias CKEditor5.Preset
   on_mount {SambaWeb.LiveUserAuth, :live_user_required}
 
   def mount(%{"id" => id}, _session, socket) do
-    form_id = String.to_integer(id)
-    forum = Ash.get!(PhpBB.Forums, form_id)
+    forum_id = String.to_integer(id)
+    forum = Ash.get!(PhpBB.Forums, forum_id, domain: PhpBB.Domain)
     current_user = socket.assigns[:current_user]
+    poster_id = current_user.phpbb_user_id
+
+    {can_post_sticky, can_post_announce} = evaluate_topic_permissions(forum, current_user)
 
     preset =
       Preset.Parser.parse!(%{
@@ -26,22 +30,94 @@ defmodule SambaWeb.NewTopicLive do
       PhpBB.Topics
       |> AshPhoenix.Form.for_create(:create,
         as: "form",
+        domain: PhpBB.Domain,
         params: %{
           "forum_id" => forum.forum_id,
-          "topic_poster" => current_user.phpbb_user_id
+          "topic_poster" => poster_id,
+          "disable_html" => "false",
+          "disable_bbcode" => "false",
+          "disable_smilies" => "false",
+          "notify_reply" => "false",
+          "topic_type" => "0",
+          "post_text" => ""
         }
       )
       |> to_form()
 
     socket =
       socket
-      |> assign(:poster_id, current_user.phpbb_user_id)
+      |> assign(:forum, forum)
+      |> assign(:poster_id, poster_id)
       |> assign(:forum_id, forum.forum_id)
+      |> assign(:can_post_sticky, can_post_sticky)
+      |> assign(:can_post_announce, can_post_announce)
       |> assign(:page_title, "New Topic")
       |> assign(:preset, preset)
       |> assign(:form, form)
 
     {:ok, socket}
+  end
+
+  defp evaluate_topic_permissions(forum, user) do
+    user_level = Map.get(user, :user_level, 0) || 0
+
+    if user_level in [1, 2] do
+      {true, true}
+    else
+      sticky_auth = forum.auth_sticky || 0
+      announce_auth = forum.auth_announce || 0
+
+      {
+        check_auth_level(forum, sticky_auth, user, :auth_sticky),
+        check_auth_level(forum, announce_auth, user, :auth_announce)
+      }
+    end
+  end
+
+  defp check_auth_level(forum, auth_val, user, permission_field) do
+    user_level = Map.get(user, :user_level, 0) || 0
+
+    cond do
+      auth_val == 0 -> true
+      auth_val == 1 -> user_level >= 0
+      auth_val == 3 -> user_level in [1, 2]
+      auth_val == 5 -> user_level == 1
+      auth_val == 2 -> check_acl_permission(forum, user, permission_field)
+      true -> false
+    end
+  end
+
+  defp check_acl_permission(forum, user, permission_field) do
+    user_id = Map.get(user, :phpbb_user_id)
+
+    if is_nil(user_id) do
+      false
+    else
+      try do
+        group_ids =
+          PhpBB.UserGroup
+          |> Ash.Query.filter(user_id == ^user_id and user_pending == 0)
+          |> Ash.read!(domain: PhpBB.Domain)
+          |> Enum.map(& &1.group_id)
+
+        if Enum.empty?(group_ids) do
+          false
+        else
+          auth_records =
+            PhpBB.AuthAccess
+            |> Ash.Query.filter(forum_id == ^forum.forum_id and group_id in ^group_ids)
+            |> Ash.read!(domain: PhpBB.Domain)
+
+          Enum.any?(auth_records, fn record ->
+            Map.get(record, permission_field) == 1
+          end)
+        end
+      rescue
+        e ->
+          Logger.error("Failed to evaluate ACL permissions: #{inspect(e)}")
+          false
+      end
+    end
   end
 
   def render(assigns) do
@@ -50,9 +126,52 @@ defmodule SambaWeb.NewTopicLive do
     <Layouts.flash_group flash={@flash} />
     <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
       <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
-        <.form for={@form} phx-submit="safe_save">
+        <.form for={@form} phx-submit="save_topic">
           <input type="hidden" name="form[forum_id]" value={@forum_id} />
           <input type="hidden" name="form[topic_poster]" value={@poster_id} />
+          <%= if @can_post_sticky || @can_post_announce do %>
+            <div class="mb-4">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Topic Type</label>
+              <div class="flex items-center space-x-6 text-sm text-neutral-950 dark:text-white">
+                <label class="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="form[topic_type]"
+                    value="0"
+                    checked={Phoenix.HTML.Form.input_value(@form, :topic_type) in [0, "0", nil]}
+                    class="text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                  />
+                  <span>Normal</span>
+                </label>
+
+                <%= if @can_post_sticky do %>
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="form[topic_type]"
+                      value="1"
+                      checked={Phoenix.HTML.Form.input_value(@form, :topic_type) in [1, "1"]}
+                      class="text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                    />
+                    <span>Sticky</span>
+                  </label>
+                <% end %>
+
+                <%= if @can_post_announce do %>
+                  <label class="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="form[topic_type]"
+                      value="2"
+                      checked={Phoenix.HTML.Form.input_value(@form, :topic_type) in [2, "2"]}
+                      class="text-indigo-600 focus:ring-indigo-500 h-4 w-4"
+                    />
+                    <span>Announcement</span>
+                  </label>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
 
           <.text_field
             id="topic_title"
@@ -86,7 +205,6 @@ defmodule SambaWeb.NewTopicLive do
             </div>
           </div>
 
-          <!-- Post Options Checkboxes -->
           <div class="space-y-2 mb-6 p-4 rounded-md border border-gray-300 dark:border-gray-700 bg-white/50 dark:bg-neutral-900/50">
             <h3 class="text-sm font-bold text-neutral-950 dark:text-white mb-3">Options</h3>
 
@@ -97,7 +215,9 @@ defmodule SambaWeb.NewTopicLive do
                   type="checkbox"
                   name="form[disable_html]"
                   value="true"
-                  checked={@form[:disable_html].value in [true, "true", 1]}
+                  checked={
+                    Phoenix.HTML.Form.input_value(@form, :disable_html) in [true, "true", 1, "1"]
+                  }
                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
                 />
                 <span class="text-sm font-medium text-neutral-950 dark:text-white">Disable HTML in this post</span>
@@ -109,7 +229,9 @@ defmodule SambaWeb.NewTopicLive do
                   type="checkbox"
                   name="form[disable_bbcode]"
                   value="true"
-                  checked={@form[:disable_bbcode].value in [true, "true", 1]}
+                  checked={
+                    Phoenix.HTML.Form.input_value(@form, :disable_bbcode) in [true, "true", 1, "1"]
+                  }
                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
                 />
                 <span class="text-sm font-medium text-neutral-950 dark:text-white">Disable BBCode in this post</span>
@@ -121,7 +243,9 @@ defmodule SambaWeb.NewTopicLive do
                   type="checkbox"
                   name="form[disable_smilies]"
                   value="true"
-                  checked={@form[:disable_smilies].value in [true, "true", 1]}
+                  checked={
+                    Phoenix.HTML.Form.input_value(@form, :disable_smilies) in [true, "true", 1, "1"]
+                  }
                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
                 />
                 <span class="text-sm font-medium text-neutral-950 dark:text-white">Disable Smilies in this post</span>
@@ -133,7 +257,9 @@ defmodule SambaWeb.NewTopicLive do
                   type="checkbox"
                   name="form[notify_reply]"
                   value="true"
-                  checked={@form[:notify_reply].value in [true, "true", 1]}
+                  checked={
+                    Phoenix.HTML.Form.input_value(@form, :notify_reply) in [true, "true", 1, "1"]
+                  }
                   class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4"
                 />
                 <span class="text-sm font-medium text-neutral-950 dark:text-white">Notify me when a reply is posted</span>
@@ -162,205 +288,100 @@ defmodule SambaWeb.NewTopicLive do
   end
 
   def handle_event("validate", %{"form" => params}, socket) do
-    form = AshPhoenix.Form.validate(socket.assigns.form, params)
+    form_params =
+      Map.drop(params, [
+        "post_text",
+        "disable_html",
+        "disable_bbcode",
+        "disable_smilies",
+        "notify_reply"
+      ])
+
+    form = AshPhoenix.Form.validate(socket.assigns.form, form_params)
     {:noreply, assign(socket, form: to_form(form))}
   end
 
-  def handle_event("safe_save", %{"form" => params}, socket) do
+  def handle_event("save_topic", %{"form" => params}, socket) do
     poster_id = socket.assigns.poster_id
     forum_id = socket.assigns.forum_id
-    post_time = System.os_time(:second)
-    forum_record = Ash.get!(PhpBB.Forums, forum_id, domain: PhpBB.Domain)
-
-    topic_title = String.trim(params["topic_title"])
-    post_text_content = String.trim(params["post_text"])
-    topic_status = 0
-    topic_type = 0
-    enable_html = true
-    enable_smilies = true
-    enable_sig = true
-    topic_vote = false
-    enable_bbcode = true
-    bbcode_uid = " "
-    post_username = " "
-
-    if String.length(topic_title) < 3 || String.length(post_text_content) < 3 do
-      form = AshPhoenix.Form.validate(socket.assigns.form, params)
-
-      {:noreply,
-       socket
-       |> put_flash(:error, "Subject and Post Text cannot be blank.")
-       |> assign(form: to_form(form))}
-    else
-      {:ok, topic} =
-        PhpBB.Topics
-        |> Ash.Changeset.for_create(:create, %{
-          "forum_id" => forum_id,
-          "topic_poster" => poster_id,
-          "topic_title" => topic_title,
-          "topic_time" => post_time,
-          "topic_replies" => 0,
-          "topic_views" => 0,
-          "topic_status" => topic_status,
-          "topic_vote" => topic_vote,
-          "topic_type" => topic_type,
-          "first_post_id" => nil,
-          "last_post_id" => nil,
-          "topic_moved_id" => nil
-        })
-        |> Ash.create(domain: PhpBB.Domain)
-
-      {:ok, post} =
-        PhpBB.Posts
-        |> Ash.Changeset.for_create(:create, %{
-          "topic_id" => topic.topic_id,
-          "forum_id" => forum_id,
-          "poster_id" => poster_id,
-          "post_time" => post_time,
-          "post_username" => post_username,
-          "enable_bbcode" => enable_bbcode,
-          "enable_html" => enable_html,
-          "enable_smilies" => enable_smilies,
-          "enable_sig" => enable_sig,
-          "post_edit_time" => 0,
-          "post_edit_count" => 0
-        })
-        |> Ash.create(domain: PhpBB.Domain)
-
-      {:ok, post_text} =
-        PhpBB.PostsText
-        |> Ash.Changeset.for_create(:create, %{
-          "post_id" => post.post_id,
-          "post_subject" => topic_title,
-          "post_text" => post_text_content
-        })
-        |> Ash.create(domain: PhpBB.Domain)
-
-      {:ok, updated_topic} =
-        topic
-        |> Ash.Changeset.for_update(:update, %{
-          "first_post_id" => post.post_id,
-          "last_post_id" => post.post_id,
-          "topic_replies" => 0
-        })
-        |> Ash.update(domain: PhpBB.Domain)
-
-      {:ok, updated_forum} =
-        forum_record
-        |> Ash.Changeset.for_update(:update, %{
-          "forum_last_post_id" => post.post_id
-        })
-        |> Ash.update(domain: PhpBB.Domain)
-
-      {:noreply,
-       socket
-       |> put_flash(:info, "Topic and post created successfully!")}
-    end
-  end
-
-  def handle_event("save", %{"form" => params}, socket) do
-    poster_id = socket.assigns.poster_id
-    forum_id = socket.assigns.forum_id
+    can_post_sticky = socket.assigns.can_post_sticky
+    can_post_announce = socket.assigns.can_post_announce
     post_time = System.os_time(:second)
 
-    forum_record = Ash.get!(PhpBB.Forums, forum_id, domain: PhpBB.Domain)
+    forum_record = socket.assigns.forum
 
     topic_title = String.trim(params["topic_title"] || "")
-    ## this is emptyvalidation is failing
     post_text_content = String.trim(params["post_text"] || "")
 
     if String.length(topic_title) < 1 || String.length(post_text_content) < 1 do
-      form = AshPhoenix.Form.validate(socket.assigns.form, params)
+      form_params =
+        Map.drop(params, [
+          "post_text",
+          "disable_html",
+          "disable_bbcode",
+          "disable_smilies",
+          "notify_reply"
+        ])
+
+      form = AshPhoenix.Form.validate(socket.assigns.form, form_params)
 
       {:noreply,
        socket
        |> put_flash(:error, "Subject and Post Text cannot be blank.")
        |> assign(form: to_form(form))}
     else
-      enable_html = if params["disable_html"] == "true", do: 0, else: 1
-      enable_bbcode = if params["disable_bbcode"] == "true", do: 0, else: 1
-      enable_smilies = if params["disable_smilies"] == "true", do: 0, else: 1
+      enable_html = if params["disable_html"] in ["true", "1", true], do: 0, else: 1
+      enable_bbcode = if params["disable_bbcode"] in ["true", "1", true], do: 0, else: 1
+      enable_smilies = if params["disable_smilies"] in ["true", "1", true], do: 0, else: 1
 
-      with {:ok, topic} <-
-             PhpBB.Topics
-             |> Ash.Changeset.for_create(:create, %{
-               "forum_id" => forum_id,
-               "topic_poster" => poster_id,
-               "topic_title" => topic_title,
-               "topic_time" => post_time,
-               "topic_replies" => 0,
-               "topic_views" => 0,
-               "topic_status" => 0,
-               "topic_vote" => 0,
-               "topic_type" => 0,
-               "first_post_id" => nil,
-               "last_post_id" => nil,
-               "topic_moved_id" => nil
-             })
-             |> Ash.create(domain: PhpBB.Domain),
-           {:ok, post} <-
-             PhpBB.Posts
-             |> Ash.Changeset.for_create(:create, %{
-               "topic_id" => topic.topic_id,
-               "forum_id" => forum_id,
-               "poster_id" => poster_id,
-               "post_time" => post_time,
-               "post_username" => "",
-               "poster_ip" => "00000000",
-               "enable_bbcode" => 1,
-               "enable_html" => 1,
-               "enable_smilies" => 1,
-               "enable_sig" => 1,
-               "post_edit_time" => 0,
-               "post_edit_count" => 0
-             })
-             |> Ash.create(domain: PhpBB.Domain),
-           {:ok, post_text} <-
-             PhpBB.PostsText
-             |> Ash.Changeset.for_create(:create, %{
-               "post_id" => post.post_id,
-               "bbcode_uid" => "0",
-               "post_subject" => topic_title,
-               "post_text" => post_text_content
-             })
-             |> Ash.create(domain: PhpBB.Domain),
-           {:ok, updated_topic} <-
-             topic
-             |> Ash.Changeset.for_update(:update, %{
-               "topic_replies" => post.post_id
-             })
-             |> Ash.update(domain: PhpBB.Domain),
-           {:ok, updated_forum} <-
-             forum_record
-             |> Ash.Changeset.for_update(:update, %{
-               "forum_posts" => post.post_id,
-               "forum_topics" => post.post_id,
-               "forum_last_post_id" => 0
-             })
-             |> Ash.update(domain: PhpBB.Domain) do
-        {:noreply,
-         socket
-         |> put_flash(:info, "Topic and post created successfully!")
-         |> push_navigate(to: ~p"/topics/#{updated_topic.topic_id}")}
-      else
-        {:error, error} ->
-          Logger.error("FAILED SEQUENTIAL STEP: #{inspect(error, pretty: true)}")
+      parsed_type =
+        case Integer.parse(params["topic_type"] || "0") do
+          {int, _} -> int
+          :error -> 0
+        end
 
-          form =
-            socket.assigns.form
-            |> AshPhoenix.Form.validate(params)
+      topic_type =
+        cond do
+          parsed_type == 1 && can_post_sticky -> 1
+          parsed_type == 2 && can_post_announce -> 2
+          true -> 0
+        end
 
+      IO.inspect(topic_type, label: "topic_type")
+
+      case create_topic_record(
+             forum_id,
+             poster_id,
+             topic_title,
+             post_time,
+             topic_type,
+             forum_record,
+             enable_html,
+             enable_bbcode,
+             enable_smilies,
+             post_text_content
+           ) do
+        {:ok, updated_topic} ->
           {:noreply,
            socket
-           |> put_flash(:error, "Failed to create topic. Check server logs.")
-           |> assign(form: to_form(form))}
+           |> put_flash(:info, "Topic and post created successfully!")
+           |> push_navigate(to: ~p"/topics/#{updated_topic.topic_id}")}
 
-        error ->
-          Logger.error("UNMATCHED SEQUENTIAL ERROR: #{inspect(error, pretty: true)}")
+        {:error, error} ->
+          Logger.error("FAILED TOPIC CREATION: #{inspect(error, pretty: true)}")
+
+          form_params =
+            Map.drop(params, [
+              "post_text",
+              "disable_html",
+              "disable_bbcode",
+              "disable_smilies",
+              "notify_reply"
+            ])
 
           form =
             socket.assigns.form
-            |> AshPhoenix.Form.validate(params)
+            |> AshPhoenix.Form.validate(form_params)
 
           {:noreply,
            socket
@@ -368,5 +389,108 @@ defmodule SambaWeb.NewTopicLive do
            |> assign(form: to_form(form))}
       end
     end
+  end
+
+  defp create_topic_record(
+         forum_id,
+         poster_id,
+         topic_title,
+         post_time,
+         topic_type,
+         forum_record,
+         enable_html \\ 1,
+         enable_bbcode \\ 1,
+         enable_smilies \\ 1,
+         post_text_content \\ ""
+       ) do
+    with {:ok, topic} <-
+           create_base_topic(forum_id, poster_id, topic_title, post_time, topic_type),
+         {:ok, post} <-
+           create_post_record(
+             topic.topic_id,
+             forum_id,
+             poster_id,
+             post_time,
+             enable_html,
+             enable_bbcode,
+             enable_smilies
+           ),
+         {:ok, _post_text} <-
+           create_post_text_record(post.post_id, topic_title, post_text_content),
+         {:ok, updated_topic} <- update_topic_pointers(topic, post.post_id),
+         {:ok, _updated_forum} <- update_forum_last_post(forum_record, post.post_id) do
+      {:ok, updated_topic}
+    end
+  end
+
+  def create_base_topic(forum_id, poster_id, topic_title, post_time, topic_type) do
+    PhpBB.Topics
+    |> Ash.Changeset.for_create(:create, %{
+      "forum_id" => forum_id,
+      "topic_poster" => poster_id,
+      "topic_title" => topic_title,
+      "topic_time" => post_time,
+      "topic_replies" => 0,
+      "topic_views" => 0,
+      "topic_status" => 0,
+      "topic_vote" => 0,
+      "topic_type" => topic_type,
+      "topic_moved_id" => nil
+    })
+    |> Ash.create(domain: PhpBB.Domain)
+  end
+
+  def create_post_record(
+        topic_id,
+        forum_id,
+        poster_id,
+        post_time,
+        enable_html,
+        enable_bbcode,
+        enable_smilies
+      ) do
+    PhpBB.Posts
+    |> Ash.Changeset.for_create(:create, %{
+      "topic_id" => topic_id,
+      "forum_id" => forum_id,
+      "poster_id" => poster_id,
+      "post_time" => post_time,
+      "post_username" => "",
+      "poster_ip" => "127.0.0.1",
+      "enable_bbcode" => enable_bbcode,
+      "enable_html" => enable_html,
+      "enable_smilies" => enable_smilies,
+      "enable_sig" => 1,
+      "post_edit_time" => 0,
+      "post_edit_count" => 0
+    })
+    |> Ash.create(domain: PhpBB.Domain)
+  end
+
+  def create_post_text_record(post_id, topic_title, post_text_content) do
+    PhpBB.PostsText
+    |> Ash.Changeset.for_create(:create, %{
+      "post_id" => post_id,
+      "post_subject" => topic_title,
+      "post_text" => post_text_content
+    })
+    |> Ash.create(domain: PhpBB.Domain)
+  end
+
+  def update_topic_pointers(topic, post_id) do
+    topic
+    |> Ash.Changeset.for_update(:update, %{
+      "first_post_id" => post_id,
+      "last_post_id" => post_id
+    })
+    |> Ash.update(domain: PhpBB.Domain)
+  end
+
+  def update_forum_last_post(forum_record, post_id) do
+    forum_record
+    |> Ash.Changeset.for_update(:update, %{
+      "forum_last_post_id" => post_id
+    })
+    |> Ash.update(domain: PhpBB.Domain)
   end
 end

@@ -23,7 +23,7 @@ defmodule Samba.MixProject do
   def application do
     [
       mod: {Samba.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :debugger]
     ]
   end
 
@@ -98,7 +98,8 @@ defmodule Samba.MixProject do
       {:ckeditor5_phoenix, "~> 1.28.2"},
       {:ash_ops, "~> 0.2.4"},
       {:nimble_parsec, "~> 1.4"},
-      {:ex_bbcode, github: "/mithereal/ex_bbcode"}
+      {:ex_bbcode, github: "/mithereal/ex_bbcode"},
+      {:abatap, "~> 0.2.0"}
     ]
   end
 

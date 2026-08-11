@@ -38,13 +38,18 @@ defmodule SambaWeb.Admin.New.Forum.Live do
         params: %{
           "forum_name" => "",
           "forum_desc" => "",
-          "forum_status" => false,
-          "prune_enable" => false,
-          "prune_days" => "",
-          "prune_freq" => ""
+          "forum_status" => 0,
+          "forum_order" => get_next_order(),
+          "prune_enable" => 0
         }
       )
       |> to_form()
+
+    first =
+      case Enum.count(category_options) do
+        0 -> nil
+        _ -> List.first(category_options)[:value]
+      end
 
     socket =
       socket
@@ -52,43 +57,53 @@ defmodule SambaWeb.Admin.New.Forum.Live do
       |> assign(:preset, preset)
       |> assign(:form, form)
       |> assign(:categories, category_options)
-      |> assign(:selected_category_id, List.first(category_options).value)
+      |> assign(:selected_category_id, first)
       |> assign(:forum_order, next_order)
+      |> assign(:prune_days, "")
+      |> assign(:prune_freq, "")
 
     {:ok, socket}
   end
 
-  def handle_event("validate", %{"form" => params}, socket) do
-    category_id = params["cat_id"] || socket.assigns.selected_category_id
+  def handle_event("validate", %{"form" => params} = event_params, socket) do
+    prune_days = get_in(event_params, ["prune_days"]) || socket.assigns.prune_days
+    prune_freq = get_in(event_params, ["prune_freq"]) || socket.assigns.prune_freq
 
     normalized_params =
       params
-      |> Map.update("prune_enable", false, fn val -> val in ["true", "1", "on", true] end)
-      |> cast_numeric_params(["prune_days", "prune_freq", "forum_order"])
+      |> Map.update("prune_enable", 0, fn val ->
+        if val in ["true", "1", "on", true], do: 1, else: 0
+      end)
+      |> cast_numeric_params(["forum_status", "forum_order"])
 
     form = AshPhoenix.Form.validate(socket.assigns.form, normalized_params)
 
     {:noreply,
      socket
-     |> assign(:selected_category_id, category_id)
-     |> assign(:form, to_form(form))}
+     |> assign(form: to_form(form))
+     |> assign(:selected_category_id, params["cat_id"] || socket.assigns.selected_category_id)
+     |> assign(:prune_days, prune_days)
+     |> assign(:prune_freq, prune_freq)}
   end
 
-  def handle_event("save", %{"form" => params}, socket) do
+  def handle_event("save", %{"form" => params} = event_params, socket) do
+    prune_days = get_in(event_params, ["prune_days"]) || socket.assigns.prune_days
+    prune_freq = get_in(event_params, ["prune_freq"]) || socket.assigns.prune_freq
+
     normalized_params =
       params
-      |> Map.update("prune_enable", false, fn val -> val in ["true", "1", "on", true] end)
-      |> cast_numeric_params(["prune_days", "prune_freq", "forum_order"])
+      |> Map.update("prune_enable", 0, fn val ->
+        if val in ["true", "1", "on", true], do: 1, else: 0
+      end)
+      |> cast_numeric_params(["forum_status", "forum_order"])
 
     submission_params =
-      normalized_params
-      |> Map.put_new("cat_id", socket.assigns.selected_category_id)
-      |> Map.put("forum_order", socket.assigns.forum_order)
+      Map.put_new(normalized_params, "cat_id", socket.assigns.selected_category_id)
 
     case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
       {:ok, forum} ->
-        if submission_params["prune_enable"] == true do
-          create_forum_prune(forum.forum_id, submission_params)
+        if submission_params["prune_enable"] == 1 do
+          create_forum_prune(forum.forum_id, prune_days, prune_freq)
         end
 
         {:noreply,
@@ -119,21 +134,9 @@ defmodule SambaWeb.Admin.New.Forum.Live do
     end)
   end
 
-  defp sanitize_empty_numeric_fields(params) do
-    params
-    |> Map.update("prune_days", nil, fn
-      val when val == "" or val == nil -> nil
-      val -> val
-    end)
-    |> Map.update("prune_freq", nil, fn
-      val when val == "" or val == nil -> nil
-      val -> val
-    end)
-  end
-
-  defp create_forum_prune(forum_id, params) do
-    days = parse_int(params["prune_days"])
-    freq = parse_int(params["prune_freq"])
+  defp create_forum_prune(forum_id, raw_days, raw_freq) do
+    days = parse_int(raw_days)
+    freq = parse_int(raw_freq)
 
     if days && freq do
       Ash.create!(PhpBB.ForumPrune,
@@ -157,6 +160,25 @@ defmodule SambaWeb.Admin.New.Forum.Live do
 
   defp parse_int(val) when is_integer(val), do: val
   defp parse_int(_), do: nil
+
+  defp map_get(nil, _), do: nil
+  defp map_get(map, key), do: map[key]
+
+  defp get_next_order do
+    max_order =
+      PhpBB.Forums
+      |> Ash.Query.for_read(:read)
+      |> Ash.Query.sort(forum_order: :desc)
+      |> Ash.Query.limit(1)
+      |> Ash.read!(domain: PhpBB.Domain)
+      |> List.first()
+      |> case do
+        nil -> 0
+        data -> data.forum_order || 0
+      end
+
+    max_order + 1
+  end
 
   def render(assigns) do
     ~H"""
@@ -217,22 +239,25 @@ defmodule SambaWeb.Admin.New.Forum.Live do
             <!-- Forum Status (Radio Fields) -->
             <div class="mb-4 flex flex-col gap-2">
               <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Forum Status</label>
-              <.radio_field
-                id="forum_status_unlocked"
+              <.group_radio
                 field={@form[:forum_status]}
-                value={false}
-                label="Unlocked (Members can freely reply and participate)"
-                color="info"
+                id="forum_status"
                 space="small"
-              />
-              <.radio_field
-                id="forum_status_locked"
-                field={@form[:forum_status]}
-                value={true}
-                label="Locked (Discussion is closed; only moderators can reply)"
-                color="info"
-                space="small"
-              />
+                variation="horizontal"
+              >
+                <:radio
+                  value="0"
+                  checked={Phoenix.HTML.Form.input_value(@form, :forum_status) in [0, "0", nil]}
+                >
+                  Unlocked
+                </:radio>
+                <:radio
+                  value="1"
+                  checked={Phoenix.HTML.Form.input_value(@form, :forum_status) in [1, "1"]}
+                >
+                  Locked
+                </:radio>
+              </.group_radio>
             </div>
 
             <!-- Forum Description (CKEditor) -->
@@ -248,40 +273,41 @@ defmodule SambaWeb.Admin.New.Forum.Live do
               </div>
             </div>
 
-            <!-- Prune Enable Checkbox -->
-            <div class="mb-4">
-              <.checkbox_field
-                id="prune_enable"
-                field={@form[:prune_enable]}
-                label="Enable Prune"
-                space="small"
-                color="white"
+            <div class="mb-4 text-neutral-950 dark:text-white font-medium">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="hidden" name="form[prune_enable]" value="0" />
+                <input
+                  type="checkbox"
+                  name="form[prune_enable]"
+                  value="1"
+                  checked={Phoenix.HTML.Form.input_value(@form, :prune_enable) == 1}
+                  class="rounded border-neutral-950 dark:border-white text-indigo-600 focus:ring-indigo-500 dark:bg-neutral-950"
+                />
+                <span class="text-sm font-bold text-neutral-950 dark:text-white">Enable Prune</span>
+              </label>
+            </div>
+
+            <div class="mb-4 max-w-xs">
+              <input type="hidden" name="prune_days" value={@prune_days} />
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Remove topics that have not been posted to in X Days</label>
+              <input
+                type="text"
+                name="prune_days"
+                value={@prune_days}
+                phx-debounce="blur"
+                class="flex h-8 w-full rounded-md border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 px-3 py-1 text-sm text-neutral-950 dark:text-white shadow-xs focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               />
             </div>
 
-            <!-- Prune Days -->
-            <div class="mb-4">
-              <.text_field
-                id="prune_days"
-                label="Remove topics that have not been posted to in X Days"
-                field={@form[:prune_days]}
-                space="small"
-                placeholder=""
-                variant="default"
-                color="white"
-              />
-            </div>
-
-            <!-- Prune Frequency -->
-            <div class="mb-4">
-              <.text_field
-                id="prune_freq"
-                label="Check for Topic Age every X Days"
-                field={@form[:prune_freq]}
-                space="small"
-                placeholder=""
-                variant="default"
-                color="white"
+            <div class="mb-4 max-w-xs">
+              <input type="hidden" name="prune_freq" value={@prune_freq} />
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Check for Topic Age every X Days</label>
+              <input
+                type="text"
+                name="prune_freq"
+                value={@prune_freq}
+                phx-debounce="blur"
+                class="flex h-8 w-full rounded-md border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 px-3 py-1 text-sm text-neutral-950 dark:text-white shadow-xs focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               />
             </div>
 
@@ -304,21 +330,5 @@ defmodule SambaWeb.Admin.New.Forum.Live do
       </div>
     </Layouts.app>
     """
-  end
-
-  defp get_next_order do
-    max_order =
-      PhpBB.Forums
-      |> Ash.Query.for_read(:read)
-      |> Ash.Query.sort(forum_order: :desc)
-      |> Ash.Query.limit(1)
-      |> Ash.read!(domain: PhpBB.Domain)
-      |> List.first()
-      |> case do
-        nil -> 0
-        data -> data.forum_order || 0
-      end
-
-    max_order + 1
   end
 end

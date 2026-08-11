@@ -3,17 +3,19 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
   use CKEditor5
 
   require Logger
+  require Ash.Query
 
   alias CKEditor5.Preset
 
-  def mount(%{"id" => forum_id}, _session, socket) do
-    current_forum = Ash.get!(PhpBB.Forums, forum_id, domain: Domain)
+  def mount(%{"id" => id}, _session, socket) do
+    forum =
+      PhpBB.Forums
+      |> Ash.get!(id, domain: PhpBB.Domain)
 
-    # Fetch existing forum prune settings if available
-    current_prune =
+    existing_prune =
       PhpBB.ForumPrune
-      |> Ash.Query.filter(forum_id == current_forum.forum_id)
-      |> Ash.read_one(domain: PhpBB.Domain)
+      |> Ash.Query.filter(forum_id == ^forum.forum_id)
+      |> Ash.read_one!(domain: PhpBB.Domain)
 
     categories =
       PhpBB.Categories
@@ -38,15 +40,10 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
       end)
 
     form =
-      current_forum
+      forum
       |> AshPhoenix.Form.for_update(:update,
-        domain: Domain,
         as: "form",
-        params: %{
-          "prune_enable" => current_forum.prune_enable || false,
-          "prune_days" => current_prune && to_string(current_prune.prune_days),
-          "prune_freq" => current_prune && to_string(current_prune.prune_freq)
-        }
+        domain: PhpBB.Domain
       )
       |> to_form()
 
@@ -55,40 +52,62 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
       |> assign(:page_title, "Edit Forum")
       |> assign(:preset, preset)
       |> assign(:form, form)
+      |> assign(:forum, forum)
       |> assign(:categories, category_options)
-      |> assign(:selected_category_id, to_string(current_forum.cat_id))
-      |> assign(:forum_order, current_forum.forum_order)
-      |> assign(:current_forum, current_forum)
-      |> assign(:current_prune, current_prune)
+      |> assign(:selected_category_id, to_string(forum.cat_id))
+      |> assign(:prune_days, (existing_prune && to_string(existing_prune.prune_days)) || "")
+      |> assign(:prune_freq, (existing_prune && to_string(existing_prune.prune_freq)) || "")
 
     {:ok, socket}
   end
 
-  def handle_event("validate", %{"form" => params}, socket) do
-    category_id = params["cat_id"] || socket.assigns.selected_category_id
+  def handle_event("validate", params, socket) do
+    form_params = Map.get(params, "form", %{})
+    prune_days = Map.get(params, "prune_days", socket.assigns.prune_days)
+    prune_freq = Map.get(params, "prune_freq", socket.assigns.prune_freq)
 
     normalized_params =
-      Map.update(params, "prune_enable", false, fn val ->
-        val in ["true", "1", "on", true]
+      form_params
+      |> Map.update("prune_enable", 0, fn val ->
+        if val in ["true", "1", "on", true], do: 1, else: 0
       end)
+      |> cast_numeric_params(["forum_status", "forum_order"])
 
     form = AshPhoenix.Form.validate(socket.assigns.form, normalized_params)
 
     {:noreply,
      socket
-     |> assign(:selected_category_id, category_id)
-     |> assign(:form, to_form(form))}
+     |> assign(form: to_form(form))
+     |> assign(
+       :selected_category_id,
+       form_params["cat_id"] || socket.assigns.selected_category_id
+     )
+     |> assign(:prune_days, prune_days)
+     |> assign(:prune_freq, prune_freq)}
   end
 
-  def handle_event("save", %{"form" => params}, socket) do
-    normalized_params =
-      Map.update(params, "prune_enable", false, fn val ->
-        val in ["true", "1", "on", true]
-      end)
+  def handle_event("save", params, socket) do
+    form_params = Map.get(params, "form", %{})
+    prune_days = Map.get(params, "prune_days", socket.assigns.prune_days)
+    prune_freq = Map.get(params, "prune_freq", socket.assigns.prune_freq)
 
-    case AshPhoenix.Form.submit(socket.assigns.form, params: normalized_params) do
+    normalized_params =
+      form_params
+      |> Map.update("prune_enable", 0, fn val ->
+        if val in ["true", "1", "on", true], do: 1, else: 0
+      end)
+      |> cast_numeric_params(["forum_status", "forum_order"])
+
+    submission_params =
+      Map.put_new(normalized_params, "cat_id", socket.assigns.selected_category_id)
+
+    case AshPhoenix.Form.submit(socket.assigns.form, params: submission_params) do
       {:ok, forum} ->
-        handle_forum_prune_update(forum.forum_id, socket.assigns.current_prune, normalized_params)
+        if submission_params["prune_enable"] == 1 do
+          upsert_forum_prune(forum.forum_id, prune_days, prune_freq)
+        else
+          delete_forum_prune(forum.forum_id)
+        end
 
         {:noreply,
          socket
@@ -100,35 +119,58 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
     end
   end
 
-  defp handle_forum_prune_update(forum_id, current_prune, params) do
-    prune_enabled = params["prune_enable"] == true
-    days = parse_int(params["prune_days"])
-    freq = parse_int(params["prune_freq"])
+  defp cast_numeric_params(params, keys) do
+    Enum.reduce(keys, params, fn key, acc ->
+      case Map.get(acc, key) do
+        val when val == "" or val == nil ->
+          Map.put(acc, key, nil)
 
-    cond do
-      prune_enabled && current_prune && days && freq ->
-        Ash.Changeset.for_update(current_prune, :update, %{
-          prune_days: days,
-          prune_freq: freq
-        })
-        |> Ash.update!(domain: PhpBB.Domain)
+        val when is_binary(val) ->
+          case Integer.parse(val) do
+            {int, _} -> Map.put(acc, key, int)
+            :error -> Map.put(acc, key, nil)
+          end
 
-      prune_enabled && !current_prune && days && freq ->
-        Ash.create!(PhpBB.ForumPrune,
-          domain: PhpBB.Domain,
-          action: :create,
-          input: %{
-            forum_id: forum_id,
-            prune_days: days,
-            prune_freq: freq
-          }
-        )
+        _ ->
+          acc
+      end
+    end)
+  end
 
-      !prune_enabled && current_prune ->
-        Ash.destroy!(current_prune, domain: PhpBB.Domain)
+  defp upsert_forum_prune(target_forum_id, raw_days, raw_freq) do
+    days = parse_int(raw_days)
+    freq = parse_int(raw_freq)
 
-      true ->
-        :ok
+    if days && freq do
+      existing =
+        PhpBB.ForumPrune
+        |> Ash.Query.filter(forum_id == ^target_forum_id)
+        |> Ash.read_one!(domain: PhpBB.Domain)
+
+      case existing do
+        nil ->
+          Ash.create!(PhpBB.ForumPrune,
+            domain: PhpBB.Domain,
+            action: :create,
+            input: %{forum_id: target_forum_id, prune_days: days, prune_freq: freq}
+          )
+
+        prune_record ->
+          Ash.update!(prune_record,
+            domain: PhpBB.Domain,
+            action: :update,
+            input: %{prune_days: days, prune_freq: freq}
+          )
+      end
+    end
+  end
+
+  defp delete_forum_prune(target_forum_id) do
+    case PhpBB.ForumPrune
+         |> Ash.Query.filter(forum_id == ^target_forum_id)
+         |> Ash.read_one!(domain: PhpBB.Domain) do
+      nil -> :ok
+      record -> Ash.destroy!(record, domain: PhpBB.Domain)
     end
   end
 
@@ -156,35 +198,10 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               placeholder="Select Category"
               class="flex flex-col items-start gap-1 mb-4"
               label_class="cursor-default text-sm font-bold text-neutral-950 dark:text-white"
-              trigger_class="flex h-8 min-w-40 items-center justify-between gap-3 pl-2 pr-1 text-sm leading-none whitespace-nowrap border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white select-none hover:not-data-[disabled]:bg-neutral-100 dark:hover:not-data-[disabled]:bg-neutral-800 active:not-data-[disabled]:bg-neutral-200 dark:active:not-data-[disabled]:bg-neutral-700 data-[disabled]:border-neutral-500 data-[disabled]:text-neutral-500 disabled:border-neutral-500 disabled:text-neutral-500 dark:data-[disabled]:border-neutral-400 dark:data-[disabled]:text-neutral-400 data-[popup-open]:bg-neutral-100 dark:data-[popup-open]:bg-neutral-800 font-normal focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
-              value_class="data-[placeholder]:text-neutral-500 dark:data-[placeholder]:text-neutral-400"
-              icon_class="flex items-center"
-              positioner_class="outline-hidden select-none z-10"
-              popup_class="group min-w-[var(--anchor-width)] origin-[var(--transform-origin)] py-1 bg-clip-padding border border-neutral-950 bg-white text-neutral-950 outline-hidden shadow-[0.25rem_0.25rem_0] shadow-black/12 transition-[scale,opacity] duration-100 ease-out dark:border-white dark:bg-neutral-950 dark:text-white"
-              item_class="grid cursor-default grid-cols-[1rem_1fr] items-center gap-2 py-1.5 pr-4 pl-2.5 text-sm outline-hidden select-none data-[highlighted]:bg-neutral-950 data-[highlighted]:text-white dark:data-[highlighted]:bg-white dark:data-[highlighted]:text-neutral-950"
-              item_indicator_class="col-start-1"
-              item_text_class="col-start-2"
+              trigger_class="flex h-8 min-w-40 items-center justify-between gap-3 pl-2 pr-1 text-sm leading-none whitespace-nowrap border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 text-neutral-950 dark:text-white select-none hover:not-data-[disabled]:bg-neutral-100 dark:hover:not-data-[disabled]:bg-neutral-800 active:not-data-[disabled]:bg-neutral-200 dark:active:not-data-[disabled]:bg-neutral-700 font-normal focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               options={@categories}
               value={@selected_category_id}
-            >
-              <:icon>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" class="block">
-                  <path d="M11 10H5l3 3.5zm0-4H5l3-3.5z" />
-                </svg>
-              </:icon>
-              <:item_indicator>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  class="block"
-                >
-                  <path d="m2.5 8.5 4 4 7-9" />
-                </svg>
-              </:item_indicator>
-            </.select>
+            />
 
             <!-- Forum Name -->
             <.text_field
@@ -193,7 +210,6 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               space="small"
               label="Forum Name"
               placeholder="Enter forum name..."
-              variant="default"
               class="mb-4"
               color="white"
             />
@@ -201,22 +217,25 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
             <!-- Forum Status (Radio Fields) -->
             <div class="mb-4 flex flex-col gap-2">
               <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Forum Status</label>
-              <.radio_field
-                id="forum_status_unlocked"
+              <.group_radio
                 field={@form[:forum_status]}
-                value={false}
-                label="Unlocked (Members can freely reply and participate)"
-                color="info"
+                id="forum_status"
                 space="small"
-              />
-              <.radio_field
-                id="forum_status_locked"
-                field={@form[:forum_status]}
-                value={true}
-                label="Locked (Discussion is closed; only moderators can reply)"
-                color="info"
-                space="small"
-              />
+                variation="horizontal"
+              >
+                <:radio
+                  value="0"
+                  checked={Phoenix.HTML.Form.input_value(@form, :forum_status) in [0, "0", nil]}
+                >
+                  Unlocked
+                </:radio>
+                <:radio
+                  value="1"
+                  checked={Phoenix.HTML.Form.input_value(@form, :forum_status) in [1, "1"]}
+                >
+                  Locked
+                </:radio>
+              </.group_radio>
             </div>
 
             <!-- Forum Description (CKEditor) -->
@@ -232,40 +251,39 @@ defmodule SambaWeb.Admin.Edit.Forum.Live do
               </div>
             </div>
 
-            <!-- Prune Enable Checkbox -->
-            <div class="mb-4">
-              <.checkbox_field
-                id="prune_enable"
-                field={@form[:prune_enable]}
-                label="Enable Prune"
-                space="small"
-                color="white"
+            <div class="mb-4 text-neutral-950 dark:text-white font-medium">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="hidden" name="form[prune_enable]" value="0" />
+                <input
+                  type="checkbox"
+                  name="form[prune_enable]"
+                  value="1"
+                  checked={Phoenix.HTML.Form.input_value(@form, :prune_enable) == 1}
+                  class="rounded border-neutral-950 dark:border-white text-indigo-600 focus:ring-indigo-500 dark:bg-neutral-950"
+                />
+                <span class="text-sm font-bold text-neutral-950 dark:text-white">Enable Prune</span>
+              </label>
+            </div>
+
+            <div class="mb-4 max-w-xs">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Remove topics that have not been posted to in X Days</label>
+              <input
+                type="text"
+                name="prune_days"
+                value={@prune_days}
+                phx-debounce="blur"
+                class="flex h-8 w-full rounded-md border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 px-3 py-1 text-sm text-neutral-950 dark:text-white shadow-xs focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               />
             </div>
 
-            <!-- Prune Days -->
-            <div class="mb-4">
-              <.text_field
-                id="prune_days"
-                label="Remove topics that have not been posted to in X Days"
-                field={@form[:prune_days]}
-                space="small"
-                placeholder=""
-                variant="default"
-                color="white"
-              />
-            </div>
-
-            <!-- Prune Frequency -->
-            <div class="mb-4">
-              <.text_field
-                id="prune_freq"
-                label="Check for Topic Age every X Days"
-                field={@form[:prune_freq]}
-                space="small"
-                placeholder=""
-                variant="default"
-                color="white"
+            <div class="mb-4 max-w-xs">
+              <label class="block text-sm font-bold text-neutral-950 dark:text-white mb-1">Check for Topic Age every X Days</label>
+              <input
+                type="text"
+                name="prune_freq"
+                value={@prune_freq}
+                phx-debounce="blur"
+                class="flex h-8 w-full rounded-md border border-neutral-950 dark:border-white bg-white dark:bg-neutral-950 px-3 py-1 text-sm text-neutral-950 dark:text-white shadow-xs focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-neutral-950 dark:focus-visible:outline-white"
               />
             </div>
 
