@@ -88,6 +88,16 @@ defmodule SambaWeb.ForumTopicsLive do
             >
               Post New Topic
             </.link>
+            <.form_wrapper for={assigns[:search_form]} method="get" action={~p"/search"}>
+              <.search_field
+                name="q"
+                value=""
+                placeholder=""
+                search_button
+                class="text-xs"
+                size="extra-small"
+              />
+            </.form_wrapper>
           </div>
         </div>
         <div class="text-black flex flex-col justify-end text-right mr-4 ">
@@ -122,7 +132,7 @@ defmodule SambaWeb.ForumTopicsLive do
                   d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
                 />
               </svg>
-              <span>Sticky Topics</span>
+              <span>Announcements & Sticky Topics</span>
             </div>
 
             <%= for topic <- @sticky_topics do %>

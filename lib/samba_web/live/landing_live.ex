@@ -221,7 +221,7 @@ defmodule SambaWeb.LandingLive do
             class="px-4"
           >
             <div>
-              <.gallery_media src="/images/logo.svg" /> fuc it
+              <.gallery_media src="/images/logo.svg" /> test
             </div>
           </.gallery>
         </div>

@@ -150,7 +150,7 @@ defmodule SambaWeb.PostsLive do
           navigate={~p"/topics/#{@topic.topic_id}/new"}
           class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors"
         >
-          Post New Topic
+          Post New Reply
         </.link>
       </div>
 

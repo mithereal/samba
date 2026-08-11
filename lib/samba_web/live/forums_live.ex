@@ -52,12 +52,17 @@ defmodule SambaWeb.ForumIndexLive do
       chat_users: Enum.count(chat_users)
     }
 
+    login_form =
+      Samba.Accounts.LoginForm
+      |> to_form()
+
     socket =
       socket
       |> assign(:page_title, "Forums")
       |> assign(:categories, categories)
       |> assign(:phpbb_online_users, phpbb_online_users)
       |> assign(:stats, stats)
+      |> assign(:login_form, login_form)
 
     {:ok, socket}
   end
@@ -66,6 +71,50 @@ defmodule SambaWeb.ForumIndexLive do
     ~H"""
     <Layouts.top current_user={assigns[:current_user] || nil} />
     <div class="w-full mx-auto px-4 sm:px-6 lg:px-4 py-8 text-gray-900 dark:text-gray-100">
+      <%= if is_nil(@current_user) do %>
+        <div class="w-full bg-gray-100 flex items-center px-4 py-2">
+          <span class="font-medium whitespace-nowrap">Login:</span>
+
+          <.form_wrapper
+            for={@login_form}
+            class="flex-1 !border-0 !bg-transparent !shadow-none !ring-0"
+          >
+            <div class="flex items-center justify-center gap-6 text-xs flex-wrap bg-transparent border-0 shadow-none">
+              <div class="flex items-center">
+                email:
+                <.email_field
+                  name="email"
+                  value=""
+                  space="small"
+                  size="extra_small"
+                  color="light"
+                  placeholder="Enter your email"
+                />
+              </div>
+
+              <div class="flex items-center">
+                password:
+                <.password_field
+                  variant="shadow"
+                  name="password"
+                  value=""
+                  size="extra_small"
+                  color="light"
+                />
+              </div>
+
+              <div class="flex items-center gap-2">
+                Log me on automatically each visit
+                <.checkbox_field size="extra_small" name="remember" color="natural" value="false" />
+              </div>
+
+              <div class="flex items-center">
+                <.button size="extra_small" color="blue">Login</.button>
+              </div>
+            </div>
+          </.form_wrapper>
+        </div>
+      <% end %>
       <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900/80 backdrop-blur-md">
         <!-- Table Header (Hidden on small screens) -->
         <div class="hidden md:grid md:grid-cols-12 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold text-sm px-6 py-3 border-b border-gray-300 dark:border-gray-700 uppercase tracking-wider">
