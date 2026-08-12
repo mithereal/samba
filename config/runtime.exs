@@ -68,75 +68,75 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   config :samba,
-    site_title_prefix: System.get_env("site_title_prefix") || ""
+    site_title_prefix: System.get_env("SITE_TITLE_PREFIX") || ""
 
   config :samba,
-    google_site_verification: System.get_env("google_site_verification") || ""
+    google_site_verification: System.get_env("GOOGLE_SITE_VERIFICATION") || ""
 
   config :samba,
-    site_default_locale: System.get_env("site_default_locale") || ""
+    site_default_locale: System.get_env("SITE_DEFAULT_LOCALE") || ""
 
   config :samba,
-    site_default_mask_icon_color: System.get_env("site_default_mask_icon_color") || ""
+    site_default_mask_icon_color: System.get_env("SITE_DEFAULT_MASK_ICON_COLOR") || ""
 
   config :samba,
-    site_default_windows_tile_color: System.get_env("site_default_windows_tile_color") || ""
+    site_default_windows_tile_color: System.get_env("SITE_DEFAULT_WINDOWS_TILE_COLOR") || ""
 
   config :samba,
-    site_themes_list: System.get_env("site_themes_list") || ""
+    site_themes_list: System.get_env("SITE_THEMES_LIST") || ""
 
   config :samba,
-    site_default_description: System.get_env("site_default_description") || ""
+    site_default_description: System.get_env("SITE_DEFAULT_DESCRIPTION") || ""
 
   config :samba,
-    site_webmaster: System.get_env("site_webmaster") || ""
+    site_webmaster: System.get_env("SITE_WEBMASTER") || ""
 
   config :samba,
-    site_default_suffix: System.get_env("site_default_suffix") || ""
+    site_default_suffix: System.get_env("SITE_DEFAULT_SUFFIX") || ""
 
   config :samba,
-    site_default_title: System.get_env("site_default_title") || ""
+    site_default_title: System.get_env("SITE_DEFAULT_TITLE") || ""
 
   config :samba,
-    site_author: System.get_env("site_author") || ""
+    site_author: System.get_env("SITE_AUTHOR") || ""
 
   config :samba,
-    site_name: System.get_env("site_name") || ""
+    site_name: System.get_env("SITE_NAME") || ""
 
   config :samba,
-    facebook_app_id: System.get_env("facebook_app_id") || ""
+    facebook_app_id: System.get_env("FACEBOOK_APP_ID") || ""
 
   config :samba,
-    twitter_site_name: System.get_env("twitter_site_name") || ""
+    twitter_site_name: System.get_env("TWITTER_SITE_NAME") || ""
 
   config :samba,
-    twitter_site_id: System.get_env("twitter_site_id") || ""
+    twitter_site_id: System.get_env("TWITTER_SITE_ID") || ""
 
   config :samba,
-    twitter_site_creator: System.get_env("twitter_site_creator") || ""
+    twitter_site_creator: System.get_env("TWITTER_SITE_CREATOR") || ""
 
   config :samba,
-    twitter_site_creator_id: System.get_env("twitter_site_creator_id") || ""
+    twitter_site_creator_id: System.get_env("TWITTER_SITE_CREATOR_ID") || ""
 
   config :samba,
-    ssl_endpoint_port: System.get_env("ssl_endpoint_port") || 443
+    ssl_endpoint_port: System.get_env("SSL_ENDPOINT_PORT") || 443
 
-  domain_info = System.get_env("ssl_endpoint_domain_info") || ""
+  domain_info = System.get_env("SSL_ENDPOINT_DOMAIN_INFO") || ""
   domain_info = domain_info |> String.split(",") |> List.to_tuple()
 
   config :samba,
     ssl_endpoint_domain_info: domain_info
 
   config :samba,
-    endpoint_same_site: System.get_env("endpoint_same_site") || ""
+    endpoint_same_site: System.get_env("ENDPOINT_SAME_SITE") || ""
 
   config :samba,
-    endpoint_signing_salt: System.get_env("endpoint_signing_salt") || ""
+    endpoint_signing_salt: System.get_env("ENDPOINT_SIGNING_SALT") || ""
 
   config :samba,
-    endpoint_key: System.get_env("endpoint_key") || ""
+    endpoint_key: System.get_env("ENDPOINT_KEY") || ""
 
-  store = System.get_env("endpoint_store") || nil
+  store = System.get_env("ENDPOINT_STORE") || nil
 
   store =
     case store do
