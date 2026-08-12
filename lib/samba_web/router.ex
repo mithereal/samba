@@ -146,6 +146,8 @@ defmodule SambaWeb.Router do
     get "/accounts/users/impersonate/:user_id", AuthController, :impersonate
     get "/accounts/users/stop/impersonation", AuthController, :stop_impersonating
 
+    #  live "/register", UserRegistrationLive, :new
+
     # Remove these if you'd like to use your own authentication views
     sign_in_route register_path: "/register",
                   reset_path: "/reset",
@@ -153,7 +155,8 @@ defmodule SambaWeb.Router do
                   on_mount: [{SambaWeb.LiveUserAuth, :live_no_user}],
                   overrides: [
                     SambaWeb.AuthOverrides,
-                    AshAuthentication.Phoenix.Overrides.DaisyUI
+                    AshAuthentication.Phoenix.Overrides.DaisyUI,
+                    SambaWeb.Components.AltchaExtra
                   ]
 
     # Remove this if you do not want to use the reset password feature

@@ -1,4 +1,4 @@
-defmodule Samba.Generators.CategoryGenerator do
+defmodule PhpBB.Generators.Category do
   @moduledoc """
   Generates default phpBB-style categories using the PhpBB.Categories Ash resource.
   """

@@ -1,5 +1,5 @@
 alias Ash.Generator
-alias Samba.Accounts.UserGenerator
+alias Samba.Generators.User
 ## Seed default ranks
 
 PhpBB.Ranks.seed_default_ranks()
@@ -13,7 +13,7 @@ IO.puts("Seeding admin user #{super_user}...")
 
 # Generate and insert an admin user using the UserGenerator
 admin_user =
-  Samba.Accounts.UserGenerator.user(
+  User.user(
     username: "admin",
     email: super_user,
     password: "AdminPassword123!",
@@ -23,4 +23,4 @@ admin_user =
 
 IO.puts("Successfully created admin user: #{admin_user.username} (#{admin_user.email})")
 
-users = Generator.generate_many(UserGenerator.user(), 3)
+users = Generator.generate_many(User.user(), 3)

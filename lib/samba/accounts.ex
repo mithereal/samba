@@ -6,7 +6,7 @@ defmodule Samba.Accounts do
     extensions: [AshOps]
 
   mix_tasks do
-    action Samba.Accounts.Generator, :generate_user, :generate_user, arguments: [:count]
+    action Samba.Generators.Account, :generate_user, :generate_user, arguments: [:count]
   end
 
   resources do
@@ -26,6 +26,6 @@ defmodule Samba.Accounts do
     end
 
     # Add the resource to the Domain
-    resource Samba.Accounts.Generator
+    resource Samba.Generators.Account
   end
 end

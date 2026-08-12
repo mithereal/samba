@@ -79,7 +79,9 @@ defmodule Samba.Accounts.User.Actions do
         case Samba.Accounts.User.get_by_username(%{username: username}, authorize?: false) do
           {:ok, user} when not is_nil(user) ->
             case Samba.Accounts.User.sign_in_with_password(
-                   %{email: user.email, password: password}, authorize?: false) do
+                   %{email: user.email, password: password},
+                   authorize?: false
+                 ) do
               {:ok, authenticated_user} ->
                 {:ok, authenticated_user}
 
@@ -130,6 +132,9 @@ defmodule Samba.Accounts.User.Actions do
         allow_nil? false
         sensitive? true
       end
+
+      argument :altcha, :string, allow_nil?: false
+      change Samba.Changes.VerifyAltcha
 
       change set_attribute(:email, arg(:email))
 

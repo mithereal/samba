@@ -63,6 +63,7 @@ defmodule SambaWeb.ForumIndexLive do
       |> assign(:phpbb_online_users, phpbb_online_users)
       |> assign(:stats, stats)
       |> assign(:login_form, login_form)
+      |> assign(:login_type, "username")
 
     {:ok, socket}
   end
@@ -78,18 +79,54 @@ defmodule SambaWeb.ForumIndexLive do
           <.form_wrapper
             for={@login_form}
             class="flex-1 !border-0 !bg-transparent !shadow-none !ring-0"
+            method="post"
+            action={~p"/login"}
+            phx-change="update_login_type"
           >
             <div class="flex items-center justify-center gap-6 text-xs flex-wrap bg-transparent border-0 shadow-none">
-              <div class="flex items-center">
-                email:
-                <.email_field
-                  name="email"
-                  value=""
-                  space="small"
-                  size="extra_small"
-                  color="light"
-                  placeholder="Enter your email"
-                />
+              <!-- Dynamic Field with Dropdown Switcher -->
+              <div class="flex items-center gap-1">
+                <!-- Dropdown to switch between email and username -->
+                <div class="relative inline-block">
+                  <select
+                    name="login_type"
+                    class="text-xs bg-transparent text-neutral-700 font-medium appearance-none pr-4 pl-1 py-0.5 focus:outline-none cursor-pointer"
+                  >
+                    <option value="email" selected={@login_type == "email"}>Email</option>
+                    <option value="username" selected={@login_type == "username"}>Username</option>
+                  </select>
+                  <!-- Custom small triangle icon -->
+                  <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-neutral-500">
+                    <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                :
+                <%= if @login_type == "username" do %>
+                  <.text_field
+                    name="username"
+                    value=""
+                    space="small"
+                    size="extra_small"
+                    color="light"
+                    placeholder="Enter your username"
+                  />
+                <% else %>
+                  <.email_field
+                    name="email"
+                    value=""
+                    space="small"
+                    size="extra_small"
+                    color="light"
+                    placeholder="Enter your email"
+                  />
+                <% end %>
               </div>
 
               <div class="flex items-center">
@@ -279,5 +316,9 @@ defmodule SambaWeb.ForumIndexLive do
       {:error, reason} ->
         {:error, reason}
     end
+  end
+
+  def handle_event("update_login_type", %{"login_type" => login_type}, socket) do
+    {:noreply, assign(socket, login_type: login_type)}
   end
 end

@@ -1,4 +1,4 @@
-defmodule Samba.Accounts.UserGenerator do
+defmodule Samba.Generators.User do
   use Ash.Generator
   alias Samba.Accounts.User
 

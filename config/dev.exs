@@ -32,7 +32,12 @@ config :samba, SambaWeb.Endpoint,
          :samba,
          ~w(--sourcemap=inline --watch)
        ]},
-    tailwind: {Tailwind, :install_and_run, [:samba, ~w(--watch)]}
+    tailwind: {Tailwind, :install_and_run, [:samba, ~w(--watch)]},
+    # asset_copy_css: {Phoenix.Copy, :watch, [:css]},
+    asset_copy_images: {Phoenix.Copy, :watch, [:images]},
+    # asset_copy_js: {Phoenix.Copy, :watch, [:js]},
+    asset_copy_fonts: {Phoenix.Copy, :watch, [:fonts]},
+    asset_copy_csv: {Phoenix.Copy, :watch, [:csv]}
   ]
 
 # ## SSL Support

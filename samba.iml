@@ -150,6 +150,57 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/image" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/sweet_xml" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/vix" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/adept_svg" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/altcha" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/certifi" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/combine" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/csv" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/dns" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/erlsom" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/etag_plug" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex2ms" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_cldr_calendars" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_cldr_dates_times" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_cldr_lists" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_cldr_territories" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_cldr_units" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_rated" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/flow" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/gen_stage" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/h2" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/hackney" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/hammer" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/inet_cidr" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/iptrie" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/live_select" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/location" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/maybe" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mimerl" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mix_audit" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/octo_fetch" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/parse_trans" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/peep" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/pfx" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_bakery" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_copy" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/plug_attack" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/plug_cache_control" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/premailex" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/prom_ex" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/quic" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/radix" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/recon" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/remote_ip" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/reverse_proxy_plug" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/safeurl" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/sobelow" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ssl_verify_fun" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/telemetry_metrics_prometheus_core" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/tesla" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/thumbp" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/unzip" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/webtransport" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/xlsxir" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -400,5 +451,70 @@
     <orderEntry type="library" name="lumis" level="project" />
     <orderEntry type="library" name="abatap" level="project" />
     <orderEntry type="library" name="image" level="project" />
+    <orderEntry type="library" name="phoenix_copy" level="project" />
+    <orderEntry type="library" name="adept_svg" level="project" />
+    <orderEntry type="library" name="etag_plug" level="project" />
+    <orderEntry type="library" name="plug_cache_control" level="project" />
+    <orderEntry type="library" name="phoenix_bakery" level="project" />
+    <orderEntry type="library" name="reverse_proxy_plug" level="project" />
+    <orderEntry type="library" name="thumbp" level="project" />
+    <orderEntry type="library" name="live_select" level="project" />
+    <orderEntry type="library" name="location" level="project" />
+    <orderEntry type="library" name="altcha" level="project" />
+    <orderEntry type="library" name="plug_attack" level="project" />
+    <orderEntry type="library" name="maybe" level="project" />
+    <orderEntry type="library" name="safeurl" level="project" />
+    <orderEntry type="library" name="recon" level="project" />
+    <orderEntry type="library" name="ex_rated" level="project" />
+    <orderEntry type="library" name="ex_cldr_calendars" level="project" />
+    <orderEntry type="library" name="ex_cldr_units" level="project" />
+    <orderEntry type="library" name="ex_cldr_dates_times" level="project" />
+    <orderEntry type="library" name="ex_cldr_numbers" level="project" />
+    <orderEntry type="library" name="ex_cldr_territories" level="project" />
+    <orderEntry type="library" name="prom_ex" level="project" />
+    <orderEntry type="library" name="remote_ip" level="project" />
+    <orderEntry type="library" name="hammer" level="project" />
+    <orderEntry type="library" name="iptrie" level="project" />
+    <orderEntry type="library" name="ex_cldr_currencies" level="project" />
+    <orderEntry type="library" name="digital_token" level="project" />
+    <orderEntry type="library" name="tesla" level="project" />
+    <orderEntry type="library" name="flow" level="project" />
+    <orderEntry type="library" name="unzip" level="project" />
+    <orderEntry type="library" name="csv" level="project" />
+    <orderEntry type="library" name="hammox" level="project" />
+    <orderEntry type="library" name="inet_cidr" level="project" />
+    <orderEntry type="library" name="dns" level="project" />
+    <orderEntry type="library" name="ex2ms" level="project" />
+    <orderEntry type="library" name="benchfella" level="project" />
+    <orderEntry type="library" name="ex_cldr_lists" level="project" />
+    <orderEntry type="library" name="calendar_interval" level="project" />
+    <orderEntry type="library" name="ex_cldr_calendars_japanese" level="project" />
+    <orderEntry type="library" name="combine" level="project" />
+    <orderEntry type="library" name="radix" level="project" />
+    <orderEntry type="library" name="pfx" level="project" />
+    <orderEntry type="library" name="credo_naming" level="project" />
+    <orderEntry type="library" name="telemetry_metrics_prometheus_core" level="project" />
+    <orderEntry type="library" name="peep" level="project" />
+    <orderEntry type="library" name="octo_fetch" level="project" />
+    <orderEntry type="library" name="oban" level="project" />
+    <orderEntry type="library" name="absinthe" level="project" />
+    <orderEntry type="library" name="broadway" level="project" />
+    <orderEntry type="library" name="inch_ex" level="project" />
+    <orderEntry type="library" name="timex" level="project" />
+    <orderEntry type="library" name="premailex" level="project" />
+    <orderEntry type="library" name="xlsxir" level="project" />
+    <orderEntry type="library" name="tzdata" level="project" />
+    <orderEntry type="library" name="meeseeks" level="project" />
+    <orderEntry type="library" name="ibrowse" level="project" />
+    <orderEntry type="library" name="msgpax" level="project" />
+    <orderEntry type="library" name="fuse" level="project" />
+    <orderEntry type="library" name="opentelemetry_semantic_conventions" level="project" />
+    <orderEntry type="library" name="opentelemetry_api" level="project" />
+    <orderEntry type="library" name="opentelemetry_process_propagator" level="project" />
+    <orderEntry type="library" name="httparrot" level="project" />
+    <orderEntry type="library" name="cowlib" level="project" />
+    <orderEntry type="library" name="ranch" level="project" />
+    <orderEntry type="library" name="gen_stage" level="project" />
+    <orderEntry type="library" name="erlsom" level="project" />
   </component>
 </module>

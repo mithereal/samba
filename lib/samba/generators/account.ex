@@ -1,4 +1,4 @@
-defmodule Samba.Accounts.Generator do
+defmodule Samba.Generators.Account do
   use Ash.Resource,
     otp_app: :samba,
     domain: Samba.Accounts,
@@ -12,7 +12,7 @@ defmodule Samba.Accounts.Generator do
 
       run fn input, _ctx ->
         users =
-          Samba.Accounts.UserGenerator.user()
+          Samba.Generators.User.user()
           |> Ash.Generator.generate_many(
             input.arguments.count,
             authorize?: false

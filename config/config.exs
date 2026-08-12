@@ -94,7 +94,24 @@ config :samba,
     Samba.Ledger,
     Samba.Accounts,
     PhpBB.Domain,
-    Samba.Analytics
+    Samba.Analytics,
+    Samba.Core
+  ]
+
+config :phoenix_copy,
+  css: [],
+  images: [
+    source: Path.expand("../assets/images/", __DIR__),
+    destination: Path.expand("../priv/static/images/", __DIR__)
+  ],
+  js: [],
+  csv: [
+    source: Path.expand("../assets/csv/", __DIR__),
+    destination: Path.expand("../priv/static/images/", __DIR__)
+  ],
+  fonts: [
+    source: Path.expand("../assets/fonts/", __DIR__),
+    destination: Path.expand("../priv/static/fonts/", __DIR__)
   ]
 
 # Configure super admin users who are allowed to do

@@ -156,10 +156,4 @@ defmodule SambaWeb.AuthController do
         |> redirect(to: ~p"/")
     end
   end
-
-  #  def login(conn, params) do
-  #    conn
-  #    |> put_flash(:warning, "An Error Occurred")
-  #    |> redirect(to: ~p"/")
-  #  end
 end
