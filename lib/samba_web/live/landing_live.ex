@@ -14,6 +14,7 @@ defmodule SambaWeb.LandingLive do
     socket =
       socket
       |> assign(:login_form, login_form)
+      |> assign(:login_type, "username")
 
     {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end
@@ -76,29 +77,73 @@ defmodule SambaWeb.LandingLive do
         <.card>
           <.card_content class="flex justify-around h-full">
             <div class="min-w-xs max-w-xs border rounded shadow">
-              <div class="flex justify-between items-center mb-2 pl-2 pr-1 bg-gray-200 ">
+              <div class="flex justify-between items-center mb-2 pl-2 pr-1 bg-gray-200">
                 <span class="font-semibold text-xs">Log-in</span>
-                <span class="text-[10px] text-neutral-500"><.link
-                  navigate="/reset"
-                  class="break-words text-neutral-700 font-semibold"
-                >Forgot Username/Password</.link>
-                |
-                <.link
-                  navigate="/register"
-                  class="break-words  text-neutral-700 font-semibold"
-                >Register</.link></span>
+                <span class="text-[10px] text-neutral-500">
+                  <.link
+                    navigate="/reset"
+                    class="break-words text-neutral-700 font-semibold"
+                  >Forgot Username/Password</.link>
+                  |
+                  <.link
+                    navigate="/register"
+                    class="break-words text-neutral-700 font-semibold"
+                  >Register</.link>
+                </span>
               </div>
+              <.form_wrapper
+                for={@login_form}
+                class="px-2"
+                method="post"
+                action={~p"/login"}
+                phx-change="update_login_type"
+              >
+                <!-- Dropdown to switch between username and email -->
+                <div class="flex justify-end mb-1">
+                  <div class="relative inline-block">
+                    <select
+                      name="login_type"
+                      class="text-[10px] bg-transparent text-neutral-600 font-medium appearance-none pr-4 pl-1 py-0.5 focus:outline-none cursor-pointer"
+                    >
+                      <option value="username" selected={@login_type == "username"}>Username</option>
+                      <option value="email" selected={@login_type == "email"}>Email</option>
+                    </select>
+                    <!-- Custom small triangle icon -->
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-neutral-500">
+                      <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
 
-              <.form_wrapper for={@login_form} class="px-2" method="post" action={~p"/login"}>
-                <.text_field
-                  name="username"
-                  value=""
-                  size="extra_small"
-                  border="none"
-                  variant="shadow"
-                  color="silver"
-                />
+                <%= if @login_type == "email" do %>
+                  <.text_field
+                    name="email"
+                    value=""
+                    size="extra_small"
+                    border="none"
+                    variant="shadow"
+                    color="silver"
+                  />
+                <% else %>
+                  <.email_field
+                    name="email"
+                    value=""
+                    size="extra_small"
+                    border="none"
+                    variant="shadow"
+                    color="silver"
+                  />
+                <% end %>
+
                 <div class="mb-4"></div>
+
                 <.password_field
                   variant="shadow"
                   name="password"
@@ -106,6 +151,7 @@ defmodule SambaWeb.LandingLive do
                   size="extra_small"
                   color="silver"
                 />
+
                 <div class="flex gap-2 p-2">
                   <.checkbox_field name="remember" color="natural" value="false" class="pl-4" />Keep me logged in
                   <.button>Login</.button>
@@ -316,6 +362,10 @@ defmodule SambaWeb.LandingLive do
       </aside>
     </main>
     """
+  end
+
+  def handle_event("update_login_type", %{"login_type" => login_type}, socket) do
+    {:noreply, assign(socket, login_type: login_type)}
   end
 
   #  def handle_params(params, _uri, socket) do
