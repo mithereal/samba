@@ -142,8 +142,18 @@ config :samba, Samba.Mailer, adapter: Swoosh.Adapters.Local
 config :esbuild,
   version: "0.25.4",
   samba: [
-    args:
-      ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:*.csv --external:/fonts/* --external:/images/* --external:/csv/* --alias:@=.),
+    args: ~w(js/app.js
+      js/editor.js
+      --bundle
+      --target=es2022
+      --outdir=../priv/static/assets/js
+      --splitting
+      --format=esm
+      --external:*.csv --external:/fonts/*
+      --external:ckeditor5-premium-features
+      --external:/images/*
+      --external:/csv/*
+      --alias:@=.),
     cd: Path.expand("../assets", __DIR__),
     env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
@@ -171,62 +181,62 @@ config :phoenix_seo, json_ld_types: :all
 # or mix-and-match:
 config :phoenix_seo, json_ld_types: [:google, SEO.JSONLD.SearchAction]
 
-config :ckeditor5_phoenix,
-  presets: %{
-    minimal: %{
-      cloud: %{
-        version: "46.0.0",
-        premium: true,
-        translations: ["pl"],
-        ckbox: %{
-          version: "1.0.0"
-        }
-      },
-      config: %{
-        toolbar: [:bold, :italic, :link],
-        plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
-      }
-    },
-    full: %{
-      config: %{
-        toolbar: [
-          :heading,
-          :|,
-          :bold,
-          :italic,
-          :underline,
-          :|,
-          :link,
-          :insertImage,
-          :insertTable,
-          :|,
-          :bulletedList,
-          :numberedList,
-          :blockQuote
-        ],
-        plugins: [
-          :Heading,
-          :Bold,
-          :Italic,
-          :Underline,
-          :Link,
-          :ImageBlock,
-          :ImageUpload,
-          :Table,
-          :List,
-          :BlockQuote,
-          :Essentials,
-          :Paragraph
-        ]
-      }
-    }
-  }
-
-config :ckeditor5_phoenix, :uploads,
-  folder: "priv/static/uploads",
-  api_url: "/api/ckeditor5/uploads",
-  # Base URL for serving files
-  url: "/uploads"
+# config :ckeditor5_phoenix,
+#  presets: %{
+#    minimal: %{
+#      cloud: %{
+#        version: "46.0.0",
+#        premium: true,
+#        translations: ["pl"],
+#        ckbox: %{
+#          version: "1.0.0"
+#        }
+#      },
+#      config: %{
+#        toolbar: [:bold, :italic, :link],
+#        plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+#      }
+#    },
+#    full: %{
+#      config: %{
+#        toolbar: [
+#          :heading,
+#          :|,
+#          :bold,
+#          :italic,
+#          :underline,
+#          :|,
+#          :link,
+#          :insertImage,
+#          :insertTable,
+#          :|,
+#          :bulletedList,
+#          :numberedList,
+#          :blockQuote
+#        ],
+#        plugins: [
+#          :Heading,
+#          :Bold,
+#          :Italic,
+#          :Underline,
+#          :Link,
+#          :ImageBlock,
+#          :ImageUpload,
+#          :Table,
+#          :List,
+#          :BlockQuote,
+#          :Essentials,
+#          :Paragraph
+#        ]
+#      }
+#    }
+#  }
+#
+# config :ckeditor5_phoenix, :uploads,
+#  folder: "priv/static/uploads",
+#  api_url: "/api/ckeditor5/uploads",
+#  # Base URL for serving files
+#  url: "/uploads"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

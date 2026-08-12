@@ -24,10 +24,31 @@ import { hooks as colocatedHooks } from "phoenix-colocated/samba";
 import topbar from "../vendor/topbar";
 import 'altcha'
 import MishkaComponents from "../vendor/mishka_components.js";
-import { Hooks } from "ckeditor5_phoenix";
 import Sortable from "sortablejs";
-let Sortables = {};
-Sortables.SortableList = {
+
+let Hooks = {};
+
+let LazyEditorHook = {
+  async mounted() {
+    const EditorHooks = await import("./editor.js");
+    // Find the primary CKEditor hook dynamically from the exported object
+    const HookClass = EditorHooks.EditorHooks.CKEditor || Object.values(EditorHooks.EditorHooks)[0];
+
+    if (HookClass) {
+      this.innerHook = Object.create(HookClass);
+      this.innerHook.el = this.el;
+      if (this.innerHook.mounted) this.innerHook.mounted.call(this);
+    }
+  },
+  updated() {
+    if (this.innerHook && this.innerHook.updated) this.innerHook.updated.call(this);
+  },
+  destroyed() {
+    if (this.innerHook && this.innerHook.destroyed) this.innerHook.destroyed.call(this);
+  }
+};
+
+Hooks.SortableList = {
   mounted() {
     this.sortable = Sortable.create(this.el, {
       animation: 150,
@@ -69,6 +90,8 @@ Hooks.AltchaHook = {
   }
 };
 
+
+
 const csrfToken = document
   .querySelector("meta[name='csrf-token']")
   .getAttribute("content");
@@ -81,7 +104,7 @@ const liveSocket = new LiveSocket("/live", Socket, {
     ...colocatedHooks,
     ...MishkaComponents,
     ...Hooks,
-    ...Sortables,
+    CKEditor5: LazyEditorHook
   },
 });
 // Show progress bar on live navigation and form submits
