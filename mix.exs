@@ -128,7 +128,19 @@ defmodule Samba.MixProject do
       {:remote_ip, ">= 0.0.0"},
       {:hammer, ">= 0.0.0"},
       {:iptrie, ">= 0.0.0"},
-      {:premailex, "~> 0.3.0"}
+      {:premailex, "~> 0.3.0"},
+      {:flag_icons, "~> 0.1.0"}
+      #{:calendar_component, "~> 0.2.1", override: true},
+      #{:phoenix_live_calendar, "~> 0.5.0"}
+      #{:phoenix_email, "~> 0.1.2"}
+      #{:live_ex_webrtc, "~> 0.8.0"},
+      #{:phx_image, "~> 0.1.0"}
+      #{:image_components, "~> 0.1.1"}
+      #{:athanor, "~> 0.1.0-beta.10"}
+      #{:ex_money_input, "~> 0.3.0"}
+      #{:shift, "~> 0.2.1"}
+      #{:cinder, "~> 0.17.0"}
+      #{:mbta_metro, "~> 1.1"}
     ]
   end
 

@@ -546,4 +546,15 @@ defmodule SambaWeb.CoreComponents do
     </span>
     """
   end
+
+  attr :flag, :string, required: true
+  attr :variant, :string, required: true, default: "1x1"
+  attr :class, :string, required: false, default: "icon"
+  attr :rest, :global
+
+  def flag_icon(assigns) do
+    ~H"""
+    <FlagIcons.render flag={@flag} variant={@variant} class={@class} {@rest} />
+    """
+  end
 end

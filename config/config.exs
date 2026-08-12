@@ -99,15 +99,13 @@ config :samba,
   ]
 
 config :phoenix_copy,
-  css: [],
   images: [
     source: Path.expand("../assets/images/", __DIR__),
     destination: Path.expand("../priv/static/images/", __DIR__)
   ],
-  js: [],
   csv: [
     source: Path.expand("../assets/csv/", __DIR__),
-    destination: Path.expand("../priv/static/images/", __DIR__)
+    destination: Path.expand("../priv/static/csv/", __DIR__)
   ],
   fonts: [
     source: Path.expand("../assets/fonts/", __DIR__),
@@ -145,10 +143,9 @@ config :esbuild,
   version: "0.25.4",
   samba: [
     args:
-      ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:/fonts/* --external:/images/* --alias:@=.),
+      ~w(js/app.js --bundle --target=es2022 --outdir=../priv/static/assets/js --external:*.csv --external:/fonts/* --external:/images/* --external:/csv/* --alias:@=.),
     cd: Path.expand("../assets", __DIR__),
-    env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__)]}
-    #env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
+    env: %{"NODE_PATH" => [Path.expand("../deps", __DIR__), Mix.Project.build_path()]}
   ]
 
 # Configure tailwind (the version is required)
