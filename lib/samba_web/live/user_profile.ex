@@ -6,8 +6,13 @@ defmodule SambaWeb.UserProfileLive do
     # In a real app, fetch user profile data from your context using the username
     user = PhpBB.Users.fetch_user_profile(id)
 
+    {_, samba_user} =
+      Samba.Accounts.User.get_by_username(%{username: user.username}, authorize?: false)
+
+    profile = Map.merge(user, %{country: samba_user.country})
+
     if user do
-      {:ok, assign(socket, user: user, page_title: "Viewing profile :: #{user.username}")}
+      {:ok, assign(socket, user: profile, page_title: "Viewing profile :: #{user.username}")}
     else
       {:ok,
        socket
@@ -32,7 +37,7 @@ defmodule SambaWeb.UserProfileLive do
       total_photos: 0,
       favorite_photos: 0,
       classified_ads_count: 4,
-      location: "Ontario",
+      location: "",
       website: nil,
       occupation: nil,
       interests: nil,
@@ -44,7 +49,8 @@ defmodule SambaWeb.UserProfileLive do
       social_instagram: nil,
       social_youtube: nil,
       aim_address: nil,
-      icq_number: nil
+      icq_number: nil,
+      country: "xx"
     }
 
     {:ok, assign(socket, user: user, page_title: "Viewing profile :: #{user.username}")}
@@ -277,8 +283,11 @@ defmodule SambaWeb.UserProfileLive do
                 <div class="text-zinc-500 dark:text-zinc-400 text-right pr-4 font-medium">
                   Location:
                 </div>
-                <div class="sm:col-span-2 font-bold text-zinc-900 dark:text-zinc-100">
-                  {@user.location}
+                <div class="sm:col-span-2 font-bold text-zinc-900 dark:text-zinc-100 flex items-end gap-2">
+                  <span>
+                    {Phoenix.Naming.humanize(@user.location)}
+                  </span>
+                  <.flag_icon flag={@user.country} class="inline-block h-6 w-12" />
                 </div>
 
                 <div class="text-zinc-500 dark:text-zinc-400 text-right pr-4 font-medium">

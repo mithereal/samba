@@ -548,8 +548,8 @@ defmodule SambaWeb.CoreComponents do
   end
 
   attr :flag, :string, required: true
-  attr :variant, :string, required: true, default: "1x1"
-  attr :class, :string, required: false, default: "icon"
+  attr :variant, :string, default: "1x1"
+  attr :class, :string, default: "icon"
   attr :rest, :global
 
   def flag_icon(assigns) do

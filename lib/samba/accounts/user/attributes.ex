@@ -19,6 +19,12 @@ defmodule Samba.Accounts.User.Attributes do
       public? true
     end
 
+    attribute :country, :string do
+      allow_nil? true
+      public? true
+      default "xx"
+    end
+
     attribute :hashed_password, :string do
       sensitive? true
     end
