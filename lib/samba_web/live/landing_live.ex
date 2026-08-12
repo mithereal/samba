@@ -89,9 +89,9 @@ defmodule SambaWeb.LandingLive do
                 >Register</.link></span>
               </div>
 
-              <.form_wrapper for={@login_form} class="px-2">
-                <.email_field
-                  name="email"
+              <.form_wrapper for={@login_form} class="px-2" method="post" action={~p"/login"}>
+                <.text_field
+                  name="username"
                   value=""
                   size="extra_small"
                   border="none"

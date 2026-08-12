@@ -124,4 +124,26 @@ defmodule SambaWeb.AuthController do
       _presence_metas -> true
     end
   end
+
+  def login(conn, %{"username" => username, "password" => password} = _params) do
+    case Samba.Accounts.User.sign_in_with_username(%{username: username, password: password},
+           authorize?: false
+         ) do
+      {:ok, user} ->
+        conn
+        |> put_flash(:info, "Welcome back, #{user.username}!")
+        |> SambaWeb.AuthController.success(nil, user, nil)
+
+      {:error, _reason} ->
+        conn
+        |> put_flash(:warning, "Invalid username or password")
+        |> redirect(to: ~p"/")
+    end
+  end
+
+  def login(conn, params) do
+    conn
+    |> put_flash(:warning, "An Error Occurred")
+    |> redirect(to: ~p"/")
+  end
 end

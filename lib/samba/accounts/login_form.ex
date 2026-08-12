@@ -3,6 +3,10 @@ defmodule Samba.Accounts.LoginForm do
     otp_app: :samba,
     domain: Samba.Accounts
 
+  code_interface do
+    define :submit, action: :submit
+  end
+
   actions do
     action :submit, :struct do
       argument :username, :string, allow_nil?: false

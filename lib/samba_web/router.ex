@@ -137,6 +137,8 @@ defmodule SambaWeb.Router do
     live "/premium_membership", FaqLive, :index
     live "/faq", FaqLive, :index
 
+    post "/login", AuthController, :login
+
     auth_routes AuthController, Samba.Accounts.User, path: "/auth"
     sign_out_route AuthController
 
