@@ -16,5 +16,35 @@ config :swoosh, local: false
 # Do not print debug messages in production
 config :logger, level: :info
 
+use_self_signed = System.get_env("USE_SIGNED_SSL") == nil
+cert_path = Application.app_dir(:samba, "priv/cert")
+host = System.get_env("PHX_HOST") || "example.com"
+
+{certfile, keyfile, ca} =
+  if use_self_signed do
+    {Path.join("priv/cert", "selfsigned.pem"), Path.join("priv/cert", "selfsigned_key.pem"),
+     Path.join("priv/cert", "ca.pem")}
+  else
+    {Path.join("priv/cert", "fullchain.pem"), Path.join("priv/cert", "fullchain.pem"),
+     Path.join("priv/cert", "ca.pem")}
+  end
+
+if(use_self_signed == false) do
+  config :samba, CapsuleWeb.Server,
+    port: 1965,
+    allowed_hosts: [host],
+    certfile: certfile,
+    keyfile: keyfile
+else
+  config :samba, CapsuleWeb.Server,
+    port: 1965,
+    allowed_hosts: [host],
+    certfile: certfile,
+    keyfile: keyfile,
+    verify: :verify_peer,
+    cacertfile: ca,
+    fail_if_no_peer_cert: false
+end
+
 # Runtime production configuration, including reading
 # of environment variables, is done on config/runtime.exs.

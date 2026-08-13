@@ -130,7 +130,10 @@ defmodule Samba.MixProject do
       {:iptrie, ">= 0.0.0"},
       {:premailex, "~> 0.3.0"},
       {:flag_icons, "~> 0.1.0"},
-      {:shift, "~> 0.2.1"}
+      {:shift, "~> 0.2.1"},
+      {:spaceboy, "~> 0.4.0"},
+      {:x509, "~> 0.8"},
+      {:thousand_island, "~> 1.4"}
       # {:calendar_component, "~> 0.2.1", override: true},
       # {:phoenix_live_calendar, "~> 0.5.0"}
       # {:phoenix_email, "~> 0.1.2"}

@@ -9,7 +9,7 @@ import Config
 
 config :mime,
   extensions: %{"json" => "application/vnd.api+json"},
-  types: %{"application/vnd.api+json" => ["json"]}
+  types: %{"application/vnd.api+json" => ["json"], "text/gemini" => ["gmi", "gemini"]}
 
 config :ash_json_api,
   show_public_calculations_when_loaded?: false,
@@ -85,10 +85,10 @@ config :samba,
   twitter_site_creator: "",
   twitter_site_creator_id: "",
   ssl_endpoint_port: 4002,
-  ssl_endpoint_domain_info: [{"example.com", "demo@example.com"}],
   endpoint_same_site: "Lax",
   endpoint_signing_salt: "gTm6MBR2",
   endpoint_key: "_web_key",
+  self_signed: true,
   endpoint_store: :cookie,
   ash_domains: [
     Samba.Ledger,

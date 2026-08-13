@@ -14,7 +14,8 @@ This is a port of one of the oldest websites on the internet from php to elixir/
 8. Import Tools
 9. Business Maps
 10. Seo Friendly
-11. Swagger API
+11. Swagger API 
+12. Gemini Protocol
 
 ###### User Impersonation
 
@@ -31,7 +32,8 @@ To start your Phoenix server:
 * Run `mix setup` to install and setup dependencies
 * Dump your phpbb2 database and place in `priv/data_dumps` then run the migration script `mix run priv/repo/migrate_dumps.exs`
 * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
-
+* gen spaceboy cert  `mix spaceboy.gen.cert --days 36500'
+* or gen samba cert  `mix spaceboy.gen.cert --days 36500'
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).

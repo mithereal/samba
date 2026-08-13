@@ -201,6 +201,11 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/unzip" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/webtransport" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/xlsxir" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/flag_icons" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/shift" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/spaceboy" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/typed_struct" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/x509" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -516,5 +521,11 @@
     <orderEntry type="library" name="ranch" level="project" />
     <orderEntry type="library" name="gen_stage" level="project" />
     <orderEntry type="library" name="erlsom" level="project" />
+    <orderEntry type="library" name="calendar_component" level="project" />
+    <orderEntry type="library" name="phx_image" level="project" />
+    <orderEntry type="library" name="flag_icons" level="project" />
+    <orderEntry type="library" name="shift" level="project" />
+    <orderEntry type="library" name="spaceboy" level="project" />
+    <orderEntry type="library" name="typed_struct" level="project" />
   </component>
 </module>

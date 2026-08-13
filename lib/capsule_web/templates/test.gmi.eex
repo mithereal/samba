@@ -1,0 +1,7 @@
+# Spaceboy Template Test
+
+This page is a test of Spaceboy EEx templates
+
+Your random number is <%= num %>
+
+Server time: <%= DateTime.utc_now() %>

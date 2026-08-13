@@ -7,7 +7,15 @@ defmodule Samba.Application do
 
   @impl true
   def start(_type, _args) do
+    cert_path = Application.app_dir(:samba, "priv/cert")
+    use_self_signed = System.get_env("USE_SIGNED_SSL") == nil
+
+    if use_self_signed do
+      Samba.SelfCertGenerator.generate_self_signed(cert_path)
+    end
+
     children = [
+      CapsuleWeb.Server,
       SambaWeb.Telemetry,
       Samba.Repo,
       {DNSCluster, query: Application.get_env(:samba, :dns_cluster_query) || :ignore},

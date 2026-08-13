@@ -20,7 +20,6 @@ defmodule SambaWeb.NewTopicLive do
     preset =
       Preset.Parser.parse!(%{
         config: %{
-          licenseKey: "GPL",
           toolbar: [:bold, :italic, :link],
           plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
         }
@@ -200,7 +199,6 @@ defmodule SambaWeb.NewTopicLive do
                 id="content-editor"
                 field={@form[:post_text]}
                 preset={@preset}
-                type="classic"
               />
             </div>
           </div>

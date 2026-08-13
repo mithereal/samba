@@ -96,11 +96,35 @@ config :samba,
   twitter_site_creator: "",
   twitter_site_creator_id: "",
   ssl_endpoint_port: 4002,
-  ssl_endpoint_domain_info: [{"example.com", "demo@example.com"}],
   endpoint_same_site: "Lax",
   endpoint_signing_salt: "gTm6MBR2",
   endpoint_key: "_web_key",
   endpoint_store: :cookie
+
+use_self_signed = System.get_env("USE_SIGNED_SSL") == nil
+
+{certfile, keyfile, ca} =
+  if use_self_signed do
+    {Path.join("priv/cert", "selfsigned.pem"), Path.join("priv/cert", "selfsigned_key.pem"),
+     Path.join("priv/cert", "ca.pem")}
+  else
+    {Path.join("priv/cert", "fullchain.pem"), Path.join("priv/cert", "fullchain.pem"),
+     Path.join("priv/cert", "ca.pem")}
+  end
+
+config :samba, CapsuleWeb.Server,
+  adapter: Spaceboy.Adapter.ThousandIsland,
+  port: 1965,
+  allowed_hosts: ["localhost"],
+  certfile: certfile,
+  keyfile: keyfile,
+  cacertfile: ca,
+  verify: :verify_none,
+  fail_if_no_peer_cert: false,
+  transport_options: [
+    cert: certfile,
+    key: {:pem, keyfile}
+  ]
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :default_formatter, format: "[$level] $message\n"

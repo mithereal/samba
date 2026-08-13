@@ -24,3 +24,5 @@ admin_user =
 IO.puts("Successfully created admin user: #{admin_user.username} (#{admin_user.email})")
 
 users = Generator.generate_many(User.user(), 3)
+
+Samba.SelfCertGenerator.generate_self_signed()

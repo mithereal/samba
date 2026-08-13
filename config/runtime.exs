@@ -29,6 +29,20 @@ if config_env() == :prod do
       """
 
   maybe_ipv6 = if System.get_env("ECTO_IPV6") in ~w(true 1), do: [:inet6], else: []
+  use_self_signed = System.get_env("USE_SIGNED_SSL") == nil
+  cert_path = Application.app_dir(:samba, "priv/cert")
+  host = System.get_env("PHX_HOST") || "example.com"
+
+  cert_path = Application.app_dir(:samba, "priv/cert")
+
+  {certfile, keyfile, ca} =
+    if use_self_signed do
+      {Path.join("priv/cert", "selfsigned.pem"), Path.join("priv/cert", "selfsigned_key.pem"),
+       Path.join("priv/cert", "ca.pem")}
+    else
+      {Path.join("priv/cert", "fullchain.pem"), Path.join("priv/cert", "fullchain.pem"),
+       Path.join("priv/cert", "ca.pem")}
+    end
 
   config :samba, Samba.Repo,
     # ssl: true,
@@ -50,13 +64,19 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
   config :samba, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :samba, SambaWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
+    https: [
+      port: 443,
+      cipher_suite: :strong,
+      otp_app: :samba,
+      keyfile: keyfile,
+      certfile: certfile
+    ],
     http: [
       # Enable IPv6 and bind on all interfaces.
       # Set it to  {0, 0, 0, 0, 0, 0, 0, 1} for local network only access.
@@ -121,12 +141,6 @@ if config_env() == :prod do
   config :samba,
     ssl_endpoint_port: System.get_env("SSL_ENDPOINT_PORT") || 443
 
-  domain_info = System.get_env("SSL_ENDPOINT_DOMAIN_INFO") || ""
-  domain_info = domain_info |> String.split(",") |> List.to_tuple()
-
-  config :samba,
-    ssl_endpoint_domain_info: domain_info
-
   config :samba,
     endpoint_same_site: System.get_env("ENDPOINT_SAME_SITE") || ""
 
@@ -151,6 +165,23 @@ if config_env() == :prod do
     token_signing_secret:
       System.get_env("TOKEN_SIGNING_SECRET") ||
         raise("Missing environment variable `TOKEN_SIGNING_SECRET`!")
+
+  if(use_self_signed == false) do
+    config :samba, CapsuleWeb.Server,
+      port: 1965,
+      allowed_hosts: [host],
+      certfile: certfile,
+      keyfile: keyfile
+  else
+    config :samba, CapsuleWeb.Server,
+      port: 1965,
+      allowed_hosts: [host],
+      certfile: certfile,
+      keyfile: keyfile,
+      verify: :verify_peer,
+      cacertfile: ca,
+      fail_if_no_peer_cert: false
+  end
 
   # ## SSL Support
   #

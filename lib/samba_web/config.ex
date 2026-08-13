@@ -15,10 +15,6 @@ defmodule SambaWeb.Config do
     Application.get_env(:samba, :endpoint_same_site, default)
   end
 
-  def ssl_domains(default \\ [{"example.com", "demo@example.com"}]) do
-    Application.get_env(:samba, :ssl_endpoint_domain_info, default)
-  end
-
   def ssl_port(default \\ 4002) do
     Application.get_env(:samba, :ssl_endpoint_port, default)
   end
