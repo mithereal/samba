@@ -122,9 +122,9 @@ defmodule SambaWeb.LandingLive do
                   </div>
                 </div>
 
-                <%= if @login_type == "email" do %>
+                <%= if @login_type == "username" do %>
                   <.text_field
-                    name="email"
+                    name="username"
                     value=""
                     size="extra_small"
                     border="none"
