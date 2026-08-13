@@ -1,11 +1,19 @@
 defmodule SambaWeb.LandingLive do
   use SambaWeb, :live_view
 
+  require Ash.Query
+
   def mount(_params, _session, socket) do
     socket =
       assign(socket,
         whats_new: %{date: Calendar.strftime(DateTime.utc_now(), "%b. %d, %Y"), data: []}
       )
+
+    random_fact =
+      Samba.Core.Fact
+      |> Ash.Query.for_read(:random)
+      |> Ash.Query.limit(1)
+      |> Ash.read_one!()
 
     login_form =
       Samba.Accounts.LoginForm
@@ -15,6 +23,7 @@ defmodule SambaWeb.LandingLive do
       socket
       |> assign(:login_form, login_form)
       |> assign(:login_type, "username")
+      |> assign(:fact, random_fact)
 
     {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end

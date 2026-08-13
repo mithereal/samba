@@ -17,6 +17,13 @@ defmodule Samba.Core.Fact do
       accept [:fact]
     end
 
+    read :random do
+      prepare fn query, _ ->
+        require Ash.Sort
+        Ash.Query.sort(query, Ash.Sort.expr_sort(fragment("RANDOM()")))
+      end
+    end
+
     update :update do
       accept [:fact]
     end

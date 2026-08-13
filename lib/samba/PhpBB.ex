@@ -3,6 +3,8 @@ defmodule PhpBB.Domain do
     otp_app: :samba
 
   resources do
+    resource PhpBB.Attachment
+    resource PhpBB.AttachmentDesc
     resource PhpBB.AuthAccess
     resource PhpBB.BanList
     resource PhpBB.Categories
