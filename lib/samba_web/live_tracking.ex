@@ -68,10 +68,10 @@ defmodule SambaWeb.LiveTracking do
 
         cond do
           post_date == today ->
-            "#{day_name}, today #{time_str}"
+            "Today #{time_str}"
 
           post_date == Date.add(today, -1) ->
-            "#{day_name}, yesterday #{time_str}"
+            "Yesterday #{time_str}"
 
           true ->
             date_str = Calendar.strftime(post_dt, "%b %d") |> String.downcase()

@@ -23,6 +23,8 @@ defmodule SambaWeb.NewPostLive do
       raise RuntimeError, message: "You are not authorized to reply to this topic."
     end
 
+    {can_post_sticky, can_post_announce} = evaluate_topic_permissions(forum, current_user)
+
     post_time = System.os_time(:second)
 
     preset =
@@ -63,11 +65,141 @@ defmodule SambaWeb.NewPostLive do
       |> assign(:poster_id, poster_id)
       |> assign(:topic_id, topic_id)
       |> assign(:forum_id, forum.forum_id)
+      |> assign(:can_post_sticky, can_post_sticky)
+      |> assign(:can_post_announce, can_post_announce)
       |> assign(:page_title, "Post Reply")
       |> assign(:preset, preset)
       |> assign(:form, form)
 
     {:ok, socket}
+  end
+
+  def mount(%{"topic_id" => id}, _session, socket) do
+    topic_id = String.to_integer(id)
+
+    # Fetch topic and its related forum
+    topic = Ash.get!(PhpBB.Topics, topic_id, domain: PhpBB.Domain)
+    forum = Ash.get!(PhpBB.Forums, topic.forum_id, domain: PhpBB.Domain)
+    current_user = socket.assigns[:current_user]
+    poster_id = current_user.phpbb_user_id
+
+    # Evaluate reply permissions based on phpBB2 authorization system
+    unless evaluate_reply_permissions(forum, topic, current_user) do
+      raise RuntimeError, message: "You are not authorized to reply to this topic."
+    end
+
+    post_time = System.os_time(:second)
+
+    preset =
+      Preset.Parser.parse!(%{
+        config: %{
+          licenseKey: "GPL",
+          toolbar: [:bold, :italic, :link],
+          plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+        }
+      })
+
+    {can_post_sticky, can_post_announce} = evaluate_topic_permissions(forum, current_user)
+
+    form =
+      PhpBB.Posts
+      |> AshPhoenix.Form.for_create(:create,
+        as: "form",
+        domain: PhpBB.Domain,
+        params: %{
+          "topic_id" => topic_id,
+          "forum_id" => forum.forum_id,
+          "poster_id" => poster_id,
+          "post_time" => post_time,
+          "post_username" => "",
+          "poster_ip" => "00000000",
+          "enable_bbcode" => 1,
+          "enable_smilies" => 1,
+          "enable_sig" => 1,
+          "enable_html" => 0,
+          "post_edit_time" => 0,
+          "post_edit_count" => 0
+        }
+      )
+      |> to_form()
+
+    socket =
+      socket
+      |> assign(:topic, topic)
+      |> assign(:forum, forum)
+      |> assign(:poster_id, poster_id)
+      |> assign(:topic, topic)
+      |> assign(:topic_id, topic_id)
+      |> assign(:forum_id, forum.forum_id)
+      |> assign(:can_post_sticky, can_post_sticky)
+      |> assign(:can_post_announce, can_post_announce)
+      |> assign(:page_title, "Post Reply")
+      |> assign(:preset, preset)
+      |> assign(:form, form)
+
+    {:ok, socket}
+  end
+
+  defp evaluate_topic_permissions(forum, user) do
+    user_level = Map.get(user, :user_level, 0) || 0
+
+    if user_level in [1, 2] do
+      {true, true}
+    else
+      sticky_auth = forum.auth_sticky || 0
+      announce_auth = forum.auth_announce || 0
+
+      {
+        check_auth_level(forum, sticky_auth, user, :auth_sticky),
+        check_auth_level(forum, announce_auth, user, :auth_announce)
+      }
+    end
+  end
+
+  defp check_auth_level(forum, auth_val, user, permission_field) do
+    user_level = Map.get(user, :user_level, 0) || 0
+
+    cond do
+      auth_val == 0 -> true
+      auth_val == 1 -> user_level >= 0
+      auth_val == 3 -> user_level in [1, 2]
+      auth_val == 5 -> user_level == 1
+      auth_val == 2 -> check_acl_permission(forum, user, permission_field)
+      true -> false
+    end
+  end
+
+  defp check_acl_permission(forum, user, permission_field) do
+    user_id = Map.get(user, :phpbb_user_id)
+
+    if is_nil(user_id) do
+      false
+    else
+      try do
+        group_ids =
+          PhpBB.UserGroup
+          |> Ash.Query.filter(user_id == ^user_id and user_pending == 0)
+          |> Ash.read!(domain: PhpBB.Domain)
+          |> Enum.map(& &1.group_id)
+
+        if Enum.empty?(group_ids) do
+          false
+        else
+          auth_records =
+            PhpBB.AuthAccess
+            |> Ash.Query.filter(forum_id == ^forum.forum_id and group_id in ^group_ids)
+            |> Ash.read!(domain: PhpBB.Domain)
+
+          Enum.any?(auth_records, fn record ->
+            Map.get(record, permission_field) == 1
+          end)
+        end
+      rescue
+        e ->
+          Logger.error("Failed to evaluate ACL permissions: #{inspect(e)}")
+          false
+      end
+    end
   end
 
   defp evaluate_reply_permissions(forum, topic, user) do
@@ -155,7 +287,7 @@ defmodule SambaWeb.NewPostLive do
     <Layouts.flash_group flash={@flash} />
     <div class="shadow-xl rounded-lg overflow-hidden border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-900/80 backdrop-blur-md">
       <div class="w-2/3 mx-auto px-4 sm:px-6 lg:px-2 py-8 text-gray-100">
-        <.form for={@form} phx-submit="save" phx-change="validate">
+        <.form for={@form} phx-submit="save_post" phx-change="validate">
           <input type="hidden" name="form[topic_id]" value={@topic_id} />
           <input type="hidden" name="form[forum_id]" value={@forum_id} />
           <input type="hidden" name="form[poster_id]" value={@poster_id} />
@@ -184,7 +316,7 @@ defmodule SambaWeb.NewPostLive do
 
           <div class="flex flex-row justify-end space-x-2 mt-4">
             <.link
-              navigate={~p"/topics/#{@topic_id}"}
+              navigate={~p"/topic/#{@topic_id}"}
               class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
             >
               Cancel
@@ -207,16 +339,18 @@ defmodule SambaWeb.NewPostLive do
     {:noreply, assign(socket, form: to_form(form))}
   end
 
-  def handle_event("save", %{"form" => params}, socket) do
+  def handle_event("save_post", %{"form" => params}, socket) do
     poster_id = socket.assigns.poster_id
     forum_id = socket.assigns.forum_id
+    topic = socket.assigns.topic
+    topic_id = socket.assigns.topic_id
     can_post_sticky = socket.assigns.can_post_sticky
     can_post_announce = socket.assigns.can_post_announce
     post_time = System.os_time(:second)
 
     forum_record = socket.assigns.forum
 
-    topic_title = String.trim(params["topic_title"] || "")
+    topic_title = String.trim(params["post_subject"] || "")
     post_text_content = String.trim(params["post_text"] || "")
 
     if String.length(topic_title) < 1 || String.length(post_text_content) < 1 do
@@ -246,25 +380,10 @@ defmodule SambaWeb.NewPostLive do
 
       result =
         Samba.Repo.transaction(fn ->
-          with {:ok, topic} <-
-                 PhpBB.Topics
-                 |> Ash.Changeset.for_create(:create, %{
-                   "forum_id" => forum_id,
-                   "topic_poster" => poster_id,
-                   "topic_title" => topic_title,
-                   "topic_time" => post_time,
-                   "topic_replies" => 0,
-                   "topic_views" => 0,
-                   "topic_status" => 0,
-                   "topic_vote" => 0,
-                   "topic_type" => topic_type,
-                   "topic_moved_id" => nil
-                 })
-                 |> Ash.create(domain: PhpBB.Domain),
-               {:ok, post} <-
+          with {:ok, post} <-
                  PhpBB.Posts
                  |> Ash.Changeset.for_create(:create, %{
-                   "topic_id" => topic.topic_id,
+                   "topic_id" => topic_id,
                    "forum_id" => forum_id,
                    "poster_id" => poster_id,
                    "post_time" => post_time,
@@ -314,7 +433,7 @@ defmodule SambaWeb.NewPostLive do
           {:noreply,
            socket
            |> put_flash(:info, "Topic and post created successfully!")
-           |> push_navigate(to: ~p"/topics/#{updated_topic.topic_id}")}
+           |> push_navigate(to: ~p"/topic/#{topic_id}")}
 
         {:error, reason} ->
           Logger.error("TRANSACTION FAILED: #{inspect(reason, pretty: true)}")

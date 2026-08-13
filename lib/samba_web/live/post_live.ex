@@ -1,29 +1,29 @@
-defmodule SambaWeb.PostsLive do
+defmodule SambaWeb.PostLive do
   use SambaWeb, :live_view
 
   require Ash.Query
 
-  def mount(%{"id" => topic_id} = params, _session, socket) do
-    topic_id = parse_int(topic_id)
+  def mount(%{"id" => post_id} = params, _session, socket) do
+    post_id = parse_int(post_id)
     page = parse_int(params["page"], 1)
     per_page = parse_int(params["per_page"], 15)
     offset_val = (page - 1) * per_page
 
-    topic =
-      PhpBB.Topics
-      |> Ash.Query.filter(topic_id == ^topic_id)
-      |> Ash.Query.load([:forum])
+    post =
+      PhpBB.Posts
+      |> Ash.Query.filter(post_id == ^post_id)
+      |> Ash.Query.load([:topic])
       |> Ash.read_one!(domain: PhpBB.Domain)
 
-    if topic do
-      topic
+    if post.topic do
+      post.topic
       |> Ash.Changeset.for_update(:increment_views, %{})
       |> Ash.update!(domain: PhpBB.Domain)
     end
 
     paginated_query =
-      PhpBB.Posts
-      |> Ash.Query.filter(topic_id == ^topic_id)
+      PhpBB.Topics
+      |> Ash.Query.filter(topic_id == ^post.topic_id)
       |> Ash.Query.sort(post_time: :asc)
       |> Ash.Query.load([:poster, :post_text])
       |> Ash.Query.page(limit: per_page, offset: offset_val)
@@ -35,13 +35,13 @@ defmodule SambaWeb.PostsLive do
 
     socket =
       socket
-      |> assign(:page_title, (topic && topic.topic_title) || "Topic")
-      |> assign(:topic, topic)
+      |> assign(:page_title, (post.topic && post.topic.topic_title) || "Topic")
+      |> assign(:topic, post.topic)
       |> assign(:posts, page_results.results || [])
       |> assign(:page, page)
       |> assign(:per_page, per_page)
       |> assign(:more?, page_results.more?)
-      |> assign(:topic_id, topic_id)
+      |> assign(:topic_id, post.topic_id)
       |> assign(:form, form)
 
     {:ok, socket}
@@ -140,14 +140,14 @@ defmodule SambaWeb.PostsLive do
           <:item icon="hero-folder" link="/forums">Forum Index</:item>
           <:item
             icon="hero-folder-open"
-            link={(@topic && @topic.forum_id && ~p"/forum/#{@topic.forum_id}") || "/"}
+            link={(@topic && @topic.forum_id && ~p"/forums/#{@topic.forum_id}") || "/"}
           >
             {(@topic && @topic.forum && @topic.forum.forum_name) || "Forum"}
           </:item>
           <:item icon="hero-document-text" link="#">{@topic && @topic.topic_title}</:item>
         </.breadcrumb>
         <.link
-          navigate={~p"/topic/#{@topic.topic_id}/post/new"}
+          navigate={~p"/topics/#{@topic.topic_id}"}
           class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors"
         >
           Post New Reply

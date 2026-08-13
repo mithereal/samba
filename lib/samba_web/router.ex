@@ -73,11 +73,15 @@ defmodule SambaWeb.Router do
       live "/ledger/chart-of-accounts/new", Ledger.CreateNewAccountLive
 
       live "/forums", ForumIndexLive, :index
-      live "/forums/:id", ForumTopicsLive, :index
-      live "/forums/:id/topic/new", NewTopicLive, :index
-      live "/topics/:id/new", NewPostLive, :index
-
-      live "/topics/:id", PostsLive, :index
+      live "/forums/rss_feeds", RSSIndexLive, :index
+      live "/forum/:id", ForumTopicsLive, :index
+      live "/forum/new", NewForumLive, :index
+      live "/forum/:forum_id/topic/new", NewTopicLive, :index
+      live "/topic/:id", PostsLive, :index
+      live "/topic/:id/reply", NewPostLive, :index
+      live "/topic/:topic_id/post/new", NewPostLive, :index
+      live "/post/:id", PostLive, :index
+      live "/post/:id/reply", NewPostLive, :index
 
       live "/memberlist", MemberListLive, :index
       live "/viewonline", OnlineUsersLive, :index
@@ -114,11 +118,14 @@ defmodule SambaWeb.Router do
     live "/memberlist", MemberListLive, :index
     live "/forums/faq", MemberListLive, :index
     live "/forums/rss_feeds", RSSIndexLive, :index
-    live "/forums/:id", ForumTopicsLive, :index
-    live "/forums/new", NewForumLive, :index
-    live "/topics/:id", PostsLive, :index
-    live "/topics/:id/reply", PostLive, :index
-    live "/topics/post/:id", TopicPostsLive, :index
+    live "/forum/:id", ForumTopicsLive, :index
+    live "/forum/new", NewForumLive, :index
+    live "/forum/:forum_id/topic/new", NewTopicLive, :index
+    live "/topic/:id", PostsLive, :index
+    live "/topic/:id/reply", NewPostLive, :index
+    live "/topic/:topic_id/post/new", NewPostLive, :index
+    live "/post/:id", PostLive, :index
+    live "/post/:id/reply", NewPostLive, :index
     live "/viewonline", OnlineUsersLive, :index
     live "/profile/:id", UserProfileLive, :index
 

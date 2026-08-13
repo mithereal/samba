@@ -201,7 +201,7 @@ defmodule SambaWeb.ForumIndexLive do
                   </div>
                   <div>
                     <.link
-                      navigate={~p"/forums/#{forum.forum_id}"}
+                      navigate={~p"/forum/#{forum.forum_id}"}
                       class="text-base font-semibold text-gray-900 dark:text-gray-100 hover:text-indigo-600 dark:hover:text-indigo-400"
                     >
                       {forum.forum_name}
@@ -227,7 +227,7 @@ defmodule SambaWeb.ForumIndexLive do
                   <%= if forum.last_post do %>
                     <div class="font-medium text-gray-800 dark:text-gray-200 truncate max-w-[200px] md:max-w-none">
                       <.link
-                        navigate={~p"/topics/post/#{forum.last_post.post_id}"}
+                        navigate={~p"/post/#{forum.last_post.post_id}"}
                         class="hover:underline"
                       >
                         {Map.get(forum.last_post, :subject, "View Post")}

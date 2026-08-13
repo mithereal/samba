@@ -83,7 +83,7 @@ defmodule SambaWeb.ForumTopicsLive do
             </.breadcrumb>
             <p class="mt-5 text-sm text-black">{@forum && raw(@forum.forum_desc)}</p>
             <.link
-              navigate={~p"/forums/#{@forum_id}/topic/new"}
+              navigate={~p"/forum/#{@forum_id}/topic/new"}
               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-md shadow transition-colors"
             >
               Post New Topic
@@ -286,7 +286,7 @@ defmodule SambaWeb.ForumTopicsLive do
         </div>
         <div>
           <.link
-            navigate={~p"/topics/#{@topic.topic_id}"}
+            navigate={~p"/topic/#{@topic.topic_id}"}
             class="text-base font-semibold text-gray-100 hover:text-indigo-400"
           >
             {@topic.topic_title}

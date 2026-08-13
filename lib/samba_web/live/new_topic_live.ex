@@ -57,6 +57,55 @@ defmodule SambaWeb.NewTopicLive do
     {:ok, socket}
   end
 
+  def mount(%{"forum_id" => id}, _session, socket) do
+    forum_id = String.to_integer(id)
+    forum = Ash.get!(PhpBB.Forums, forum_id, domain: PhpBB.Domain)
+    current_user = socket.assigns[:current_user]
+    poster_id = current_user.phpbb_user_id
+
+    {can_post_sticky, can_post_announce} = evaluate_topic_permissions(forum, current_user)
+    {can_post_sticky, can_post_announce} = evaluate_topic_permissions(forum, current_user)
+
+    preset =
+      Preset.Parser.parse!(%{
+        config: %{
+          toolbar: [:bold, :italic, :link],
+          plugins: [:Bold, :Italic, :Link, :Essentials, :Paragraph]
+        }
+      })
+
+    form =
+      PhpBB.Topics
+      |> AshPhoenix.Form.for_create(:create,
+        as: "form",
+        domain: PhpBB.Domain,
+        params: %{
+          "forum_id" => forum.forum_id,
+          "topic_poster" => poster_id,
+          "disable_html" => "false",
+          "disable_bbcode" => "false",
+          "disable_smilies" => "false",
+          "notify_reply" => "false",
+          "topic_type" => "0",
+          "post_text" => ""
+        }
+      )
+      |> to_form()
+
+    socket =
+      socket
+      |> assign(:forum, forum)
+      |> assign(:poster_id, poster_id)
+      |> assign(:forum_id, forum.forum_id)
+      |> assign(:can_post_sticky, can_post_sticky)
+      |> assign(:can_post_announce, can_post_announce)
+      |> assign(:page_title, "New Topic")
+      |> assign(:preset, preset)
+      |> assign(:form, form)
+
+    {:ok, socket}
+  end
+
   defp evaluate_topic_permissions(forum, user) do
     user_level = Map.get(user, :user_level, 0) || 0
 
@@ -345,8 +394,6 @@ defmodule SambaWeb.NewTopicLive do
           true -> 0
         end
 
-      IO.inspect(topic_type, label: "topic_type")
-
       case create_topic_record(
              forum_id,
              poster_id,
@@ -363,7 +410,7 @@ defmodule SambaWeb.NewTopicLive do
           {:noreply,
            socket
            |> put_flash(:info, "Topic and post created successfully!")
-           |> push_navigate(to: ~p"/topics/#{updated_topic.topic_id}")}
+           |> push_navigate(to: ~p"/topic/#{updated_topic.topic_id}")}
 
         {:error, error} ->
           Logger.error("FAILED TOPIC CREATION: #{inspect(error, pretty: true)}")
