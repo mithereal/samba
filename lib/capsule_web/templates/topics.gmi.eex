@@ -1,0 +1,4 @@
+This page list of topics
+
+
+Server time: <%= DateTime.utc_now() %>

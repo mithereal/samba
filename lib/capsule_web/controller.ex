@@ -1,10 +1,10 @@
 defmodule CapsuleWeb.Controller do
   use Spaceboy.Controller,
-    root: "lib/example/templates"
+    root: "lib/capsule_web/templates"
 
   alias Spaceboy.Conn
   alias Spaceboy.PeerCert
-
+  require Ash.Query
   require Logger
 
   @doc ~S"""
@@ -12,83 +12,35 @@ defmodule CapsuleWeb.Controller do
   """
   def index(conn) do
     gemini(conn, """
-    # Example page
+    # The Samba
 
-    This is index page
+    => /forums Forums
+    => /forum Forum
+    => /topics Topics
+    => /topic Topic
 
-    => /user Set username
-    => /cert Check certificate
-    => /file File test
-    => /template Template test
-    => /static Folder test
-    => /static/projects Folder without index.gmi
-    => /robots.txt Robots file
-
-    Server time: #{DateTime.utc_now()}
     """)
-  end
-
-  @doc ~S"""
-  Page requiring user input and then redirecting to appropriate page
-  """
-  def users(%Conn{query_string: nil} = conn) do
-    input(conn, "Enter username")
-  end
-
-  def users(%Conn{query_string: user} = conn) do
-    Logger.info("Processing user: #{user}")
-
-    redirect(conn, "/user/#{user}")
   end
 
   @doc ~S"""
   Page with URL parameter
   """
-  def user(%Conn{params: %{user_id: user_id}} = conn) do
-    gemini(conn, """
-    # Example user page
+  def forums(conn) do
+    render(conn, "forums.gmi", title: "Forums")
+  end
 
-    => / Home
-
-    ## User
-    ```
-    User ID: "#{user_id}"
-    ```
-    """)
+  def forum(conn) do
+    render(conn, "forum.gmi", title: "Forum")
   end
 
   @doc ~S"""
-  Page showing work with certificates
+  Page with URL parameter
   """
-  def cert(%Conn{peer_cert: :no_peercert} = conn) do
-    auth_required(conn)
+  def topics(conn) do
+    render(conn, "topics.gmi", title: "topics")
   end
 
-  def cert(%Conn{peer_cert: pc} = conn) do
-    data = PeerCert.rdn(pc)
-
-    gemini(conn, """
-    # Example certificate page
-
-    Great! Certificate detected:
-
-    ```
-    #{inspect(data)}
-    ```
-    """)
-  end
-
-  @doc ~S"""
-  Rendering and serving a template in the template root (`templates/`)
-  """
-  def template(conn) do
-    render(conn, "test.gmi", num: :rand.uniform(10))
-  end
-
-  @doc ~S"""
-  Serving single file as a response
-  """
-  def file(conn) do
-    Conn.file(conn, "priv/test.txt")
+  def topic(conn) do
+    render(conn, "topic.gmi", title: "topic")
   end
 end

@@ -1,0 +1,4 @@
+This page is a forum
+
+
+Server time: <%= DateTime.utc_now() %>
