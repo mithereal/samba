@@ -96,6 +96,15 @@ if config_env() == :prod do
   config :samba,
     site_default_locale: System.get_env("SITE_DEFAULT_LOCALE") || ""
 
+  super_users =
+    case System.get_env("SUPER_USERS") do
+      nil -> ["admin@example.com"]
+      val -> String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)
+    end
+
+  config :samba,
+    super_users: super_users
+
   config :samba,
     site_default_mask_icon_color: System.get_env("SITE_DEFAULT_MASK_ICON_COLOR") || ""
 

@@ -7,6 +7,15 @@
 # General application configuration
 import Config
 
+config :ash_oban, pro?: false
+
+config :samba, Oban,
+  engine: Oban.Engines.Basic,
+  notifier: Oban.Notifiers.Postgres,
+  queues: [default: 10, system: 10],
+  repo: Samba.Repo,
+  plugins: [{Oban.Plugins.Cron, []}]
+
 config :mime,
   extensions: %{"json" => "application/vnd.api+json"},
   types: %{"application/vnd.api+json" => ["json"], "text/gemini" => ["gmi", "gemini"]}
@@ -90,13 +99,7 @@ config :samba,
   endpoint_key: "_web_key",
   self_signed: true,
   endpoint_store: :cookie,
-  ash_domains: [
-    Samba.Ledger,
-    Samba.Accounts,
-    PhpBB.Domain,
-    Samba.Analytics,
-    Samba.Core
-  ]
+  ash_domains: [Samba.Ledger, Samba.Accounts, PhpBB.Domain, Samba.Analytics, Samba.Core]
 
 config :phoenix_copy,
   images: [
@@ -116,7 +119,7 @@ config :phoenix_copy,
 # special actions such as impersonating other
 # users in the teams. Seeing all teams
 # and more...
-config :samba, super_users: ["mithereal@gmail.com"]
+config :samba, super_users: ["admin@example.com"]
 
 # Configures the endpoint
 config :samba, SambaWeb.Endpoint,

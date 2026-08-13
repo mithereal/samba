@@ -39,6 +39,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
 
 ## Learn more
+* A background job runs every 30 minutes for forgotten admin passwords, if the user has lost access to the email address, simply blanking the hashed_password field for an admin user (which is set in the env variable SUPER_USERS, or "admin@example.com")  
 
 ### Phoenix
 * https://www.phoenixframework.org/

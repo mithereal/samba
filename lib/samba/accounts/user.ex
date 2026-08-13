@@ -4,7 +4,7 @@ defmodule Samba.Accounts.User do
     domain: Samba.Accounts,
     data_layer: AshPostgres.DataLayer,
     authorizers: [Ash.Policy.Authorizer],
-    extensions: [AshAuthentication],
+    extensions: [AshAuthentication, AshOban],
     fragments: [
       Samba.Accounts.User.Actions,
       Samba.Accounts.User.Attributes,
@@ -64,7 +64,25 @@ defmodule Samba.Accounts.User do
     repo Samba.Repo
   end
 
+  oban do
+    triggers do
+      trigger :reset_empty_admin_password do
+        action :admin_set_default_password
+        worker_read_action :list_empty_password_admins
+        scheduler_cron false
+        queue :system
+        actor_persister Samba.Accounts.ObanActorPersister
+        worker_module_name Samba.Accounts.User.Empty.Password.Reset.AshOban.Worker
+        scheduler_module_name Samba.Accounts.User.Empty.Password.Reset.AshOban.Scheduler.Process
+      end
+    end
+  end
+
   policies do
+    bypass AshOban.Checks.AshObanInteraction do
+      authorize_if always()
+    end
+
     bypass AshAuthentication.Checks.AshAuthenticationInteraction do
       authorize_if always()
     end

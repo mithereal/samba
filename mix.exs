@@ -42,6 +42,7 @@ defmodule Samba.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      {:oban, "~> 2.0"},
       {:open_api_spex, "~> 3.0"},
       {:decimal, "~> 3.0", override: true},
       {:ash_json_api, "~> 1.0"},
@@ -133,7 +134,8 @@ defmodule Samba.MixProject do
       {:shift, "~> 0.2.1"},
       {:spaceboy, "~> 0.4.0"},
       {:x509, "~> 0.8"},
-      {:thousand_island, "~> 1.4"}
+      {:thousand_island, "~> 1.4"},
+      {:ash_oban, "~> 0.8"}
       # {:calendar_component, "~> 0.2.1", override: true},
       # {:phoenix_live_calendar, "~> 0.5.0"}
       # {:phoenix_email, "~> 0.1.2"}

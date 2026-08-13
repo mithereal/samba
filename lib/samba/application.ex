@@ -14,16 +14,17 @@ defmodule Samba.Application do
       Samba.SelfCertGenerator.generate_self_signed(cert_path)
     end
 
+    frequency = Application.get_env(:samba, :frequency, 60_000)
+
     children = [
       CapsuleWeb.Server,
       SambaWeb.Telemetry,
       Samba.Repo,
+      {Oban, AshOban.config([Samba.Accounts], Application.get_env(:samba, Oban))},
       {DNSCluster, query: Application.get_env(:samba, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Samba.PubSub},
       {Finch, name: Finch},
-      # Start a worker by calling: Samba.Worker.start_link(arg)
-      # {Samba.Worker, arg},
-      # Start to serve requests, typically the last entry
+      Samba.Accounts.PasswordResetScheduler,
       Samba.Analytics.OnlineTracker,
       Samba.Analytics.PageTracker,
       SambaWeb.Presence,

@@ -206,6 +206,8 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/spaceboy" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/typed_struct" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/x509" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ash_oban" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/oban" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -527,5 +529,10 @@
     <orderEntry type="library" name="shift" level="project" />
     <orderEntry type="library" name="spaceboy" level="project" />
     <orderEntry type="library" name="typed_struct" level="project" />
+    <orderEntry type="library" name="ash_oban" level="project" />
+    <orderEntry type="library" name="quantum" level="project" />
+    <orderEntry type="library" name="crontab" level="project" />
+    <orderEntry type="library" name="telemetry_registry" level="project" />
+    <orderEntry type="library" name="periodic" level="project" />
   </component>
 </module>

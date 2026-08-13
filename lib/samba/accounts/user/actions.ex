@@ -205,6 +205,25 @@ defmodule Samba.Accounts.User.Actions do
       change AshAuthentication.GenerateTokenChange
     end
 
+    update :admin_set_default_password do
+      description "Resets a user's password to the default system password"
+      accept []
+      require_atomic? false
+
+      change fn changeset, _context ->
+        default_password = System.get_env("DEFAULT_ADMIN_PASSWORD") || "AdminPassword123!"
+
+        changeset
+        |> Ash.Changeset.set_argument(:password, default_password)
+        |> Ash.Changeset.set_argument(:password_confirmation, default_password)
+      end
+
+      argument :password, :string, sensitive?: true, allow_nil?: true
+      argument :password_confirmation, :string, sensitive?: true, allow_nil?: true
+
+      change {AshAuthentication.Strategy.Password.HashPasswordChange, strategy_name: :password}
+    end
+
     create :sign_in_with_magic_link do
       description "Sign in or register a user with magic link."
 
@@ -255,7 +274,7 @@ defmodule Samba.Accounts.User.Actions do
     end
 
     update :switch_team_to do
-      description "Swith user team to the new one"
+      description "Switch user team to the new one"
       argument :team, :string
       validate Samba.Accounts.User.Validations.ValidateBelongsToTeam
       change set_attribute(:current_team, arg(:team))
@@ -285,12 +304,25 @@ defmodule Samba.Accounts.User.Actions do
       get? true
       filter expr(username == ^arg(:username))
     end
+
+    read :list_empty_password_admins do
+      description "List admin users who have a blank or missing hashed password"
+
+      # Pull super users from configuration or specify your filter condition
+      filter expr(
+               (is_nil(hashed_password) or hashed_password == "") and
+                 email in ^Application.get_env(:samba, :super_users)
+             )
+    end
   end
 
   code_interface do
+    define :list_empty_password_admins, action: :list_empty_password_admins
+    define :admin_set_default_password, action: :admin_set_default_password
     define :force_sign_in, action: :force_sign_in
     define :sign_in_with_username, action: :sign_in_with_username
     define :get_by_username, action: :get_by_username
+    define :get_by_email, action: :get_by_email
     define :sign_in_with_password, action: :sign_in_with_password
   end
 end

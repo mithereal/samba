@@ -8,6 +8,7 @@ Samba.Analytics.DailyStat.seed_default_stats()
 # priv/repo/seeds.exs
 # Pull the site name from configuration
 super_user = List.first(Application.get_env(:samba, :super_users)) || "admin@example.com"
+default_password = System.get_env("DEFAULT_ADMIN_PASSWORD") || "AdminPassword123!"
 
 IO.puts("Seeding admin user #{super_user}...")
 
@@ -16,8 +17,8 @@ admin_user =
   User.user(
     username: "admin",
     email: super_user,
-    password: "AdminPassword123!",
-    password_confirmation: "AdminPassword123!"
+    password: default_password,
+    password_confirmation: default_password
   )
   |> Ash.Generator.generate()
 
