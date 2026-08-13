@@ -4,5 +4,6 @@ defmodule Samba.Core do
 
   resources do
     resource Samba.Core.Fact
+    resource Samba.Settings.Configuration
   end
 end

@@ -160,6 +160,48 @@ defmodule Samba.Accounts.User.Actions do
       end
     end
 
+    create :seed do
+      description "Register a new user with an email and password."
+
+      argument :email, :ci_string do
+        allow_nil? false
+      end
+
+      argument :password, :string do
+        allow_nil? false
+        constraints min_length: 8
+        sensitive? true
+      end
+
+      argument :password_confirmation, :string do
+        allow_nil? false
+        sensitive? true
+      end
+
+      change set_attribute(:email, arg(:email))
+
+      change fn changeset, _context ->
+        case Ash.Changeset.get_argument(changeset, :email) do
+          email when is_binary(email) or not is_nil(email) ->
+            [username | _] = String.split(to_string(email), "@")
+            Ash.Changeset.force_change_attribute(changeset, :username, username)
+
+          _ ->
+            changeset
+        end
+      end
+
+      change AshAuthentication.Strategy.Password.HashPasswordChange
+      change AshAuthentication.GenerateTokenChange
+      change Samba.Accounts.User.Changes.CreatePhpbbUser
+
+      validate AshAuthentication.Strategy.Password.PasswordConfirmationValidation
+
+      metadata :token, :string do
+        allow_nil? false
+      end
+    end
+
     action :request_password_reset_token do
       description "Send password reset instructions to a user if they exist."
 
@@ -324,5 +366,6 @@ defmodule Samba.Accounts.User.Actions do
     define :get_by_username, action: :get_by_username
     define :get_by_email, action: :get_by_email
     define :sign_in_with_password, action: :sign_in_with_password
+    define :seed, action: :seed
   end
 end

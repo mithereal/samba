@@ -100,10 +100,9 @@ defmodule Samba.MixProject do
       {:ash_ops, "~> 0.2.4"},
       {:nimble_parsec, "~> 1.4"},
       {:ex_bbcode, github: "/mithereal/ex_bbcode"},
-      {:abatap, "~> 0.2.0"},
       {:phoenix_copy, ">= 0.0.0"},
       {:adept_svg, ">= 0.0.0"},
-      {:image, "~> 0.54.1"},
+      {:image, ">= 0.0.0"},
       {:etag_plug, "~> 1.0"},
       {:plug_cache_control, "~> 1.1.0", github: "tanguilp/plug_cache_control"},
       {:phoenix_bakery, "~> 0.1.0", runtime: false},
@@ -135,14 +134,24 @@ defmodule Samba.MixProject do
       {:spaceboy, "~> 0.4.0"},
       {:x509, "~> 0.8"},
       {:thousand_island, "~> 1.4"},
-      {:ash_oban, "~> 0.8"}
+      {:ash_oban, "~> 0.8"},
+      {:phia_ui, "~> 0.1.17"},
+      {:primer_live, "~> 0.11"},
+      {:theme_ex, "~> 0.1.0"},
+      {:og_image_gen, "~> 0.1.1"},
+      {:pote, github: "Lorenzo-SF/pote"},
+      {:phoenix_iconify, "~> 0.3.5"},
+      {:athanor, "~> 0.1.0-beta.10"},
+      {:phx_image, "~> 0.1.0"},
+      {:image_components, "~> 0.1.1"},
+      {:phoenix_email, "~> 0.1.2"},
+      {:ex_oss, "~> 1.0"},
+      {:con_cache, "~> 1.1"}
+      # {:cdn, "~> 0.1.0"}
+
       # {:calendar_component, "~> 0.2.1", override: true},
       # {:phoenix_live_calendar, "~> 0.5.0"}
-      # {:phoenix_email, "~> 0.1.2"}
       # {:live_ex_webrtc, "~> 0.8.0"},
-      # {:phx_image, "~> 0.1.0"}
-      # {:image_components, "~> 0.1.1"}
-      # {:athanor, "~> 0.1.0-beta.10"}
       # {:ex_money_input, "~> 0.3.0"}
       # {:cinder, "~> 0.17.0"}
       # {:mbta_metro, "~> 1.1"}

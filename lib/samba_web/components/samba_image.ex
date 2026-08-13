@@ -1,18 +1,8 @@
-defmodule SambaWeb.Components.Image do
-  @moduledoc """
-  A unified image rendering component that supports both local server-side processing 
-  (via local plug/handlers) and future cloud CDN integration (via `image_components`), 
-  driven dynamically by database settings.
-  """
-
+defmodule Samba.Components.Samba.Image do
   use Phoenix.Component
 
   attr :src, :string, required: true
-
-  attr :image_mode, :atom,
-    default: :local,
-    doc: "Passed down from LiveView assigns or fetched from Samba.SettingsManager"
-
+  attr :image_mode, :atom, default: :local, doc: "Passed down from LiveView assigns or DB"
   attr :width, :integer, default: nil
   attr :height, :integer, default: nil
   attr :fit, :atom, default: :cover
@@ -30,7 +20,7 @@ defmodule SambaWeb.Components.Image do
     """
   end
 
-  # --- LOCAL MODE (Local processing / fallback handler) ---
+  # --- LOCAL MODE (phx_image / local processing) ---
   defp build_image_url(:local, assigns) do
     query =
       [
@@ -53,7 +43,7 @@ defmodule SambaWeb.Components.Image do
   # --- CLOUD CDN MODE (image_components / IR pipeline) ---
   defp build_image_url(:cdn, assigns) do
     host = System.get_env("CDN_HOST") || "https://imagedelivery.net/your-account-hash"
-    # Can also be read dynamically if multi-CDN support is needed
+    # Can also be fetched from DB if multi-CDN is needed
     provider = :cloudflare
 
     alias Image.Components.URL

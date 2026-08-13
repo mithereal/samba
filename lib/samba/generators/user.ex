@@ -5,7 +5,7 @@ defmodule Samba.Generators.User do
   def user(opts \\ []) do
     changeset_generator(
       User,
-      :register_with_password,
+      :seed,
       defaults: [
         username: sequence(:username, &"user_#{&1}"),
         email: sequence(:email, &"user_#{&1}@example.com"),

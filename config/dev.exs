@@ -144,5 +144,12 @@ config :phoenix_live_view,
   # Enable helpful, but potentially expensive runtime checks
   enable_expensive_runtime_checks: true
 
+config :samba, image_mode: :local
+
+# config :samba,
+#       image_mode: :cdn,
+#       cdn_provider: :cloudflare, # or :cloudinary, :imgix, etc.
+#       cdn_host: "https://imagedelivery.net/your-account-hash"
+
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false

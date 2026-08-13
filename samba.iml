@@ -208,6 +208,26 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/x509" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ash_oban" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/oban" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/athanor" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/color" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/con_cache" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/eqrcode" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_aws" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_aws_s3" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ex_oss" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/iconify" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/image_components" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/image_plug" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/imageboss" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/og_image_gen" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phia_ui" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_email" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phoenix_iconify" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/phx_image" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/pote" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/primer_live" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/resvg" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/theme_ex" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="open_api_spex" level="project" />
@@ -534,5 +554,120 @@
     <orderEntry type="library" name="crontab" level="project" />
     <orderEntry type="library" name="telemetry_registry" level="project" />
     <orderEntry type="library" name="periodic" level="project" />
+    <orderEntry type="library" name="phia_ui" level="project" />
+    <orderEntry type="library" name="eqrcode" level="project" />
+    <orderEntry type="library" name="primer_live" level="project" />
+    <orderEntry type="library" name="theme_ex" level="project" />
+    <orderEntry type="library" name="og_image_gen" level="project" />
+    <orderEntry type="library" name="pote" level="project" />
+    <orderEntry type="library" name="phoenix_iconify" level="project" />
+    <orderEntry type="library" name="athanor" level="project" />
+    <orderEntry type="library" name="image_components" level="project" />
+    <orderEntry type="library" name="phoenix_email" level="project" />
+    <orderEntry type="library" name="imageboss" level="project" />
+    <orderEntry type="library" name="ex_oss" level="project" />
+    <orderEntry type="library" name="cdn" level="project" />
+    <orderEntry type="library" name="oban" level="project" />
+    <orderEntry type="library" name="open_api_spex" level="project" />
+    <orderEntry type="library" name="decimal" level="project" />
+    <orderEntry type="library" name="ash_json_api" level="project" />
+    <orderEntry type="library" name="rename_project" level="project" />
+    <orderEntry type="library" name="ex_money_sql" level="project" />
+    <orderEntry type="library" name="ex_cldr" level="project" />
+    <orderEntry type="library" name="ash_money" level="project" />
+    <orderEntry type="library" name="ash_double_entry" level="project" />
+    <orderEntry type="library" name="nimble_csv" level="project" />
+    <orderEntry type="library" name="cinder" level="project" />
+    <orderEntry type="library" name="bcrypt_elixir" level="project" />
+    <orderEntry type="library" name="picosat_elixir" level="project" />
+    <orderEntry type="library" name="sourceror" level="project" />
+    <orderEntry type="library" name="live_debugger" level="project" />
+    <orderEntry type="library" name="ash_authentication_phoenix" level="project" />
+    <orderEntry type="library" name="ash_authentication" level="project" />
+    <orderEntry type="library" name="ash_postgres" level="project" />
+    <orderEntry type="library" name="ash_phoenix" level="project" />
+    <orderEntry type="library" name="ash" level="project" />
+    <orderEntry type="library" name="igniter" level="project" />
+    <orderEntry type="library" name="phoenix" level="project" />
+    <orderEntry type="library" name="phoenix_ecto" level="project" />
+    <orderEntry type="library" name="ecto_sql" level="project" />
+    <orderEntry type="library" name="postgrex" level="project" />
+    <orderEntry type="library" name="phoenix_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_reload" level="project" />
+    <orderEntry type="library" name="phoenix_live_view" level="project" />
+    <orderEntry type="library" name="lazy_html" level="project" />
+    <orderEntry type="library" name="phoenix_live_dashboard" level="project" />
+    <orderEntry type="library" name="esbuild" level="project" />
+    <orderEntry type="library" name="tailwind" level="project" />
+    <orderEntry type="library" name="swoosh" level="project" />
+    <orderEntry type="library" name="req" level="project" />
+    <orderEntry type="library" name="telemetry_metrics" level="project" />
+    <orderEntry type="library" name="telemetry_poller" level="project" />
+    <orderEntry type="library" name="gettext" level="project" />
+    <orderEntry type="library" name="jason" level="project" />
+    <orderEntry type="library" name="dns_cluster" level="project" />
+    <orderEntry type="library" name="bandit" level="project" />
+    <orderEntry type="library" name="mishka_chelekom" level="project" />
+    <orderEntry type="library" name="ash_pagify" level="project" />
+    <orderEntry type="library" name="ash_archival" level="project" />
+    <orderEntry type="library" name="phoenix_seo" level="project" />
+    <orderEntry type="library" name="floki" level="project" />
+    <orderEntry type="library" name="faker" level="project" />
+    <orderEntry type="library" name="makeup" level="project" />
+    <orderEntry type="library" name="ckeditor5_phoenix" level="project" />
+    <orderEntry type="library" name="ash_ops" level="project" />
+    <orderEntry type="library" name="nimble_parsec" level="project" />
+    <orderEntry type="library" name="phoenix_copy" level="project" />
+    <orderEntry type="library" name="adept_svg" level="project" />
+    <orderEntry type="library" name="image" level="project" />
+    <orderEntry type="library" name="etag_plug" level="project" />
+    <orderEntry type="library" name="phoenix_bakery" level="project" />
+    <orderEntry type="library" name="reverse_proxy_plug" level="project" />
+    <orderEntry type="library" name="thumbp" level="project" />
+    <orderEntry type="library" name="unzip" level="project" />
+    <orderEntry type="library" name="live_select" level="project" />
+    <orderEntry type="library" name="altcha" level="project" />
+    <orderEntry type="library" name="plug_attack" level="project" />
+    <orderEntry type="library" name="maybe" level="project" />
+    <orderEntry type="library" name="mix_audit" level="project" />
+    <orderEntry type="library" name="sobelow" level="project" />
+    <orderEntry type="library" name="safeurl" level="project" />
+    <orderEntry type="library" name="recon" level="project" />
+    <orderEntry type="library" name="ex_rated" level="project" />
+    <orderEntry type="library" name="ex_cldr_calendars" level="project" />
+    <orderEntry type="library" name="ex_cldr_units" level="project" />
+    <orderEntry type="library" name="ex_cldr_dates_times" level="project" />
+    <orderEntry type="library" name="ex_cldr_numbers" level="project" />
+    <orderEntry type="library" name="ex_cldr_territories" level="project" />
+    <orderEntry type="library" name="prom_ex" level="project" />
+    <orderEntry type="library" name="remote_ip" level="project" />
+    <orderEntry type="library" name="hammer" level="project" />
+    <orderEntry type="library" name="iptrie" level="project" />
+    <orderEntry type="library" name="premailex" level="project" />
+    <orderEntry type="library" name="flag_icons" level="project" />
+    <orderEntry type="library" name="shift" level="project" />
+    <orderEntry type="library" name="spaceboy" level="project" />
+    <orderEntry type="library" name="x509" level="project" />
+    <orderEntry type="library" name="thousand_island" level="project" />
+    <orderEntry type="library" name="ash_oban" level="project" />
+    <orderEntry type="library" name="phia_ui" level="project" />
+    <orderEntry type="library" name="ex_doc" level="project" />
+    <orderEntry type="library" name="html_sanitize_ex" level="project" />
+    <orderEntry type="library" name="plug" level="project" />
+    <orderEntry type="library" name="tesla" level="project" />
+    <orderEntry type="library" name="hackney" level="project" />
+    <orderEntry type="library" name="flow" level="project" />
+    <orderEntry type="library" name="csv" level="project" />
+    <orderEntry type="library" name="xlsxir" level="project" />
+    <orderEntry type="library" name="stream_data" level="project" />
+    <orderEntry type="library" name="github_workflows_generator" level="project" />
+    <orderEntry type="library" name="quokka" level="project" />
+    <orderEntry type="library" name="resvg" level="project" />
+    <orderEntry type="library" name="iconify" level="project" />
+    <orderEntry type="library" name="reach" level="project" />
+    <orderEntry type="library" name="ex_aws_s3" level="project" />
+    <orderEntry type="library" name="configparser_ex" level="project" />
+    <orderEntry type="library" name="approval" level="project" />
+    <orderEntry type="library" name="con_cache" level="project" />
   </component>
 </module>
