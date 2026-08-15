@@ -434,3 +434,23 @@
         --stepper-separator-completed-border-dark
     );
 }
+
+         /* Apply the font to your page */
+         body {
+           font-family: 'volkswagen-text-regular', sans-serif;
+         }
+         body a{
+           font-family: 'volkswagen-text-bold', sans-serif;
+         }
+         body .font-semibold{
+           font-family: 'volkswagen-text-bold', sans-serif;
+         }
+         div .font-semibold a{
+           font-family: 'volkswagen-head-bold', sans-serif;
+         }
+         nav{
+           font-family: 'volkswagen-head-regular', sans-serif;
+         }
+         nav .font-semibold a{
+           font-family: 'volkswagen-head-bold', sans-serif;
+         }

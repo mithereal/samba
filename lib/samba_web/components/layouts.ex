@@ -86,7 +86,7 @@ defmodule SambaWeb.Layouts do
     <!-- Top Navigation Bar -->
     <nav class="bg-gray-300 border-b border-gray-300 px-2 py-2 text-xs rounded-t-sm">
       <div class="flex justify-between">
-        <div id="header_nav_block">
+        <div id="header_nav_block" class="top_header">
           <%= if @current_user do %>
             Hello, {@current_user.username}
             <span class="ml-2">
@@ -109,10 +109,10 @@ defmodule SambaWeb.Layouts do
             </span>
           <% end %>
         </div>
-        <div class="space-x-1">
-          <.link navigate="/allbanners">See all banner ads</.link>
+        <div class="space-x-1 top_header">
+          <.link navigate="/allbanners top_header">See all banner ads</.link>
           |
-          <.link navigate="/banners">
+          <.link navigate="/banners top_header">
             Advertise on
             <script>
               document.write(window.location.hostname);
@@ -123,17 +123,26 @@ defmodule SambaWeb.Layouts do
     </nav>
 
     <header class="text-white">
+
       <div class="flex py-2 bg-[#293F4F] justify-between">
         <.link navigate={~p"/"}>
           <.image src="/images/logo.svg" alt="Logo" class="h-16 px-4" />
         </.link>
         <div class="flex flex-col justify-end px-2"><.theme_toggle /></div>
       </div>
+
+     <.top_menu />
+    </header>
+    """
+  end
+
+  def top_menu(assigns) do
+    ~H"""
       <div class="rounded-b-sm relative flex items-center justify-between bg-[#42637B] px-4 py-1 dark:bg-neutral-950">
         <!-- Empty spacer div matching the search bar width to balance the layout and keep the menu truly centered -->
         <div class="w-1/8 invisible pointer-events-none"></div>
 
-        <div class="flex items-center flex-wrap justify-center gap-1">
+        <div class="flex items-center flex-wrap justify-center gap-1 font-semibold">
           <.menu
             id="home_dropdown"
             open_on_hover="true"
@@ -380,7 +389,6 @@ defmodule SambaWeb.Layouts do
           </.form_wrapper>
         </div>
       </div>
-    </header>
     """
   end
 

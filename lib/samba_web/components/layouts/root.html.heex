@@ -33,6 +33,40 @@
         window.addEventListener("phx:set-theme", (e) => setTheme(e.target.dataset.phxTheme));
       })();
     </script>
+    <style>
+       @font-face {
+        font-family: 'volkswagen-head-regular';
+        src: url('/fonts/volkswagen-head-regular.woff2') format('woff2'),
+        url('/fonts/volkswagen-head-regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+        @font-face {
+        font-family: 'volkswagen-head-bold';
+        src: url('/fonts/volkswagen-head-bold.woff2') format('woff2'),
+        url('/fonts/volkswagen-head-bold.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'volkswagen-text-regular';
+        src: url('/fonts/volkswagen-text-regular.woff2') format('woff2'),
+        url('/fonts/volkswagen-text-regular.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+        font-display: swap;
+      }
+        @font-face {
+        font-family: 'volkswagen-text-bold';
+        src: url('/fonts/volkswagen-text-bold.woff2') format('woff2'),
+        url('/fonts/volkswagen-text-bold.woff') format('woff');
+        font-weight: bold;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
   </head>
   <body>
     <div class="py-2 px-2 min-h-screen bg-gradient-to-b from-gray-100 from-50% to-gray-900 to-90% text-gray-900">
