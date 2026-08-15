@@ -136,21 +136,21 @@ defmodule Samba.MixProject do
       {:thousand_island, "~> 1.4"},
       {:ash_oban, "~> 0.8"},
       {:phia_ui, "~> 0.1.17"},
-      {:primer_live, "~> 0.11"},
       {:theme_ex, "~> 0.1.0"},
       {:og_image_gen, "~> 0.1.1"},
       {:pote, github: "Lorenzo-SF/pote"},
-      {:phoenix_iconify, "~> 0.3.5"},
-      {:athanor, "~> 0.1.0-beta.10"},
-      {:phx_image, "~> 0.1.0"},
-      {:image_components, "~> 0.1.1"},
       {:phoenix_email, "~> 0.1.2"},
-      {:ex_oss, "~> 1.0"},
       {:con_cache, "~> 1.1"}
-      # {:cdn, "~> 0.1.0"}
+      #      {:phoenix_iconify, "~> 0.3.5"},
+      #      {:athanor, "~> 0.1.0-beta.10"},
+      #      {:phx_image, "~> 0.1.0"},
+      #      {:image_components, "~> 0.1.1"},
+      #      {:ex_oss, "~> 1.0"},
+      #      {:cdn, "~> 0.1.0"}
 
       # {:calendar_component, "~> 0.2.1", override: true},
       # {:phoenix_live_calendar, "~> 0.5.0"}
+      # {:phoenix_live_gantt, "~> 0.4.0"}
       # {:live_ex_webrtc, "~> 0.8.0"},
       # {:ex_money_input, "~> 0.3.0"}
       # {:cinder, "~> 0.17.0"}

@@ -1,13 +1,18 @@
 defmodule Samba.Core.Fact do
   use Ash.Resource,
+    otp_app: :samba,
     domain: Elixir.Samba.Core,
     data_layer: AshPostgres.DataLayer,
-    extensions: [],
+    extensions: [AshOban],
     authorizers: []
 
   postgres do
     table "facts"
     repo Samba.Repo
+  end
+
+  code_interface do
+    define :random, action: :random
   end
 
   actions do

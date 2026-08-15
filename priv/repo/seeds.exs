@@ -1,5 +1,6 @@
 alias Ash.Generator
 alias Samba.Generators.User
+alias Samba.Generators.Fact
 ## Seed default ranks
 
 PhpBB.Ranks.seed_default_ranks()
@@ -25,5 +26,6 @@ admin_user =
 IO.puts("Successfully created admin user: #{admin_user.username} (#{admin_user.email})")
 
 users = Generator.generate_many(User.user(), 3)
+facts = Generator.generate_many(Fact.fact(), 3)
 
 Samba.SelfCertGenerator.generate_self_signed()

@@ -11,7 +11,7 @@ defmodule Samba.Utils.Importers do
     |> Stream.each(fn row ->
       # Adjust the index depending on which column contains the fact text.
       # For example, if it's the first column:
-      fact_text = List.first(row)
+      fact_text = List.last(row)
 
       attrs = %{
         fact: fact_text

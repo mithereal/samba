@@ -24,7 +24,12 @@ defmodule Samba.Application do
       {DNSCluster, query: Application.get_env(:samba, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Samba.PubSub},
       {Finch, name: Finch},
-      {ConCache, [name: :app_settings_cache, ttl_check_interval: :timer.seconds(60)]},
+      {ConCache,
+       [
+         name: :app_settings_cache,
+         ttl_check_interval: :timer.seconds(60),
+         global_ttl: :timer.seconds(60)
+       ]},
       Samba.Accounts.PasswordResetScheduler,
       Samba.Analytics.OnlineTracker,
       Samba.Analytics.PageTracker,

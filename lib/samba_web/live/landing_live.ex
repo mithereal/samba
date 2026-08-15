@@ -19,11 +19,13 @@ defmodule SambaWeb.LandingLive do
       Samba.Accounts.LoginForm
       |> to_form()
 
+    fact = %{image: "/images/logo.svg", data: random_fact.fact}
+
     socket =
       socket
       |> assign(:login_form, login_form)
       |> assign(:login_type, "username")
-      |> assign(:fact, random_fact)
+      |> assign(:vw_fact, fact)
 
     {:ok, socket, temporary_assigns: [{SEO.key(), nil}]}
   end
@@ -240,10 +242,8 @@ defmodule SambaWeb.LandingLive do
         <.jumbotron class="flex px-10 py-10">
           <div>
             <.image
-              src={assigns[:vw_fact][:image]}
+              src={@vw_fact.image}
               alt="image"
-              srcset="{assigns[:vw_fact][:image]} 300w,
-    {assigns[:vw_fact][:image]} 600w"
               sizes="(max-width: 600px) 100vw, 50vw"
               loading="lazy"
               ismap
@@ -255,7 +255,7 @@ defmodule SambaWeb.LandingLive do
             />
           </div>
           <div>
-            {assigns[:vw_fact][:data]}
+            {@vw_fact.data}
           </div>
         </.jumbotron>
         <div>

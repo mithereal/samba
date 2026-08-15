@@ -191,6 +191,8 @@ defmodule Samba.Accounts.User.Actions do
         end
       end
 
+      change set_context(%{strategy_name: :password})
+
       change AshAuthentication.Strategy.Password.HashPasswordChange
       change AshAuthentication.GenerateTokenChange
       change Samba.Accounts.User.Changes.CreatePhpbbUser
