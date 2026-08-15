@@ -173,6 +173,7 @@ defmodule Samba.MixProject do
       "assets.setup": [
         "tailwind.install --if-missing",
         "esbuild.install --if-missing",
+        "fetch_fonts",
         "ckeditor5.install"
       ],
       "assets.build": ["compile", "tailwind Samba", "esbuild Samba"],
