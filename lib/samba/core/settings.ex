@@ -1,4 +1,4 @@
-defmodule Samba.Settings.Configuration do
+defmodule Samba.Core.Settings do
   @moduledoc """
   An Ash Framework resource representing a single key-value configuration entry 
   persisted in the PostgreSQL database.
@@ -15,8 +15,11 @@ defmodule Samba.Settings.Configuration do
   """
 
   use Ash.Resource,
-    domain: Samba.Settings,
-    data_layer: AshPostgres.DataLayer
+      otp_app: :samba,
+      domain: Elixir.Samba.Core,
+      data_layer: AshPostgres.DataLayer,
+      extensions: [AshOban],
+      authorizers: []
 
   postgres do
     table "app_settings"

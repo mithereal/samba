@@ -15,7 +15,6 @@ defmodule PhpBB.Domain do
     resource PhpBB.ForumPrune
     resource PhpBB.Forums
     resource PhpBB.Groups
-    resource PhpBB.Page
     resource PhpBB.Posts
     resource PhpBB.PostsText
     resource PhpBB.Privmsgs

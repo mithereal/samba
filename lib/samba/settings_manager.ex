@@ -50,7 +50,7 @@ defmodule Samba.SettingsManager do
       ]
   """
 
-  alias Samba.Settings.Configuration
+  alias Samba.Core.Settings
 
   @cache_name :app_settings_cache
 
@@ -58,7 +58,7 @@ defmodule Samba.SettingsManager do
     key_str = to_string(key)
 
     ConCache.get_or_store(@cache_name, key_str, fn ->
-      case Ash.get(Configuration, [key: key_str], not_found_error?: false) do
+      case Ash.get(Settings, [key: key_str], not_found_error?: false) do
         nil -> {:error, :not_found}
         config -> {:ok, cast_value(config.value, config.type)}
       end
@@ -77,9 +77,9 @@ defmodule Samba.SettingsManager do
     attrs = %{key: key_str, value: string_value, type: inferred_type}
 
     result =
-      case Ash.get(Configuration, [key: key_str], not_found_error?: false) do
+      case Ash.get(Settings, [key: key_str], not_found_error?: false) do
         nil ->
-          Configuration
+          Settings
           |> Ash.Changeset.for_create(:create, attrs)
           |> Ash.create()
 

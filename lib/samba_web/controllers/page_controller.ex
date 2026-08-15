@@ -1,10 +1,13 @@
 defmodule SambaWeb.PageController do
   use SambaWeb, :controller
 
+
+  alias Samba.Core.Page
+
   plug :put_view, html: SambaWeb.PageHTML, md: SambaWeb.PageMD
 
   def show(conn, %{"page" => name}) do
-    case PhpBB.Page.by_name(name) do
+    case Page.by_title(name) do
       {:ok, page} ->
         conn
         |> SEO.assign(page)
@@ -21,44 +24,5 @@ defmodule SambaWeb.PageController do
     conn
     |> put_flash(:error, "Page not found")
     |> redirect(to: ~p"/")
-  end
-
-  def contact(conn, _params) do
-    data = PhpBB.Page.by_name!("contact")
-    render(conn, :contact, data: data)
-  end
-
-  def donate(conn, _params) do
-    data = PhpBB.Page.by_name!("donate")
-    render(conn, :donate, data: data)
-  end
-
-  def members(conn, _params) do
-    data = PhpBB.Page.by_name!("members")
-    render(conn, :members, data: data)
-  end
-
-  def whats_new(conn, _params) do
-    data = PhpBB.Page.by_name!("whats_new")
-    render(conn, :whats_new, data: data)
-  end
-
-  def donate(conn, _params) do
-    data = PhpBB.Page.by_name!("donate")
-    render(conn, :donate, data: data)
-  end
-
-  def feeds(conn, _params) do
-    categories =
-      PhpBB.Categories
-      |> Ash.Query.sort(cat_order: :asc)
-      |> Ash.Query.load(
-        forums: [
-          :topics
-        ]
-      )
-      |> Ash.read!(domain: PhpBB.Domain)
-
-    render(conn, :feeds, categories: categories)
   end
 end
