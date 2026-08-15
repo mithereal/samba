@@ -437,20 +437,17 @@
 
          /* Apply the font to your page */
          body {
-           font-family: 'volkswagen-text-regular', sans-serif;
-         }
-         body a{
-           font-family: 'volkswagen-text-bold', sans-serif;
+           font-family: 'volkswagen-body-regular', sans-serif;
          }
          body .font-semibold{
-           font-family: 'volkswagen-text-bold', sans-serif;
+           font-family: 'volkswagen-body-bold', sans-serif;
          }
          div .font-semibold a{
-           font-family: 'volkswagen-head-bold', sans-serif;
+           font-family: 'volkswagen-header-bold', sans-serif;
          }
          nav{
-           font-family: 'volkswagen-head-regular', sans-serif;
+           font-family: 'volkswagen-header-regular', sans-serif;
          }
          nav .font-semibold a{
-           font-family: 'volkswagen-head-bold', sans-serif;
+           font-family: 'volkswagen-header-bold', sans-serif;
          }
