@@ -60,7 +60,7 @@ defmodule SambaWeb.ForumTopicsLive do
 
   def handle_event("change-per-page", %{"per_page" => per_page}, socket) do
     {:noreply,
-     push_navigate(socket, to: ~p"/forums/#{socket.assigns.forum_id}?page=1&per_page=#{per_page}")}
+     push_navigate(socket, to: ~p"/forum/#{socket.assigns.forum_id}?page=1&per_page=#{per_page}")}
   end
 
   def render(assigns) do
@@ -76,7 +76,7 @@ defmodule SambaWeb.ForumTopicsLive do
             </h1>
             <p class="text-sm text-gray-400">Moderators: {Enum.join(@moderators, ", ")}</p>
             <.breadcrumb>
-              <:item icon="hero-folder" link="/forums">Forum Index</:item>
+              <:item icon="hero-folder" link="/forum">Forum Index</:item>
               <:item icon="hero-folder-open">
                 {@forum && @forum.forum_name}
               </:item>
@@ -102,7 +102,7 @@ defmodule SambaWeb.ForumTopicsLive do
         </div>
         <div class="text-black flex flex-col justify-end text-right mr-4 ">
           <.link
-            navigate={~p"/forums/#{@forum_id}/mark_topics"}
+            navigate={~p"/forum/#{@forum_id}/mark_topics"}
             class="inline-flex items-center px-4  text-gray-700  text-sm font-semibold rounded-md shadow transition-colors"
           >
             Mark all topics read
@@ -179,7 +179,7 @@ defmodule SambaWeb.ForumTopicsLive do
         <div class="flex space-x-2">
           <%= if @page > 1 do %>
             <.link
-              patch={~p"/forums/#{@forum_id}?page=#{@page - 1}&per_page=#{@per_page}"}
+              patch={~p"/forum/#{@forum_id}?page=#{@page - 1}&per_page=#{@per_page}"}
               class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-md text-sm font-medium border border-gray-700 transition-colors"
             >
               &larr; Previous
@@ -188,7 +188,7 @@ defmodule SambaWeb.ForumTopicsLive do
 
           <%= if @more? do %>
             <.link
-              patch={~p"/forums/#{@forum_id}?page=#{@page + 1}&per_page=#{@per_page}"}
+              patch={~p"/forum/#{@forum_id}?page=#{@page + 1}&per_page=#{@per_page}"}
               class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-200 rounded-md text-sm font-medium border border-gray-700 transition-colors"
             >
               Next &rarr;
@@ -317,7 +317,7 @@ defmodule SambaWeb.ForumTopicsLive do
       <div class="col-span-2 text-left md:text-right text-xs text-gray-400">
         <%= if @topic.last_post do %>
           <div class="font-medium text-gray-200 truncate max-w-[200px] md:max-w-none">
-            <.link navigate={~p"/posts/#{@topic.last_post.post_id}"} class="hover:underline">
+            <.link navigate={~p"/post/#{@topic.last_post.post_id}"} class="hover:underline">
               {Map.get(@topic.last_post, :subject, "View Post")}
             </.link>
           </div>

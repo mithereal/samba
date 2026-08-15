@@ -137,7 +137,7 @@ defmodule SambaWeb.PostsLive do
       <div class="mb-6">
         <h1 class="text-2xl font-bold tracking-tight text-black">{@topic && @topic.topic_title}</h1>
         <.breadcrumb>
-          <:item icon="hero-folder" link="/forums">Forum Index</:item>
+          <:item icon="hero-folder" link="/forum">Forum Index</:item>
           <:item
             icon="hero-folder-open"
             link={(@topic && @topic.forum_id && ~p"/forum/#{@topic.forum_id}") || "/"}

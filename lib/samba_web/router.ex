@@ -15,16 +15,6 @@ defmodule SambaWeb.Router do
     plug :load_from_session
   end
 
-  pipeline :admin_browser do
-    plug :accepts, ["html", "md"]
-    plug :fetch_session
-    plug :fetch_live_flash
-    plug :put_root_layout, html: {SambaWeb.Layouts, :admin}
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug :load_from_session
-  end
-
   pipeline :api do
     plug :accepts, ["json"]
     plug :load_from_bearer
@@ -71,11 +61,11 @@ defmodule SambaWeb.Router do
       live "/ledger/journal", Ledger.JournalLive
       live "/ledger/chart-of-accounts", Ledger.ChartOfAccountsLive
       live "/ledger/chart-of-accounts/new", Ledger.CreateNewAccountLive
-
-      live "/forums", ForumIndexLive, :index
-      live "/forums/rss_feeds", RSSIndexLive, :index
-      live "/forum/:id", ForumTopicsLive, :index
+      live "/forum", ForumIndexLive, :index
+      live "/forum/memberlist", MemberListLive, :index
+      live "/forum/rss_feeds", RSSIndexLive, :index
       live "/forum/new", NewForumLive, :index
+      live "/forum/:id", ForumTopicsLive, :index
       live "/forum/:forum_id/topic/new", NewTopicLive, :index
       live "/topic/:id", PostsLive, :index
       live "/topic/:id/reply", NewPostLive, :index
@@ -114,10 +104,10 @@ defmodule SambaWeb.Router do
   scope "/", SambaWeb do
     pipe_through :browser
 
-    live "/forums", ForumIndexLive, :index
+    live "/forum", ForumIndexLive, :index
     live "/memberlist", MemberListLive, :index
-    live "/forums/faq", MemberListLive, :index
-    live "/forums/rss_feeds", RSSIndexLive, :index
+    live "/forum/faq", MemberListLive, :index
+    live "/forum/rss_feeds", RSSIndexLive, :index
     live "/forum/:id", ForumTopicsLive, :index
     live "/forum/new", NewForumLive, :index
     live "/forum/:forum_id/topic/new", NewTopicLive, :index
@@ -129,7 +119,7 @@ defmodule SambaWeb.Router do
     live "/viewonline", OnlineUsersLive, :index
     live "/profile/:id", UserProfileLive, :index
 
-    get "/forums/:forum_id/rss.xml", RSSController, :index
+    get "/forum/:forum_id/rss.xml", RSSController, :index
   end
 
   scope "/", SambaWeb do
