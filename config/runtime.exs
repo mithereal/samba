@@ -88,17 +88,26 @@ if config_env() == :prod do
     secret_key_base: secret_key_base
 
   config :samba,
-    site_title_prefix: System.get_env("SITE_TITLE_PREFIX") || ""
+    site_title_prefix: System.get_env("SITE_TITLE_PREFIX") || Application.get_env(:samba, :site_title_prefix, "")
 
   config :samba,
-    google_site_verification: System.get_env("GOOGLE_SITE_VERIFICATION") || ""
+    google_site_verification: System.get_env("GOOGLE_SITE_VERIFICATION") || Application.get_env(:samba, :google_site_verification, "")
 
   config :samba,
-    site_default_locale: System.get_env("SITE_DEFAULT_LOCALE") || ""
+    site_default_locale: System.get_env("SITE_DEFAULT_LOCALE") || Application.get_env(:samba, :site_default_locale, "")
+
+  font_urls =
+    case System.get_env("FONT_URLS") do
+      nil -> Application.get_env(:samba, :font_urls, [])
+      val -> String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)
+    end
+
+  config :samba,
+         font_urls: font_urls
 
   super_users =
     case System.get_env("SUPER_USERS") do
-      nil -> ["admin@example.com"]
+      nil -> Application.get_env(:samba, :super_users, ["admin@example.com"])
       val -> String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)
     end
 
@@ -106,60 +115,67 @@ if config_env() == :prod do
     super_users: super_users
 
   config :samba,
-    site_default_mask_icon_color: System.get_env("SITE_DEFAULT_MASK_ICON_COLOR") || ""
+    site_default_mask_icon_color: System.get_env("SITE_DEFAULT_MASK_ICON_COLOR") || Application.get_env(:samba, :site_default_windows_tile_color, "")
 
   config :samba,
-    site_default_windows_tile_color: System.get_env("SITE_DEFAULT_WINDOWS_TILE_COLOR") || ""
+    site_default_windows_tile_color: System.get_env("SITE_DEFAULT_WINDOWS_TILE_COLOR") ||  Application.get_env(:samba, :site_default_mask_icon_color, "")
+
+  site_themes_list =
+    case System.get_env("SITE_THEMES_LIST") do
+      nil -> Application.get_env(:samba, :site_themes_list, [])
+      val -> String.split(val, ",", trim: true) |> Enum.map(&String.trim/1)
+    end
 
   config :samba,
-    site_themes_list: System.get_env("SITE_THEMES_LIST") || ""
+    site_themes_list: site_themes_list
 
   config :samba,
-    site_default_description: System.get_env("SITE_DEFAULT_DESCRIPTION") || ""
+    site_default_description: System.get_env("SITE_DEFAULT_DESCRIPTION") || Application.get_env(:samba, :site_default_description, "")
 
   config :samba,
-    site_webmaster: System.get_env("SITE_WEBMASTER") || ""
+    site_webmaster: System.get_env("SITE_WEBMASTER") || Application.get_env(:samba, :site_webmaster, "")
 
   config :samba,
-    site_default_suffix: System.get_env("SITE_DEFAULT_SUFFIX") || ""
+    site_default_suffix: System.get_env("SITE_DEFAULT_SUFFIX") ||  Application.get_env(:samba, :site_default_suffix, "")
 
   config :samba,
-    site_default_title: System.get_env("SITE_DEFAULT_TITLE") || ""
+    site_default_title: System.get_env("SITE_DEFAULT_TITLE") || Application.get_env(:samba, :site_default_title, "")
 
   config :samba,
-    site_author: System.get_env("SITE_AUTHOR") || ""
+    site_author: System.get_env("SITE_AUTHOR") || Application.get_env(:samba, :site_author, "")
 
   config :samba,
-    site_name: System.get_env("SITE_NAME") || ""
+    site_name: System.get_env("SITE_NAME") ||  Application.get_env(:samba, :site_name, "")
 
   config :samba,
-    facebook_app_id: System.get_env("FACEBOOK_APP_ID") || ""
+    facebook_app_id: System.get_env("FACEBOOK_APP_ID") || Application.get_env(:samba, :facebook_app_id, "")
 
   config :samba,
-    twitter_site_name: System.get_env("TWITTER_SITE_NAME") || ""
+    twitter_site_name: System.get_env("TWITTER_SITE_NAME") ||  Application.get_env(:samba, :twitter_site_name, "")
 
   config :samba,
-    twitter_site_id: System.get_env("TWITTER_SITE_ID") || ""
+    twitter_site_id: System.get_env("TWITTER_SITE_ID") ||  Application.get_env(:samba, :twitter_site_id, "")
 
   config :samba,
-    twitter_site_creator: System.get_env("TWITTER_SITE_CREATOR") || ""
+    twitter_site_creator: System.get_env("TWITTER_SITE_CREATOR") || Application.get_env(:samba, :twitter_site_creator, "")
 
   config :samba,
-    twitter_site_creator_id: System.get_env("TWITTER_SITE_CREATOR_ID") || ""
+    twitter_site_creator_id: System.get_env("TWITTER_SITE_CREATOR_ID") ||  Application.get_env(:samba, :twitter_site_creator_id, "")
 
   config :samba,
-    ssl_endpoint_port: System.get_env("SSL_ENDPOINT_PORT") || 443
+    ssl_endpoint_port: System.get_env("SSL_ENDPOINT_PORT") ||  Application.get_env(:samba, :ssl_endpoint_port, 443)
 
   config :samba,
-    endpoint_same_site: System.get_env("ENDPOINT_SAME_SITE") || ""
+    endpoint_same_site: System.get_env("ENDPOINT_SAME_SITE") ||  Application.get_env(:samba, :endpoint_same_site, "")
+
 
   config :samba,
-    endpoint_signing_salt: System.get_env("ENDPOINT_SIGNING_SALT") || ""
+    endpoint_signing_salt: System.get_env("ENDPOINT_SIGNING_SALT") ||  Application.get_env(:samba, :endpoint_signing_salt, "")
 
   config :samba,
-    endpoint_key: System.get_env("ENDPOINT_KEY") || ""
+    endpoint_key: System.get_env("ENDPOINT_KEY") || Application.get_env(:samba, :endpoint_key, "")
 
-  store = System.get_env("ENDPOINT_STORE") || nil
+  store = System.get_env("ENDPOINT_STORE") || Application.get_env(:samba, :endpoint_store, nil)
 
   store =
     case store do

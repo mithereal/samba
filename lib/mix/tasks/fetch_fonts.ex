@@ -1,13 +1,9 @@
 defmodule Mix.Tasks.FetchFonts do
   use Mix.Task
 
-  @shortdoc "Downloads font files or zip archives, extracts/saves them locally, and ensures filenames are lowercase"
+  @shortdoc "Downloads font files or zip archives from application config, places/extracts them locally, and ensures filenames are lowercase"
 
   @fonts_dir "priv/static/fonts"
-
-  # A list of font URLs. Supports both direct files (.woff, .woff2) and zip archives (.zip).
-  @font_urls [
-  ]
 
   def run(_args) do
     Mix.shell().info("==> Starting font fetching...")
@@ -15,15 +11,21 @@ defmodule Mix.Tasks.FetchFonts do
     Application.ensure_all_started(:inets)
     Application.ensure_all_started(:ssl)
 
-    File.mkdir_p!(@fonts_dir)
+    font_urls = Application.get_env(:samba, :font_urls, [])
 
-    Enum.each(@font_urls, fn url ->
-      process_url(url)
-    end)
+    if Enum.empty?(font_urls) do
+      Mix.shell().error("No font URLs found in application config under :samba, :font_urls")
+    else
+      File.mkdir_p!(@fonts_dir)
 
-    lowercase_all_files_in_dir(@fonts_dir)
+      Enum.each(font_urls, fn url ->
+        process_url(url)
+      end)
 
-    Mix.shell().info("==> All font tasks complete!")
+      lowercase_all_files_in_dir(@fonts_dir)
+
+      Mix.shell().info("==> All font tasks complete!")
+    end
   end
 
   defp process_url(url) do
